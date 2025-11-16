@@ -12,6 +12,7 @@ with pkgs; [
   fzf
   bash
   zsh
+  zsh-autosuggestions
   podman
   granted
   lua
@@ -21,4 +22,9 @@ with pkgs; [
   starship
   tmux
   zoxide
+  _1password-gui
+  _1password-cli
+  ghostty-bin
+  obsidian
+  zotero
 ]

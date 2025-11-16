@@ -1,6 +1,8 @@
 { pkgs, system, ... }: {
+  nixpkgs.hostPlatform = system;
+
   environment.systemPackages = with pkgs; [
-  ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
+] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
   nix = {
     enable = false;
@@ -12,6 +14,4 @@
   system = {
     stateVersion = 6;
   };
-  
-  nixpkgs.hostPlatform = system;
 }
