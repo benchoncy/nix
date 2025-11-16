@@ -1,27 +1,26 @@
 {
-  description = "benchoncy's nix configurations";
+  description = "Nix flake for MacOS configuration";
 
   inputs = {
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs.url = "github:NixOS/nixpkgs/24.05";
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nixpkgs-unstable  }:
-  {
-    # Import overlays
-    overlays = import ./overlays {inherit inputs;};
-
-    # Work darwin configuration
-    # $ darwin-rebuild build --flake .#bstuart-mbp-m1pro
-    darwinConfigurations."bstuart-mbp-m1pro" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      modules = [
-        ./modules/system/darwin.nix
-        ./modules/common/configuration.nix
-      ];
-      specialArgs = { inherit inputs; };
+  outputs = inputs@{ self, nix-darwin, nixpkgs }:
+  let
+    hostName = "bstuart-mbp-m1pro";
+    system = "aarch64-darwin";
+    pkgs = nixpkgs.legacyPackages.${system};
+  in with pkgs; {
+    darwinConfigurations = {
+      "${hostName}" = nix-darwin.lib.darwinSystem {
+        modules = [ 
+          ./hosts/darwin/configuration.nix
+        ];
+        specialArgs = { inherit pkgs; inherit system; };
+      };
     };
+    darwinPackages = self.darwinConfigurations."${hostName}".pkgs;
   };
 }
