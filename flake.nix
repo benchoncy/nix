@@ -17,6 +17,7 @@
     };
   in with pkgs; {
     darwinConfigurations = {
+      # Work MacOS configuration
       "${hostName}" = nix-darwin.lib.darwinSystem {
         modules = [ 
           ./hosts/work-darwin/configuration.nix

@@ -3,21 +3,23 @@ let
   username = "bstuart";
 in {
   nixpkgs.hostPlatform = system;
-
+  
+  # Define system packages
   environment.systemPackages = with pkgs; [
-] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
+  ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
   nix = {
-    enable = false;
+    enable = false; # Not controlled by nix-darwin on MacOS
     settings = {
         experimental-features = "nix-command flakes";
     };
   };
 
   system = {
-    primaryUser = username;
-    stateVersion = 6;
+    primaryUser = username; 
+    stateVersion = 6; 
     defaults = {
+        # Configure MacOS Dock
         dock = {
             autohide = true;
             orientation = "bottom";

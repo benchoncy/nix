@@ -1,3 +1,5 @@
+# NixOS module that defines shared system packages
+# Search https://search.nixos.org/packages for available packages
 { pkgs, ... }:
 with pkgs; [
   coreutils
