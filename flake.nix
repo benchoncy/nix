@@ -19,7 +19,7 @@
     darwinConfigurations = {
       "${hostName}" = nix-darwin.lib.darwinSystem {
         modules = [ 
-          ./hosts/darwin/configuration.nix
+          ./hosts/work-darwin/configuration.nix
         ];
         specialArgs = { inherit pkgs; inherit system; };
       };
