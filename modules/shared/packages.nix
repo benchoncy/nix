@@ -3,6 +3,7 @@
 { pkgs, ... }:
 with pkgs; [
   coreutils
+  gcc
   neovim
   git
   wget
@@ -26,7 +27,6 @@ with pkgs; [
   zoxide
   _1password-gui
   _1password-cli
-  ghostty-bin
   obsidian
   zotero
 ]
