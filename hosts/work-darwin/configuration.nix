@@ -6,6 +6,7 @@ in {
   
   # Define system packages
   environment.systemPackages = with pkgs; [
+    ghostty-bin
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
   nix = {

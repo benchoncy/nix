@@ -90,6 +90,7 @@
   # Define system packages
   environment.systemPackages = with pkgs; [
     displaylink # for the displaylink driver
+    ghostty
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
 
