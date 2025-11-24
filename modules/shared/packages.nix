@@ -5,12 +5,16 @@ with pkgs; [
   coreutils
   gcc
   neovim
+  tree-sitter
   git
   wget
   curl
   gnugrep
+  ripgrep
   jq
   yq
+  fd
+  unzip
   chezmoi
   fzf
   bash
@@ -18,8 +22,12 @@ with pkgs; [
   zsh-autosuggestions
   podman
   granted
+  cargo
   lua
+  luarocks
   go
+  nodejs_24
+  python313
   pre-commit
   uv
   starship
