@@ -1,6 +1,7 @@
 { config, pkgs, inputs, username, ... }: {   
   imports = [ 
     ./hardware-configuration.nix  # Include the results of the hardware scan.
+    ./settings.nix                # Static settings for this host
     ../../modules/shared
     ../../modules/nixos 
   ];
@@ -19,18 +20,6 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Configure video drivers
-  services.xserver.videoDrivers = [ "displaylink" "modesetting" ];
-  
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "gb";
-    variant = "";
-  };
-
-  # Configure console keymap
-  console.keyMap = "uk";
-  
   environment.variables = {
     CUSTOM_1P_SIGNING_PROGRAM = "${pkgs._1password-gui}/share/1password/op-ssh-sign";  # Share 1Password git signing program with chezmoi
   };
