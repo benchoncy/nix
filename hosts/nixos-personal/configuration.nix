@@ -1,9 +1,13 @@
-{ pkgs, inputs, username, ... }: {   
+{ config, pkgs, inputs, username, ... }: {   
   imports = [ 
     ./hardware-configuration.nix  # Include the results of the hardware scan.
     ../../modules/shared
     ../../modules/nixos 
   ];
+
+  # Enable Home Manager Configuration
+  home-manager.enable = true;
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 

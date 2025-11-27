@@ -1,9 +1,13 @@
-{ pkgs, inputs, username, ... }: {
+{ config, pkgs, lib, inputs, username, ... }: {
   imports = [
     inputs.home-manager.nixosModules.default # Include home-manager module
   ];
+
+  options.home-manager.enable = lib.mkEnableOption "Home Manager Configuration";
   
-  home-manager.users."${username}" = import ../../home {
-    inherit pkgs username;
+  config = lib.mkIf config.home-manager.enable {
+    home-manager.users."${username}" = import ../../home {
+      inherit pkgs username;
+    };
   };
 }
