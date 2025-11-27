@@ -2,19 +2,12 @@
 let
   username = "bstuart";
 in {
-  nixpkgs.hostPlatform = system;
-  
+  nixpkgs.config.allowUnfree = true;
+
   # Define system packages
   environment.systemPackages = with pkgs; [
     ghostty-bin
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
-
-  nix = {
-    enable = false; # Not controlled by nix-darwin on MacOS
-    settings = {
-        experimental-features = "nix-command flakes";
-    };
-  };
 
   system = {
     primaryUser = username; 

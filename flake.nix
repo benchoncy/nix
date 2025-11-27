@@ -14,37 +14,26 @@
   };
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
-  let
-    hostName = "bstuart-mbp-m1pro";
-    system = "aarch64-darwin";
-    pkgs = import nixpkgs {
-      system = "${system}";
-      config.allowUnfree = true;
-    };
-  in with pkgs; {
+  {
     darwinConfigurations = {
       # Work MacOS configuration
       "bstuart-mbp-m1pro" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
         modules = [ 
-          ./hosts/work-darwin/configuration.nix
+          ./hosts/darwin-work/configuration.nix
         ];
-        specialArgs = { inherit pkgs; inherit system; };
+        specialArgs = inputs;
       };
     };
-    darwinPackages = self.darwinConfigurations."${hostName}".pkgs;
 
     nixosConfigurations = {
       # Personal NixOS configuration
-      "nixos" = nixpkgs.lib.nixosSystem {
+      "nixos-bstuart" = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./hosts/nixos/configuration.nix
-          home-manager.nixosModules.home-manager {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.ben = ./modules/shared/home.nix;
-          }
+          ./hosts/nixos-personal/configuration.nix 
         ];
+        specialArgs = inputs;
       };
     }; 
   };

@@ -1,7 +1,7 @@
-{ config, pkgs, ... }:
+{ pkgs, username, ... }:
 {
-  home.username = "ben";
-  home.homeDirectory = "/home/ben";
+  home.username = "${username}";
+  home.homeDirectory = "/home/${username}";
 
   # Enable XDG Autostart
   xdg.autostart.enable = true;
