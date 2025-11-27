@@ -22,7 +22,11 @@
         modules = [ 
           ./hosts/darwin-work/configuration.nix
         ];
-        specialArgs = inputs;
+        specialArgs = {
+          inherit inputs;
+
+          username = "bstuart";
+        };
       };
     };
 
@@ -33,7 +37,13 @@
         modules = [
           ./hosts/nixos-personal/configuration.nix 
         ];
-        specialArgs = inputs;
+        specialArgs = {
+          inherit inputs;
+
+          hostname = "nixos-bstuart";
+          username = "ben";
+          displayname = "Ben Stuart";
+        };
       };
     }; 
   };

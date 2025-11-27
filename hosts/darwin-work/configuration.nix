@@ -1,7 +1,4 @@
-{ pkgs, system, ... }:
-let
-  username = "bstuart";
-in {
+{ pkgs, system, username ... }: {
   nixpkgs.config.allowUnfree = true;
 
   # Define system packages

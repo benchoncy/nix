@@ -17,3 +17,8 @@ To use this configuration on NixOS, follow these steps:
 To use this configuration on MacOS, follow these steps:
 1. Follow the Determinate Systems [instructions](https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#determinate-nix-installer) to install Nix
 2. For a first time setup, use `sudo nix run nix-darwin/nix-darwin-25.05#darwin-rebuild -- switch --flake ./` or `sudo darwin-rebuild switch --flake ./` thereafter.
+
+# Development
+
+## Testing Changes
+Run `nix flake check` to test changes made to the flake before committing or initiating a rebuild.
