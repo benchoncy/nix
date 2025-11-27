@@ -1,8 +1,8 @@
-{ ... }: {
+{ lib, ... }: {
   nixpkgs.config.allowUnfree = true;
 
   nix = {
-    enable = true;
+    enable = lib.mkDefault true;
     settings = {
         experimental-features = "nix-command flakes";
     };

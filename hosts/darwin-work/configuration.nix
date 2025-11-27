@@ -1,10 +1,16 @@
 { pkgs, system, username ... }: {
-  nixpkgs.config.allowUnfree = true;
 
-  # Define system packages
+  imports = [
+    ../../modules/shared
+    ../../modules/darwin
+  ];
+  
+  # Enable Home Manager Module
+  home-manager.enable = true;
+
   environment.systemPackages = with pkgs; [
-    ghostty-bin
-  ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
+    # Place bespoke packages here if needed
+  ];
 
   system = {
     primaryUser = username; 

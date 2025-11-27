@@ -7,7 +7,7 @@
   
   config = lib.mkIf config.home-manager.enable {
     home-manager.users."${username}" = import ../../home {
-      inherit pkgs username;
+      inherit pkgs lib username;
     };
   };
 }

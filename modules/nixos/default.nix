@@ -1,4 +1,8 @@
 { hostname, username, displayname, ... }: {
+  imports = [
+    ./packages.nix
+  ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
