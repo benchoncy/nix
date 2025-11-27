@@ -5,3 +5,9 @@
     ghostty-bin
   ];
 }
+
+# Manage homebrew packages
+homebrew.enable = true;
+homebrew.casks = [
+  displaylink
+];
