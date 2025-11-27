@@ -1,15 +1,9 @@
 { pkgs, inputs, username, ... }: {   
   imports = [ 
     ./hardware-configuration.nix  # Include the results of the hardware scan.
-    inputs.home-manager.nixosModules.default # Include home-manager module
     ../../modules/shared
     ../../modules/nixos 
   ];
-  
-  home-manager.users."${username}" = import ../../modules/home-manager {
-    inherit pkgs username;
-  };
-
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
