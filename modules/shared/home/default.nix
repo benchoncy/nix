@@ -1,6 +1,10 @@
-{ config, pkgs, lib, inputs, username, ... }:
+{ pkgs, ... }:
+let
+  username = "ben";
+in
 {
   imports = [
+    ../catppuccin.nix
     ./hyprland
   ];
 
@@ -11,7 +15,10 @@
   xdg.autostart.enable = true;
   xdg.autostart.entries = [
     "${pkgs._1password-gui}/share/applications/1password.desktop"
-  ];
+  ]; 
+
+  programs.home-manager.enable = true;
+  nixpkgs.config.allowUnfree = true;
   
   home.stateVersion = "25.05";
 }

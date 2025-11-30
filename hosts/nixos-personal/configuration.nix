@@ -6,9 +6,6 @@
     ../../modules/nixos 
   ];
 
-  # Enable Home Manager Module
-  home-manager.enable = true;
-  
   # Enable hyprland Module
   hyprland.enable = true;
 

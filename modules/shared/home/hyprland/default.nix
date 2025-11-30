@@ -1,4 +1,8 @@
 { config, lib, ... }: {
+  imports = [
+    ./waybar.nix
+  ];
+
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
@@ -6,10 +10,22 @@
       "$browser" = "firefox";
       "$menu" = "wofi --show drun";
 
+      exec-once = [
+        "waybar"
+      ];
+
       # Gestures
       gesture = [
         "3, horizontal, workspace"
-        "3, up, dispatcher, exec, $menu"
+      ];
+
+      # Workspaces
+      workspace = [
+        "1, persistent:true"
+        "2, persistent:true"
+        "3, persistent:true"
+        "4, persistent:true"
+        "5, persistent:true"
       ];
 
       # Monitor configuration
