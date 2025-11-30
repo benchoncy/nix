@@ -1,5 +1,9 @@
-{ pkgs, lib, username, ... }:
+{ config, pkgs, lib, inputs, username, ... }:
 {
+  imports = [
+    ./hyprland
+  ];
+
   home.username = "${username}";
   home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
 
