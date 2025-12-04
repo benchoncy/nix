@@ -1,7 +1,7 @@
 { hostname, username, displayname, ... }: {
   imports = [
     ./packages.nix
-    ./hyprland
+    ./display
   ];
 
   # Bootloader.

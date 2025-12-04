@@ -11,5 +11,8 @@
     ];
 
     backupFileExtension = "bkp";
+    extraSpecialArgs = {
+      inherit username;
+    };
   };
 }

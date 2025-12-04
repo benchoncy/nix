@@ -6,13 +6,12 @@
       enable = true;
     };
 
-    # Enable kitty as is the default terminal in hyprland
+    # Install additional packages
     environment.systemPackages = with pkgs; [
-      kitty
       wofi
     ];
     
     # Enable ly display manager
-    services.displayManager.ly.enable = true;
+    services.displayManager.ly.enable = lib.mkDefault true;
   };
 }

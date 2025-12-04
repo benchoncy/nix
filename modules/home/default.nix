@@ -1,11 +1,9 @@
-{ pkgs, ... }:
-let
-  username = "ben";
-in
-{
+{ pkgs, username, ... }: {
   imports = [
-    ../catppuccin.nix
+    ./programs
     ./hyprland
+    ./gnome
+    ./assets.nix
   ];
 
   home.username = "${username}";

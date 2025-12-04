@@ -1,0 +1,130 @@
+# WIP: This is a work in progress, I would not recommend using, or taking insperation from this config yet.
+{ config, osConfig, lib, ... }: {
+  imports = [
+    ./waybar.nix
+  ];
+
+  options = {
+    hyprland.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = osConfig.hyprland.enable or false;
+      description = "Enable Hyprland specific settings and packages.";
+    };
+  };
+
+  config = lib.mkIf config.hyprland.enable {
+    hyprland.waybar.enable = lib.mkDefault true;
+
+    wayland.windowManager.hyprland = {
+      enable = true;
+      settings = {
+        "$terminal" = "ghostty";
+        "$browser" = "firefox";
+        "$menu" = "wofi --show drun";
+
+        exec-once = [
+          "waybar"
+        ];
+
+        # Gestures
+        gesture = [
+          "3, horizontal, workspace"
+        ];
+
+        # Workspaces
+        workspace = [
+          "1, persistent:true"
+          "2, persistent:true"
+          "3, persistent:true"
+          "4, persistent:true"
+          "5, persistent:true"
+        ];
+
+        # Monitor configuration
+        monitor = ",preferred,auto,auto";
+
+        # Keybindings
+        "$mainMod" = "SUPER";
+
+        bind = [
+          "$mainMod, T, exec, $terminal"
+          "$mainMod, B, exec, $browser"
+          "$mainMod, K, killactive,"
+          "$mainMod, M, exit,"
+          # "$mainMod, V, togglefloating,"
+          "$mainMod, F, exec, $menu"
+          # bind = $mainMod, P, pseudo, # dwindle
+          # bind = $mainMod, J, togglesplit, # dwindle
+
+          # Move focus with mainMod + arrow keys
+          "$mainMod, left, movefocus, l"
+          "$mainMod, right, movefocus, r"
+          "$mainMod, up, movefocus, u"
+          "$mainMod, down, movefocus, d"
+
+          # Move focus with mainMod + HJKL
+          "$mainMod, H, movefocus, l"
+          "$mainMod, L, movefocus, r"
+          "$mainMod, K, movefocus, u"
+          "$mainMod, J, movefocus, d"
+
+          # Switch workspaces with mainMod + [0-9]
+          "$mainMod, 1, workspace, 1"
+          "$mainMod, 2, workspace, 2"
+          "$mainMod, 3, workspace, 3"
+          "$mainMod, 4, workspace, 4"
+          "$mainMod, 5, workspace, 5"
+          "$mainMod, 6, workspace, 6"
+          "$mainMod, 7, workspace, 7"
+          "$mainMod, 8, workspace, 8"
+          "$mainMod, 9, workspace, 9"
+          "$mainMod, 0, workspace, 10"
+
+          # Move active window to a workspace with mainMod + SHIFT + [0-9]
+          "$mainMod SHIFT, 1, movetoworkspace, 1"
+          "$mainMod SHIFT, 2, movetoworkspace, 2"
+          "$mainMod SHIFT, 3, movetoworkspace, 3"
+          "$mainMod SHIFT, 4, movetoworkspace, 4"
+          "$mainMod SHIFT, 5, movetoworkspace, 5"
+          "$mainMod SHIFT, 6, movetoworkspace, 6"
+          "$mainMod SHIFT, 7, movetoworkspace, 7"
+          "$mainMod SHIFT, 8, movetoworkspace, 8"
+          "$mainMod SHIFT, 9, movetoworkspace, 9"
+          "$mainMod SHIFT, 0, movetoworkspace, 10"
+
+          # Example special workspace (scratchpad)
+          # bind = $mainMod, S, togglespecialworkspace, magic
+          # bind = $mainMod SHIFT, S, movetoworkspace, special:magic
+
+          # Scroll through existing workspaces with mainMod + scroll
+          "$mainMod, mouse_down, workspace, e+1"
+          "$mainMod, mouse_up, workspace, e-1"
+        ];
+
+        # Move/resize windows with mainMod + LMB/RMB and dragging
+        bindm = [
+          "$mainMod, mouse:272, movewindow"
+          "$mainMod, mouse:273, resizewindow"
+        ];
+
+        # Laptop multimedia keys for volume and LCD brightness
+        bindel = [
+          ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
+          ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+          ",XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+"
+          ",XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-"
+        ];
+
+        # Requires playerctl
+        bindl = [
+          ", XF86AudioNext, exec, playerctl next"
+          ", XF86AudioPause, exec, playerctl play-pause"
+          ", XF86AudioPlay, exec, playerctl play-pause"
+          ", XF86AudioPrev, exec, playerctl previous"
+        ];
+      };
+    };
+  };
+}

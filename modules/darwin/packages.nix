@@ -2,7 +2,6 @@
 # Search https://search.nixos.org/packages for available packages
 { pkgs, ... }: {
   environment.systemPackages = with pkgs; [
-    ghostty-bin
   ];
 }
 
