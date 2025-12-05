@@ -1,5 +1,7 @@
-{ hostname, username, displayname, ... }: {
+{ inputs, hostname, username, displayname, ... }: {
   imports = [
+    inputs.home-manager.nixosModules.default # Include home-manager module
+    inputs.catppuccin.nixosModules.catppuccin # Include catppuccin theme module
     ./packages.nix
     ./display
   ];

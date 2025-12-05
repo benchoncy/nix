@@ -32,14 +32,14 @@
     starship
     tmux
     zoxide
-    obsidian
     zotero
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
+    obsidian
     ghostty
     displaylink
   ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-    # For macOS only
+    # For Darwin only
     ghostty-bin
   ];
 }

@@ -1,9 +1,4 @@
-{ config, pkgs, lib, inputs, username, ... }: {
-  imports = [
-    inputs.catppuccin.nixosModules.catppuccin # Include catppuccin theme module
-    inputs.home-manager.nixosModules.default # Include home-manager module
-  ];
-
+{ inputs, username, ... }: {
   home-manager = {
     users."${username}".imports = [
       ../home 
@@ -11,6 +6,8 @@
     ];
 
     backupFileExtension = "bkp";
+    useUserPackages = true;
+    useGlobalPkgs = true;
     extraSpecialArgs = {
       inherit username;
     };

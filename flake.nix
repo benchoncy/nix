@@ -11,10 +11,21 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs-firefox-darwin = {
+      url = "github:bandithedoge/nixpkgs-firefox-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     catppuccin.url = "github:catppuccin/nix";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, catppuccin }:
+  outputs = inputs@{
+    self,
+    nix-darwin,
+    nixpkgs,
+    home-manager,
+    nixpkgs-firefox-darwin,
+    catppuccin
+  }:
   {
     darwinConfigurations = {
       # Work MacOS configuration

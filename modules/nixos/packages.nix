@@ -1,6 +1,5 @@
 # NixOS module that defines shared system packages
 # Search https://search.nixos.org/packages for available packages
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs; [
-  ];
+{ username, ... }: {
+  programs._1password-gui.polkitPolicyOwners = [ "${username}" ];
 }
