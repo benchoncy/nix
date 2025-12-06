@@ -19,7 +19,6 @@
     nix-darwin,
     nixpkgs,
     home-manager,
-    nixpkgs-firefox-darwin,
     catppuccin
   }:
   {
