@@ -5,10 +5,6 @@
     ../../modules/darwin
   ];
   
-  environment.systemPackages = with pkgs; [
-    # Place bespoke packages here if needed
-  ];
-
   system = {
     primaryUser = username; 
     stateVersion = 6; 

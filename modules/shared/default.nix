@@ -1,10 +1,13 @@
-{ lib, ... }: {
+{ lib, inputs, ... }: {
   imports = [
     ./packages.nix
     ./home-manager.nix
   ];
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    overlays = [ inputs.nur.overlays.default ];
+    config.allowUnfree = true;
+  };
 
   nix = {
     enable = lib.mkDefault true;

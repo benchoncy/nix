@@ -1,7 +1,6 @@
 { lib, pkgs, ... }: {
   programs.firefox = {
     enable = if pkgs.stdenv.isDarwin then false else true;
-    package = if pkgs.stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
     languagePacks = [ "en-GB" ];
     profiles.default = {
       search = {
@@ -14,6 +13,13 @@
       };
       extensions = {
         force = true;
+        packages = with pkgs.nur.repos.rycee.firefox-addons; [
+          firefox-color
+          onepassword-password-manager
+          ublock-origin
+          granted
+          vimium
+        ];
       };
     };
   };

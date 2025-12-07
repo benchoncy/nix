@@ -6,7 +6,6 @@
     ];
 
     backupFileExtension = "bkp";
-    useUserPackages = true;
     useGlobalPkgs = true;
     extraSpecialArgs = {
       inherit username;

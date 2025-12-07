@@ -9,9 +9,5 @@
   # Enable Gnome Module
   gnome.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    # Place bespoke packages here if needed
-  ]; 
-
   system.stateVersion = "25.05";
 }
