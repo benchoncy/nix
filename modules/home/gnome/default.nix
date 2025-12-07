@@ -24,7 +24,6 @@
     home.packages = with pkgs; [
       dconf-editor
       gnomeExtensions.appindicator
-      gnomeExtensions.pop-shell
     ];
 
     dconf = {
@@ -47,14 +46,8 @@
           icon-theme = "Adwaita";
           cursor-theme = "Adwaita";
         };
+
         "org/gnome/desktop/background".picture-uri-dark = "file:///home/${username}/.config/userdata/wallpaper.jpg";
-        
-        "org/gnome/shell/extensions/pop-shell" = {
-          tile-by-default = true;
-          active-hint = false;
-          gap-outer = 2;
-          gap-inner = 2;
-        };
       };
     };
 
