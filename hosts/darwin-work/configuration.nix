@@ -20,8 +20,8 @@
                 { app = "/Applications/Google Chrome.app"; }
                 { app = "/Applications/Slack.app"; }
                 { app = "/Applications/Ghostty.app"; }
-                { app = "/Applications/1Password.app"; }
                 { app = "/Applications/Obsidian.app"; }
+                { app = "/Applications/1Password.app"; }
             ];
             persistent-others = [
                 { folder = { path = "/Users/${username}/Downloads"; displayas = "stack"; }; }

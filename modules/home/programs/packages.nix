@@ -33,6 +33,12 @@
     tmux
     zoxide
     zotero
+    # AI Agents and tools
+    github-copilot-cli
+    codex
+    gemini-cli
+    claude-code
+    opencommit
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
     obsidian
