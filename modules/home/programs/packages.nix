@@ -38,7 +38,7 @@
     codex
     gemini-cli
     claude-code
-    opencommit
+    opencode
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
     obsidian
