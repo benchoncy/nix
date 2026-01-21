@@ -1,6 +1,7 @@
 { lib, inputs, ... }: {
   imports = [
     ./packages.nix
+    ./options.nix
     ./home-manager.nix
   ];
 

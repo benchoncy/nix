@@ -9,5 +9,8 @@
   # Enable Gnome Module
   gnome.enable = true;
 
+  # Enable 3D Printing Module
+  _3dPrinting.enable = true;
+
   system.stateVersion = "25.05";
 }

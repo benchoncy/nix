@@ -12,8 +12,8 @@
         "org.gnome.Nautilus.desktop"
         "firefox.desktop"
         "com.mitchellh.ghostty.desktop"
-        "1password.desktop"
         "obsidian.desktop"
+        "1password.desktop"
         "zotero.desktop"
       ];
       description = "List of favorite applications to show in the GNOME dock.";
@@ -51,6 +51,6 @@
       };
     };
 
-    home.file.".face".source = ../../../assets/avatar.png;
+    home.file.".face".source = ../../../../assets/avatar.png;
   };
 }

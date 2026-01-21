@@ -1,8 +1,7 @@
 { pkgs, username, ... }: {
   imports = [
     ./programs
-    ./hyprland
-    ./gnome
+    ./modules
     ./assets.nix
   ];
 
