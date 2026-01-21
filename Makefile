@@ -1,6 +1,9 @@
 check:
 	nix flake check
 
+update:
+	nix flake update --flake .
+
 nixos-rebuild:
 	sudo nixos-rebuild switch --flake .
 

@@ -9,10 +9,6 @@
   home.username = "${username}";
   home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${username}" else "/home/${username}";
 
-  home.sessionPath = [
-    "/etc/profiles/per-user/${username}/bin"
-  ];
-
   # Enable XDG Autostart
   xdg.autostart.enable = true;
   xdg.autostart.entries = [
