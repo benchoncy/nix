@@ -29,4 +29,10 @@
         };
     };
   };
+
+  environment.systemPackages = with pkgs; [
+    # Add any additional system packages here
+    codex
+    gemini-cli
+  ];
 }

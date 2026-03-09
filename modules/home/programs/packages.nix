@@ -34,10 +34,6 @@
     zoxide
     zotero
     # AI Agents and tools
-    github-copilot-cli
-    codex
-    gemini-cli
-    claude-code
     opencode
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
