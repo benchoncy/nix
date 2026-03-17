@@ -17,7 +17,6 @@
     fzf
     bash
     zsh
-    zsh-autosuggestions
     podman
     cargo
     lua
@@ -33,6 +32,7 @@
     tmux
     zoxide
     zotero
+    nerd-fonts.hack
     # AI Agents and tools
     opencode
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [

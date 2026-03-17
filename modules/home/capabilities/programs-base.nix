@@ -1,5 +1,5 @@
 { ... }: {
   imports = [
-    ./profiles/system.nix
+    ../programs
   ];
 }

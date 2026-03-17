@@ -1,5 +1,6 @@
 { ... }: {
   imports = [
-    ./profiles/system.nix
+    ./base.nix
+    ../modules
   ];
 }

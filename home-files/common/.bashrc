@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# ~/.bashrc
+
+# Load the shared shell configuration
+source $HOME/.config/shell/init.sh
+
+# Load fzf integration
+eval "$(fzf --bash)"
+
+# Initialize zoxide
+eval "$(zoxide init bash)"
+
+# Start starship prompt
+eval "$(starship init bash)"

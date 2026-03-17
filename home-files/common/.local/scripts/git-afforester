@@ -1,0 +1,201 @@
+#!/usr/bin/env python3
+# Git Afforester
+# Inspired by tmux-sessionizer/tmux-windowizer for tmux, Git Afforester aims
+# to provide a simple and opinionated way to manage git based projects to
+# accelerate my workflow and reduce the friction of context switching.
+# designed to integrate with tmux and other scripts/tools to provide
+# a seamless development experience tailored to my workflow.
+
+import argparse
+import os
+
+# Environment variables
+PROJECTS_PATH = os.environ.get("GAF__PROJECTS_PATH", os.path.expanduser("~/Projects"))
+PROJECTS_SUFFIX = os.environ.get("GAF__PROJECTS_SUFFIX", ".tree")
+DEFAULT_BRANCH_WORKTREE = os.environ.get("GAF__DEFAULT_BRANCH_WORKTREE", "default")
+
+
+def plant(repo_uri: str):
+    """
+    Adds a new project to the forest.
+    """
+
+    project = Project(repo_uri)
+    # Checkout the repo on default branch worktree
+    os.system(f"git clone {repo_uri} {project.full_path}/{DEFAULT_BRANCH_WORKTREE}")
+
+
+def clean(age: int = 30, prune: bool = True, force: bool = False):
+    """
+    Cleans up old worktrees.
+    """
+    if prune:
+        print("Pruning old worktrees...")
+        for project in iter_projects():
+            os.system(f"cd {project}/{DEFAULT_BRANCH_WORKTREE} && git worktree prune --expire={str(age)}d")
+
+    print(f"Cleaning up worktree not accessed in the last {age} days...")
+    args = ""
+    if force:
+        args += " --force"
+    age_in_seconds = int(age) * 24 * 60 * 60
+    current_time = int(os.popen("date +%s").read())
+    for project in iter_projects():
+        for worktree in get_worktrees(project):
+            most_recent_change = int(os.popen(f"cd {project}/{worktree} && date -r ./ +%s").read())
+            if (current_time - most_recent_change) > age_in_seconds:
+                print(f"Removing {project}/{worktree}")
+                os.system(f"cd {project}/{DEFAULT_BRANCH_WORKTREE} && git worktree remove{args} {worktree}")
+
+
+def iter_projects():
+    for root, _, __ in os.walk(PROJECTS_PATH):
+        if root.endswith(PROJECTS_SUFFIX):
+            yield root
+
+
+def get_worktrees(project: str, protected: bool = False) -> list[str]:
+    worktrees = os.listdir(project)
+    if not protected:
+        if DEFAULT_BRANCH_WORKTREE in worktrees:
+            worktrees.remove(DEFAULT_BRANCH_WORKTREE)
+    return worktrees
+
+
+class Worktree:
+    """
+    Manages project git worktrees.
+    """
+
+    def __init__(self, project: str):
+        self.project = Project(project)
+
+    def add(self, branch: str, pull: bool = True):
+        """
+        Creates a worktree for the given branch name.
+        """
+        branch_path = f"{self.project.full_path}/{branch}"
+        # Create the worktree if it doesn't exist
+        if not os.path.isdir(branch_path):
+            os.system(
+                f"cd {self.project.full_path}/{DEFAULT_BRANCH_WORKTREE} && git pull &> /dev/null && git worktree add ../{branch} &> /dev/null"
+            )
+            if pull:
+                os.system(f"cd {branch_path} && git pull &> /dev/null")
+
+        # Output the path to the worktree
+        print(branch_path)
+
+    def remove(self, branch: str):
+        """
+        Removes a worktree for the given branch name.
+        """
+        if os.path.isdir(f"{self.project.full_path}/{branch}"):
+            os.system(
+                f"cd {self.project.full_path}/{DEFAULT_BRANCH_WORKTREE} && git worktree remove ../{branch} &> /dev/null"
+            )
+
+
+class Project:
+    domain: str
+    owner: str
+    repo: str
+    local_path: str
+    _uri: str
+    _path: str
+
+    def __init__(self, uri: str):
+        if uri.endswith(".git") or uri.startswith("http") or uri.startswith("git@"):
+            self.uri = uri
+        else:
+            self.path = uri
+
+    @property
+    def path(self) -> str:
+        return self._path
+
+    @path.setter
+    def path(self, value: str):
+        value = os.path.abspath(value)
+        self._path = value
+        self.domain, self.owner, self.repo = self._decompose_path(value)
+        self.local_path = self._create_local_path()
+
+    @property
+    def uri(self):
+        return self._uri
+
+    @uri.setter
+    def uri(self, value: str):
+        if not value.endswith(".git"):
+            raise Exception("Invalid git repo url:", value)
+        self._uri = value
+        self.domain, self.owner, self.repo = self._decompose_uri(value)
+        self.local_path = self._create_local_path()
+
+    def _create_local_path(self) -> str:
+        return f"{self.domain}/{self.owner}/{self.repo}{PROJECTS_SUFFIX}"
+
+    @property
+    def full_path(self) -> str:
+        project_path = os.path.abspath(PROJECTS_PATH)
+        return f"{project_path}/{self.local_path}"
+
+    def _decompose_path(self, path: str) -> tuple[str, str, str]:
+        path = path.replace(f"{os.path.abspath(PROJECTS_PATH)}/", "")
+        domain, owner, repo = path.split("/")
+        repo = repo.replace(PROJECTS_SUFFIX, "")
+        return domain, owner, repo
+
+    def _decompose_uri(self, uri: str) -> tuple[str, str, str]:
+        domain, owner, repo = uri.replace(":", "/").split("/")
+        repo = repo.replace(".git", "")
+        domain = domain.replace("https://", "").replace("git@", "")
+        return domain, owner, repo
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="command")
+
+    clean_parser = subparsers.add_parser("clean")
+    clean_parser.add_argument("-a", "--age", help="The age in days to clean up.", default="30")
+    clean_parser.add_argument(
+        "-p",
+        "--prune",
+        help="Prune old worktrees first.",
+        action="store_true",
+        default=True,
+    )
+    clean_parser.add_argument(
+        "-f",
+        "--force",
+        help="Force remove worktrees.",
+        action="store_true",
+        default=False,
+    )
+
+    plant_parser = subparsers.add_parser("plant")
+    plant_parser.add_argument("repo_uri", help="The git repo uri to plant.")
+
+    worktree_parser = subparsers.add_parser("worktree")
+    worktree_parser.add_argument("action", help="The action to perform.", choices=["add", "remove"])
+    worktree_parser.add_argument("branch", help="The branch to manage.")
+    worktree_parser.add_argument("-p", "--project", help="The project to manage.")
+
+    args = parser.parse_args()
+
+    if args.command == "clean":
+        clean(args.age, args.prune, args.force)
+    elif args.command == "plant":
+        plant(args.repo_uri)
+    elif args.command == "worktree":
+        worktree = Worktree(args.project)
+        if args.action == "add":
+            worktree.add(args.branch)
+        elif args.action == "remove":
+            worktree.remove(args.branch)
+
+
+if __name__ == "__main__":
+    main()

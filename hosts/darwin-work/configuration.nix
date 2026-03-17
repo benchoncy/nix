@@ -4,6 +4,11 @@
     ../../modules/shared
     ../../modules/darwin
   ];
+
+  my.work = {
+    enable = true;
+    repoPath = "/Users/bstuart/.work-dotfiles";
+  };
   
   system = {
     primaryUser = username; 
