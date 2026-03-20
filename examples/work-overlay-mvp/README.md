@@ -1,10 +1,13 @@
 # Work Overlay MVP
 
-This is a generic example of the minimum private work overlay expected by the main flake.
+This is a generic example of the minimum private work wrapper flake expected to compose with the shared repo.
 
 Suggested layout:
 
+- `flake.nix`
+- `Makefile`
 - `modules/home/default.nix`
+- `hosts/darwin-work/configuration.nix`
 - `home-files/work/.aws/config`
 - `home-files/work/.config/shell/tools/work-ticket.sh`
 
@@ -15,7 +18,8 @@ Customize these placeholders before using it:
 - the AWS profiles in `home-files/work/.aws/config`
 - any ticketing CLI commands in `work-ticket.sh`
 
-The host machine should set:
+The wrapper flake should:
 
-- `my.work.enable = true`
-- `my.work.repoPath = "/absolute/path/to/your/private/work/repo"`
+- pull the shared repo as a normal flake input
+- own the final work-machine outputs
+- compose from `darwinModules.base` and `homeModules.base`

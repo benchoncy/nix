@@ -1,9 +1,8 @@
-{ lib, config, ... }:
+{ lib, ... }:
 let
   inherit (lib) hasPrefix listToAttrs nameValuePair optionalAttrs unique;
 
   commonRoot = ../../../home-files/common;
-  personalRoot = ../../../home-files/personal;
 
   mkEntry = entry:
     nameValuePair entry.target ({
@@ -71,18 +70,9 @@ let
     }
   ];
 
-  personalRawDirs = if !config.my.work.enable && builtins.pathExists personalRoot then [ ] else [ ];
-
-  personalRawFiles = if !config.my.work.enable && builtins.pathExists personalRoot then [ ] else [ ];
-
-  personalExecutableFiles = if !config.my.work.enable && builtins.pathExists personalRoot then [ ] else [ ];
-
   rawEntries = commonRawDirs
     ++ commonRawFiles
-    ++ commonExecutableFiles
-    ++ personalRawDirs
-    ++ personalRawFiles
-    ++ personalExecutableFiles;
+    ++ commonExecutableFiles;
 
   rawFiles = listToAttrs (map mkEntry rawEntries);
   targets = map (entry: entry.target) rawEntries;

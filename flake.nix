@@ -33,22 +33,31 @@
       config.allowUnfree = true;
     };
 
-    workRepoPath = "/Users/bstuart/.work-dotfiles";
-    workModulePath = "${workRepoPath}/modules/home/default.nix";
-  in {
-    darwinConfigurations = {
-      # Work MacOS configuration
-      "bstuart-mbp-m1pro" = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [ 
-          ./hosts/darwin-work/configuration.nix
-        ];
-        specialArgs = {
-          inherit inputs;
+    darwinBaseModule = { ... }: {
+      imports = [
+        ./modules/shared
+        ./modules/darwin
+      ];
+    };
 
-          username = "bstuart";
-        };
-      };
+    nixosBaseModule = { ... }: {
+      imports = [
+        ./modules/shared
+        ./modules/nixos
+      ];
+    };
+  in {
+    darwinModules = {
+      base = darwinBaseModule;
+    };
+
+    nixosModules = {
+      base = nixosBaseModule;
+    };
+
+    homeModules = {
+      base = ./modules/home/profiles/base.nix;
+      system = ./modules/home/profiles/system.nix;
     };
 
     nixosConfigurations = {
@@ -69,21 +78,6 @@
     };
 
     homeConfigurations = {
-      "bstuart-mbp-m1pro-home" = home-manager.lib.homeManagerConfiguration {
-        pkgs = mkPkgs "aarch64-darwin";
-        extraSpecialArgs = {
-          inherit inputs;
-          username = "bstuart";
-        };
-        modules = [
-          ./modules/home/profiles/standalone-work.nix
-          inputs.catppuccin.homeModules.catppuccin
-          {
-            my.work.repoPath = workRepoPath;
-          }
-        ] ++ (if builtins.pathExists workModulePath then [ workModulePath ] else [ ]);
-      };
-
       "nixos-bstuart-home" = home-manager.lib.homeManagerConfiguration {
         pkgs = mkPkgs "x86_64-linux";
         extraSpecialArgs = {
@@ -91,7 +85,7 @@
           username = "ben";
         };
         modules = [
-          ./modules/home/profiles/standalone-personal.nix
+          ./modules/home/profiles/base.nix
           inputs.catppuccin.homeModules.catppuccin
         ];
       };

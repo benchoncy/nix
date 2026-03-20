@@ -46,6 +46,7 @@
     jack.enable = true;
   };
 
+  # Setup user account.
   users.users.${username} = {
     isNormalUser = true;
     description = "${displayname}";

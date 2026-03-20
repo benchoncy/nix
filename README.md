@@ -12,27 +12,29 @@ To use this configuration on NixOS, follow these steps:
 3. use `make nixos-rebuild` to create a new configuration
 
 ## MacOS (Darwin)
-(Updated ~Nov 2025, see [nix-darwin](https://github.com/nix-darwin/nix-darwin))
 
-To use this configuration on MacOS, follow these steps:
+Generic macOS support lives in this repo, but final work-machine outputs are expected to be assembled in a separate private wrapper flake (for privacy).
+
+To use this configuration for a work MacOS machine, follow these steps:
 1. Follow the Determinate Systems [instructions](https://github.com/DeterminateSystems/nix-installer?tab=readme-ov-file#determinate-nix-installer) to install Nix
-2. For a first time setup, use `sudo nix run nix-darwin/nix-darwin-25.05#darwin-rebuild -- switch --flake ./`.
-3. Once the local private work repo exists at the configured path, use `sudo darwin-rebuild switch --impure --flake "path:$PWD#bstuart-mbp-m1pro"` or `make darwin-rebuild` thereafter.
+2. Clone or prepare the private work wrapper repo
+3. Run `make darwin-rebuild` from the private work repo thereafter
 
 # Development
 
 ## Testing Changes
 Run `nix flake check` to test changes made to the flake before committing or initiating a rebuild.
 
+Use `make update` to refresh this repo's flake inputs.
+
 ## Home Manager Only
 
-The flake now exposes standalone Home Manager outputs for dotfiles-only workflows.
+The flake exposes standalone Home Manager outputs for dotfiles-only workflows.
 
-- `home-manager switch --impure --flake "path:$PWD#bstuart-mbp-m1pro-home"`
 - `home-manager switch --flake .#nixos-bstuart-home`
+- `make home-manager`
 
-The work Home Manager output expects a local private work module checkout at the host-configured path.
-Because that work module is local and intentionally ignored, work-only `darwin-rebuild` and `home-manager` runs should use `path:$PWD` and `--impure`.
+Work-only standalone Home Manager outputs are expected to live in the private wrapper flake, not this shared repo.
 
 ## Raw Dotfiles
 
@@ -43,22 +45,30 @@ The repo supports raw dotfile copying through an explicit Home Manager manifest.
 - prefer whole app directories under `.config/<app>` instead of one giant `.config` mapping
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, and `.config/ghostty/config` in Home Manager modules rather than raw copies
 
-## Migration Caveats
+## Reusable Exports
 
-The current migration plan intentionally does not do a few things yet:
+The flake also exposes reusable module entrypoints intended for wrapper flakes and other composition:
 
-- there is no separate personal flake repo yet; this repo remains the shared base
-- the private work config is not cloned at activation time and must exist locally on work machines
-- not every dotfile needs to become a Nix/Home Manager option; raw file copying remains a supported path
-- some app configs are expected to stay as raw files initially and move into Home Manager only when it is useful
+- `darwinModules.base` - shared macOS system module stack
+- `nixosModules.base` - shared NixOS system module stack
+- `homeModules.base` - standalone-safe Home Manager base profile
+- `homeModules.system` - Home Manager profile intended for embedded system use
+
+Wrapper flakes should prefer these exports over copying host composition logic directly.
 
 ## Private Work Overlay
 
-Work-specific configuration is expected to live in a separate local repo that exports a Home Manager module.
+Work-specific configuration is expected to live in a separate repo that owns the final work-machine outputs.
 
-- hosts opt in with `my.work.enable = true`
-- hosts point at the local repo with `my.work.repoPath = "/absolute/path/to/private/work/repo"`
-- the private repo should export `modules/home/default.nix`
+- the private repo should export a top-level wrapper flake
+- the private repo should provide `modules/home/default.nix`
+- the private repo can compose from `darwinModules.base`, `nixosModules.base`, and `homeModules.*`
 
 If you need to recreate a minimal private work repo quickly, use `examples/work-overlay-mvp/` as a generic starting point.
 It is intentionally organization-neutral and shows the minimum shape for work-only Git, AWS, and shell-tool overrides.
+
+For a fully pure setup, prefer a separate private wrapper flake that:
+
+- pulls this shared repo as a normal flake input from GitHub
+- owns the final work machine outputs
+- layers its private module on top of these reusable exports
