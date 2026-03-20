@@ -14,8 +14,7 @@ source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 autoload -Uz compinit && compinit
 autoload bashcompinit && bashcompinit
 
-# Enable vi mode
-bindkey -v
+# Use default zsh keybindings
 bindkey "^H" backward-delete-char
 bindkey "^?" backward-delete-char
 
