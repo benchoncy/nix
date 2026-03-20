@@ -21,5 +21,13 @@ Customize these placeholders before using it:
 The wrapper flake should:
 
 - pull the shared repo as a normal flake input
+- own its `nixpkgs` pin and wire shared to follow it
 - own the final work-machine outputs
 - compose from `darwinModules.base` and `homeModules.base`
+
+Useful commands:
+
+- `make check`
+- `make update`
+- `make update-shared`
+- `make update-nixpkgs`

@@ -2,8 +2,11 @@
   description = "Generic work wrapper flake example";
 
   inputs = {
-    shared.url = "github:<owner>/<shared-repo>?dir=<shared-flake-dir>";
-    nixpkgs.follows = "shared/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    shared = {
+      url = "github:benchoncy/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-darwin.follows = "shared/nix-darwin";
     home-manager.follows = "shared/home-manager";
     nur.follows = "shared/nur";
