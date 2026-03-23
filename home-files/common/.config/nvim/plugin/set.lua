@@ -71,6 +71,8 @@ vim.opt.incsearch = true
 -- Enable terminal colors
 vim.opt.termguicolors = true
 
+vim.opt.guicursor = "n-v-c-sm:block,r-cr-o:block,i-ci-ve:block-blinkwait700-blinkon400-blinkoff400"
+
 -- Set the color column to 80 characters as a visual aid.
 vim.opt.colorcolumn = "80"
 
