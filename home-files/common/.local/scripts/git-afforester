@@ -1,201 +1,828 @@
 #!/usr/bin/env python3
-# Git Afforester
-# Inspired by tmux-sessionizer/tmux-windowizer for tmux, Git Afforester aims
-# to provide a simple and opinionated way to manage git based projects to
-# accelerate my workflow and reduce the friction of context switching.
-# designed to integrate with tmux and other scripts/tools to provide
-# a seamless development experience tailored to my workflow.
+"""git-afforester: deterministic project/worktree manager."""
+
+from __future__ import annotations
 
 import argparse
+import json
+import logging
 import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from enum import IntEnum
+from pathlib import Path
+from urllib.parse import urlparse
 
-# Environment variables
-PROJECTS_PATH = os.environ.get("GAF__PROJECTS_PATH", os.path.expanduser("~/Projects"))
+PROJECTS_PATH = Path(os.environ.get("GAF__PROJECTS_PATH", "~/Projects")).expanduser()
 PROJECTS_SUFFIX = os.environ.get("GAF__PROJECTS_SUFFIX", ".tree")
-DEFAULT_BRANCH_WORKTREE = os.environ.get("GAF__DEFAULT_BRANCH_WORKTREE", "default")
+DEFAULT_BASE_BRANCH = os.environ.get("GAF__DEFAULT_BASE_BRANCH", "main")
+
+DEFAULT_LOG_PATH = (
+    Path(
+        os.environ.get("XDG_STATE_HOME", str(Path.home() / ".local" / "state"))
+    ).expanduser()
+    / "git-afforester"
+    / "git-afforester.log"
+)
+DEFAULT_LOG_MAX_BYTES = 10 * 1024 * 1024  # 10 MB
+
+LOG_PATH = Path(os.environ.get("GAF__LOG_PATH", str(DEFAULT_LOG_PATH))).expanduser()
+try:
+    LOG_MAX_BYTES = int(
+        os.environ.get("GAF__LOG_MAX_BYTES", str(DEFAULT_LOG_MAX_BYTES))
+    )
+except ValueError:
+    LOG_MAX_BYTES = DEFAULT_LOG_MAX_BYTES
+LOG_MAX_BYTES = max(LOG_MAX_BYTES, 0)
 
 
-def plant(repo_uri: str):
-    """
-    Adds a new project to the forest.
-    """
-
-    project = Project(repo_uri)
-    # Checkout the repo on default branch worktree
-    os.system(f"git clone {repo_uri} {project.full_path}/{DEFAULT_BRANCH_WORKTREE}")
+class ExitCode(IntEnum):
+    OK = 0
+    INVALID_INPUT = 10
+    NOT_FOUND = 20
+    GIT_FAILED = 30
+    INTERNAL = 50
 
 
-def clean(age: int = 30, prune: bool = True, force: bool = False):
-    """
-    Cleans up old worktrees.
-    """
-    if prune:
-        print("Pruning old worktrees...")
-        for project in iter_projects():
-            os.system(f"cd {project}/{DEFAULT_BRANCH_WORKTREE} && git worktree prune --expire={str(age)}d")
-
-    print(f"Cleaning up worktree not accessed in the last {age} days...")
-    args = ""
-    if force:
-        args += " --force"
-    age_in_seconds = int(age) * 24 * 60 * 60
-    current_time = int(os.popen("date +%s").read())
-    for project in iter_projects():
-        for worktree in get_worktrees(project):
-            most_recent_change = int(os.popen(f"cd {project}/{worktree} && date -r ./ +%s").read())
-            if (current_time - most_recent_change) > age_in_seconds:
-                print(f"Removing {project}/{worktree}")
-                os.system(f"cd {project}/{DEFAULT_BRANCH_WORKTREE} && git worktree remove{args} {worktree}")
+class AfforesterError(Exception):
+    def __init__(self, code: int, message: str):
+        super().__init__(message)
+        self.code = code
+        self.message = message
 
 
-def iter_projects():
-    for root, _, __ in os.walk(PROJECTS_PATH):
-        if root.endswith(PROJECTS_SUFFIX):
-            yield root
+class CommandError(AfforesterError):
+    pass
 
 
-def get_worktrees(project: str, protected: bool = False) -> list[str]:
-    worktrees = os.listdir(project)
-    if not protected:
-        if DEFAULT_BRANCH_WORKTREE in worktrees:
-            worktrees.remove(DEFAULT_BRANCH_WORKTREE)
-    return worktrees
+def get_logger() -> logging.Logger:
+    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    truncated = False
+    if (
+        LOG_MAX_BYTES > 0
+        and LOG_PATH.exists()
+        and LOG_PATH.stat().st_size >= LOG_MAX_BYTES
+    ):
+        LOG_PATH.write_text("", encoding="utf-8")
+        truncated = True
+
+    configured_logger = logging.getLogger("git-afforester")
+    configured_logger.handlers.clear()
+    configured_logger.propagate = False
+    configured_logger.setLevel(logging.DEBUG)
+
+    handler = logging.FileHandler(LOG_PATH, mode="a", encoding="utf-8")
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s [pid=%(process)d] %(message)s"
+    )
+    handler.setFormatter(formatter)
+    configured_logger.addHandler(handler)
+
+    configured_logger.info("--- run start ---")
+    if truncated:
+        configured_logger.warning(
+            "log truncated after reaching max size (%s bytes)", LOG_MAX_BYTES
+        )
+
+    return configured_logger
 
 
-class Worktree:
-    """
-    Manages project git worktrees.
-    """
-
-    def __init__(self, project: str):
-        self.project = Project(project)
-
-    def add(self, branch: str, pull: bool = True):
-        """
-        Creates a worktree for the given branch name.
-        """
-        branch_path = f"{self.project.full_path}/{branch}"
-        # Create the worktree if it doesn't exist
-        if not os.path.isdir(branch_path):
-            os.system(
-                f"cd {self.project.full_path}/{DEFAULT_BRANCH_WORKTREE} && git pull &> /dev/null && git worktree add ../{branch} &> /dev/null"
-            )
-            if pull:
-                os.system(f"cd {branch_path} && git pull &> /dev/null")
-
-        # Output the path to the worktree
-        print(branch_path)
-
-    def remove(self, branch: str):
-        """
-        Removes a worktree for the given branch name.
-        """
-        if os.path.isdir(f"{self.project.full_path}/{branch}"):
-            os.system(
-                f"cd {self.project.full_path}/{DEFAULT_BRANCH_WORKTREE} && git worktree remove ../{branch} &> /dev/null"
-            )
+logger = get_logger()
 
 
+def run_command(
+    command: list[str],
+    cwd: Path | None = None,
+    check: bool = True,
+    input_text: str | None = None,
+) -> subprocess.CompletedProcess[str]:
+    run_cwd = cwd or Path.cwd()
+    quoted_command = " ".join(shlex.quote(part) for part in command)
+    logger.debug("$ %s (cwd=%s)", quoted_command, run_cwd)
+    result = subprocess.run(
+        command,
+        cwd=run_cwd,
+        capture_output=True,
+        text=True,
+        input=input_text,
+        check=False,
+    )
+    logger.debug("rc=%s", result.returncode)
+    if result.stdout.strip():
+        logger.debug("stdout:\n%s", result.stdout.rstrip())
+    if result.stderr.strip():
+        logger.debug("stderr:\n%s", result.stderr.rstrip())
+    if check and result.returncode != 0:
+        stderr_line = (result.stderr or "").strip().splitlines()
+        reason = stderr_line[0] if stderr_line else "command failed"
+        raise CommandError(ExitCode.GIT_FAILED, f"{reason} ({' '.join(command)})")
+    return result
+
+
+def is_repo_uri(value: str) -> bool:
+    return value.endswith(".git") and (
+        value.startswith("git@")
+        or value.startswith("https://")
+        or value.startswith("http://")
+        or value.startswith("ssh://")
+    )
+
+
+@dataclass
 class Project:
     domain: str
     owner: str
     repo: str
-    local_path: str
-    _uri: str
-    _path: str
 
-    def __init__(self, uri: str):
-        if uri.endswith(".git") or uri.startswith("http") or uri.startswith("git@"):
-            self.uri = uri
+    @property
+    def root_path(self) -> Path:
+        return (
+            PROJECTS_PATH / self.domain / self.owner / f"{self.repo}{PROJECTS_SUFFIX}"
+        )
+
+    @staticmethod
+    def from_input(value: str) -> "Project":
+        if is_repo_uri(value):
+            return Project.from_uri(value)
+        return Project.from_path(Path(value).expanduser())
+
+    @staticmethod
+    def from_uri(uri: str) -> "Project":
+        if uri.startswith("git@"):
+            match = re.match(r"^git@([^:]+):([^/]+)/([^/]+)\.git$", uri)
+            if not match:
+                raise AfforesterError(ExitCode.INVALID_INPUT, f"Invalid git URI: {uri}")
+            domain, owner, repo = match.groups()
+            return Project(domain=domain, owner=owner, repo=repo)
+
+        parsed = urlparse(uri)
+        segments = [segment for segment in parsed.path.split("/") if segment]
+        if (
+            len(segments) != 2
+            or not segments[1].endswith(".git")
+            or not parsed.hostname
+        ):
+            raise AfforesterError(ExitCode.INVALID_INPUT, f"Invalid git URI: {uri}")
+        owner = segments[0]
+        repo = segments[1].removesuffix(".git")
+        return Project(domain=parsed.hostname, owner=owner, repo=repo)
+
+    @staticmethod
+    def from_path(path_value: Path) -> "Project":
+        absolute = path_value.resolve()
+        project_root = None
+        for candidate in [absolute, *absolute.parents]:
+            if candidate.name.endswith(PROJECTS_SUFFIX):
+                project_root = candidate
+                break
+        if project_root is None:
+            raise AfforesterError(
+                ExitCode.INVALID_INPUT,
+                f"Path is not inside a {PROJECTS_SUFFIX} project: {absolute}",
+            )
+
+        try:
+            relative = project_root.relative_to(PROJECTS_PATH.resolve())
+        except ValueError as error:
+            raise AfforesterError(
+                ExitCode.INVALID_INPUT,
+                f"Project path must be under {PROJECTS_PATH}: {project_root}",
+            ) from error
+
+        if len(relative.parts) < 3:
+            raise AfforesterError(
+                ExitCode.INVALID_INPUT, f"Unexpected project layout: {project_root}"
+            )
+
+        domain, owner, repo_with_suffix = relative.parts[:3]
+        repo = repo_with_suffix.removesuffix(PROJECTS_SUFFIX)
+        return Project(domain=domain, owner=owner, repo=repo)
+
+
+def detect_remote_default_branch(repo_uri: str) -> str:
+    try:
+        result = run_command(
+            ["git", "ls-remote", "--symref", repo_uri, "HEAD"], check=True
+        )
+        for line in result.stdout.splitlines():
+            match = re.match(r"ref:\s+refs/heads/(.+)\s+HEAD", line)
+            if match:
+                return match.group(1)
+    except AfforesterError:
+        pass
+    return DEFAULT_BASE_BRANCH
+
+
+def get_seed_repo(project: Project) -> Path:
+    if not project.root_path.is_dir():
+        raise AfforesterError(
+            ExitCode.NOT_FOUND, f"Project not found: {project.root_path}"
+        )
+
+    for child in sorted(project.root_path.iterdir()):
+        if child.is_dir() and (child / ".git").exists():
+            return child
+    raise AfforesterError(
+        ExitCode.NOT_FOUND, f"No git worktrees found in project: {project.root_path}"
+    )
+
+
+def detect_project_default_branch(project: Project) -> str:
+    seed = get_seed_repo(project)
+    origin_head = run_command(
+        ["git", "symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"],
+        cwd=seed,
+        check=False,
+    )
+    if origin_head.returncode == 0 and origin_head.stdout.strip():
+        value = origin_head.stdout.strip()
+        return value.split("/", maxsplit=1)[1] if "/" in value else value
+
+    local_head = run_command(
+        ["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=seed, check=False
+    )
+    if (
+        local_head.returncode == 0
+        and local_head.stdout.strip()
+        and local_head.stdout.strip() != "HEAD"
+    ):
+        return local_head.stdout.strip()
+
+    return DEFAULT_BASE_BRANCH
+
+
+def ref_exists(repo_path: Path, ref: str) -> bool:
+    result = run_command(
+        ["git", "show-ref", "--verify", "--quiet", ref], cwd=repo_path, check=False
+    )
+    return result.returncode == 0
+
+
+def slugify(value: str) -> str:
+    text = value.strip()
+    text = re.sub(r"\s+", "-", text)
+    text = re.sub(r"[^A-Za-z0-9._-]+", "-", text)
+    text = re.sub(r"-+", "-", text)
+    return text.strip("-._")
+
+
+def prompt_worktree_name(default_worktree: str | None = None) -> tuple[str, str]:
+    if not sys.stdin.isatty():
+        raise AfforesterError(
+            ExitCode.INVALID_INPUT,
+            "Worktree name is required in non-interactive mode. Pass a worktree name argument.",
+        )
+
+    if not shutil.which("gum"):
+        raise AfforesterError(
+            ExitCode.INVALID_INPUT,
+            "gum is required for interactive worktree selection.",
+        )
+
+    default_worktree_value = (default_worktree or "").strip()
+    kind = "custom"
+    prompt_default = ""
+    if default_worktree_value:
+        default_option = f"use default worktree: {default_worktree_value}"
+        custom_option = "enter custom worktree"
+        chooser = run_command(
+            [
+                "gum",
+                "choose",
+                "--header",
+                f"Default worktree: {default_worktree_value}",
+                default_option,
+                custom_option,
+            ],
+            check=False,
+        )
+        if chooser.returncode in {1, 130}:
+            raise AfforesterError(ExitCode.INVALID_INPUT, "Worktree selection canceled")
+        if chooser.returncode != 0:
+            raise CommandError(
+                ExitCode.GIT_FAILED, "Failed to choose worktree mode with gum"
+            )
+
+        selected = chooser.stdout.strip()
+        if selected == default_option:
+            kind = "default"
+            prompt_default = default_worktree_value
+        elif selected == custom_option:
+            kind = "custom"
         else:
-            self.path = uri
+            raise AfforesterError(
+                ExitCode.INVALID_INPUT, "Invalid worktree mode selected"
+            )
 
-    @property
-    def path(self) -> str:
-        return self._path
+    while True:
+        input_command = ["gum", "input", "--prompt", "Worktree name > "]
+        if prompt_default:
+            input_command.extend(["--value", prompt_default])
 
-    @path.setter
-    def path(self, value: str):
-        value = os.path.abspath(value)
-        self._path = value
-        self.domain, self.owner, self.repo = self._decompose_path(value)
-        self.local_path = self._create_local_path()
+        response = run_command(input_command, check=False)
+        if response.returncode in {1, 130}:
+            raise AfforesterError(ExitCode.INVALID_INPUT, "Worktree entry canceled")
+        if response.returncode != 0:
+            raise CommandError(
+                ExitCode.GIT_FAILED, "Failed to read worktree name with gum"
+            )
 
-    @property
-    def uri(self):
-        return self._uri
-
-    @uri.setter
-    def uri(self, value: str):
-        if not value.endswith(".git"):
-            raise Exception("Invalid git repo url:", value)
-        self._uri = value
-        self.domain, self.owner, self.repo = self._decompose_uri(value)
-        self.local_path = self._create_local_path()
-
-    def _create_local_path(self) -> str:
-        return f"{self.domain}/{self.owner}/{self.repo}{PROJECTS_SUFFIX}"
-
-    @property
-    def full_path(self) -> str:
-        project_path = os.path.abspath(PROJECTS_PATH)
-        return f"{project_path}/{self.local_path}"
-
-    def _decompose_path(self, path: str) -> tuple[str, str, str]:
-        path = path.replace(f"{os.path.abspath(PROJECTS_PATH)}/", "")
-        domain, owner, repo = path.split("/")
-        repo = repo.replace(PROJECTS_SUFFIX, "")
-        return domain, owner, repo
-
-    def _decompose_uri(self, uri: str) -> tuple[str, str, str]:
-        domain, owner, repo = uri.replace(":", "/").split("/")
-        repo = repo.replace(".git", "")
-        domain = domain.replace("https://", "").replace("git@", "")
-        return domain, owner, repo
+        raw_name = response.stdout.strip()
+        cleaned = slugify(raw_name)
+        if cleaned:
+            return kind, cleaned
+        print("Worktree name cannot be empty.", file=sys.stderr)
+        prompt_default = ""
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(dest="command")
+def ensure_base_worktree(project: Project, default_branch: str) -> Path:
+    base_path = project.root_path / default_branch
+    if base_path.is_dir():
+        return base_path
 
-    clean_parser = subparsers.add_parser("clean")
-    clean_parser.add_argument("-a", "--age", help="The age in days to clean up.", default="30")
+    seed = get_seed_repo(project)
+    run_command(["git", "clone", str(seed), str(base_path)], check=True)
+
+    run_command(["git", "fetch", "--prune", "origin"], cwd=base_path, check=False)
+    if ref_exists(base_path, f"refs/remotes/origin/{default_branch}"):
+        run_command(
+            ["git", "checkout", "-B", default_branch, f"origin/{default_branch}"],
+            cwd=base_path,
+            check=True,
+        )
+    elif ref_exists(base_path, f"refs/heads/{default_branch}"):
+        run_command(["git", "checkout", default_branch], cwd=base_path, check=True)
+
+    return base_path
+
+
+def plant(repo_uri: str) -> dict[str, str | int | bool]:
+    project = Project.from_input(repo_uri)
+    project.root_path.mkdir(parents=True, exist_ok=True)
+    default_branch = detect_remote_default_branch(repo_uri)
+    destination = project.root_path / default_branch
+
+    if destination.is_dir():
+        return {
+            "action": "plant",
+            "ok": True,
+            "code": ExitCode.OK,
+            "project": str(project.root_path),
+            "path": str(destination),
+            "branch": default_branch,
+            "worktree": default_branch,
+            "message": "Project already exists",
+        }
+
+    run_command(["git", "clone", repo_uri, str(destination)], check=True)
+    return {
+        "action": "plant",
+        "ok": True,
+        "code": ExitCode.OK,
+        "project": str(project.root_path),
+        "path": str(destination),
+        "branch": default_branch,
+        "worktree": default_branch,
+        "message": "Project planted",
+    }
+
+
+def create_worktree(
+    project_input: str,
+    name: str | None,
+    pull: bool,
+    default_worktree: str | None,
+) -> dict[str, str | int | bool]:
+    project = Project.from_input(project_input)
+    default_branch = detect_project_default_branch(project)
+    base_path = ensure_base_worktree(project, default_branch)
+
+    if pull:
+        run_command(["git", "fetch", "--prune", "origin"], cwd=base_path, check=False)
+
+    if name:
+        chosen_kind = "named"
+        worktree_name = slugify(name)
+    else:
+        chosen_kind, worktree_name = prompt_worktree_name(default_worktree)
+
+    if not worktree_name:
+        raise AfforesterError(ExitCode.INVALID_INPUT, "Worktree name cannot be empty")
+
+    worktree_path = project.root_path / worktree_name
+    branch = worktree_name
+    if worktree_path.is_dir():
+        return {
+            "action": "worktree.create",
+            "ok": True,
+            "code": ExitCode.OK,
+            "project": str(project.root_path),
+            "path": str(worktree_path),
+            "branch": branch,
+            "worktree": worktree_name,
+            "kind": chosen_kind,
+            "message": "Worktree already exists",
+        }
+
+    local_branch_ref = f"refs/heads/{branch}"
+    remote_branch_ref = f"refs/remotes/origin/{branch}"
+    if ref_exists(base_path, local_branch_ref):
+        run_command(
+            ["git", "worktree", "add", str(worktree_path), branch],
+            cwd=base_path,
+            check=True,
+        )
+    elif ref_exists(base_path, remote_branch_ref):
+        run_command(
+            [
+                "git",
+                "worktree",
+                "add",
+                "-b",
+                branch,
+                str(worktree_path),
+                f"origin/{branch}",
+            ],
+            cwd=base_path,
+            check=True,
+        )
+    else:
+        start_ref = (
+            f"origin/{default_branch}"
+            if ref_exists(base_path, f"refs/remotes/origin/{default_branch}")
+            else default_branch
+        )
+        run_command(
+            ["git", "worktree", "add", "-b", branch, str(worktree_path), start_ref],
+            cwd=base_path,
+            check=True,
+        )
+
+    return {
+        "action": "worktree.create",
+        "ok": True,
+        "code": ExitCode.OK,
+        "project": str(project.root_path),
+        "path": str(worktree_path),
+        "branch": branch,
+        "worktree": worktree_name,
+        "kind": chosen_kind,
+        "message": "Worktree created",
+    }
+
+
+def list_worktrees(project_input: str) -> dict[str, str | int | bool | list[str]]:
+    project = Project.from_input(project_input)
+    if not project.root_path.is_dir():
+        raise AfforesterError(
+            ExitCode.NOT_FOUND, f"Project not found: {project.root_path}"
+        )
+
+    paths = [str(path) for path in sorted(project.root_path.iterdir()) if path.is_dir()]
+    return {
+        "action": "worktree.list",
+        "ok": True,
+        "code": ExitCode.OK,
+        "project": str(project.root_path),
+        "worktrees": paths,
+        "message": f"Found {len(paths)} worktrees",
+    }
+
+
+def resolve_worktree(
+    project_input: str, name: str | None
+) -> dict[str, str | int | bool]:
+    project = Project.from_input(project_input)
+    if not project.root_path.is_dir():
+        raise AfforesterError(
+            ExitCode.NOT_FOUND, f"Project not found: {project.root_path}"
+        )
+
+    worktrees = [path for path in sorted(project.root_path.iterdir()) if path.is_dir()]
+    if not worktrees:
+        raise AfforesterError(
+            ExitCode.NOT_FOUND, f"No worktrees found in project: {project.root_path}"
+        )
+
+    target: Path | None = None
+    if name:
+        candidates = [name, slugify(name)]
+        seen = set()
+        for candidate in candidates:
+            if candidate in seen or not candidate:
+                continue
+            seen.add(candidate)
+            candidate_path = project.root_path / candidate
+            if candidate_path.is_dir():
+                target = candidate_path
+                break
+
+        if target is None:
+            raise AfforesterError(
+                ExitCode.NOT_FOUND,
+                f"Worktree not found: {project.root_path}/{name}",
+            )
+    else:
+        if not shutil.which("fzf"):
+            raise AfforesterError(
+                ExitCode.INVALID_INPUT,
+                "fzf is required for interactive resolve. Pass a worktree name instead.",
+            )
+        if not sys.stdin.isatty():
+            raise AfforesterError(
+                ExitCode.INVALID_INPUT,
+                "Worktree name is required in non-interactive mode.",
+            )
+
+        selection = run_command(
+            ["fzf", "--prompt=Worktree > "],
+            check=False,
+            input_text="\n".join(path.name for path in worktrees) + "\n",
+        )
+
+        if selection.returncode in {1, 130}:
+            return {
+                "action": "worktree.resolve",
+                "ok": True,
+                "code": ExitCode.OK,
+                "project": str(project.root_path),
+                "message": "No worktree selected",
+            }
+        if selection.returncode != 0:
+            raise CommandError(
+                ExitCode.GIT_FAILED, "Failed to resolve worktree with fzf"
+            )
+
+        selected_name = selection.stdout.strip()
+        if not selected_name:
+            return {
+                "action": "worktree.resolve",
+                "ok": True,
+                "code": ExitCode.OK,
+                "project": str(project.root_path),
+                "message": "No worktree selected",
+            }
+        target = project.root_path / selected_name
+
+    return {
+        "action": "worktree.resolve",
+        "ok": True,
+        "code": ExitCode.OK,
+        "project": str(project.root_path),
+        "path": str(target),
+        "worktree": target.name,
+        "message": "Worktree resolved",
+    }
+
+
+def remove_worktree(
+    project_input: str, name: str, force: bool
+) -> dict[str, str | int | bool]:
+    project = Project.from_input(project_input)
+    default_branch = detect_project_default_branch(project)
+    if name == default_branch:
+        raise AfforesterError(
+            ExitCode.INVALID_INPUT,
+            f"Refusing to remove base worktree '{default_branch}'",
+        )
+
+    path = project.root_path / name
+    if not path.is_dir():
+        raise AfforesterError(ExitCode.NOT_FOUND, f"Worktree not found: {path}")
+
+    base_path = ensure_base_worktree(project, default_branch)
+    command = ["git", "worktree", "remove"]
+    if force:
+        command.append("--force")
+    command.append(str(path))
+    run_command(command, cwd=base_path, check=True)
+
+    return {
+        "action": "worktree.remove",
+        "ok": True,
+        "code": ExitCode.OK,
+        "project": str(project.root_path),
+        "path": str(path),
+        "worktree": name,
+        "message": "Worktree removed",
+    }
+
+
+def iter_projects() -> list[Project]:
+    projects = []
+    root = PROJECTS_PATH
+    if not root.is_dir():
+        return projects
+
+    for path in sorted(root.glob(f"*/*/*{PROJECTS_SUFFIX}")):
+        if path.is_dir():
+            projects.append(Project.from_path(path))
+    return projects
+
+
+def clean(age: int, prune: bool, force: bool) -> dict[str, str | int | bool]:
+    removed_count = 0
+    cutoff = datetime.now(timezone.utc).timestamp() - (age * 24 * 60 * 60)
+    for project in iter_projects():
+        try:
+            default_branch = detect_project_default_branch(project)
+            base_path = ensure_base_worktree(project, default_branch)
+        except AfforesterError:
+            continue
+
+        if prune:
+            run_command(
+                ["git", "worktree", "prune", f"--expire={age}d"],
+                cwd=base_path,
+                check=False,
+            )
+
+        for child in sorted(project.root_path.iterdir()):
+            if not child.is_dir() or child.name == default_branch:
+                continue
+            if child.stat().st_mtime <= cutoff:
+                command = ["git", "worktree", "remove"]
+                if force:
+                    command.append("--force")
+                command.append(str(child))
+                run_command(command, cwd=base_path, check=False)
+                removed_count += 1
+
+    return {
+        "action": "clean",
+        "ok": True,
+        "code": ExitCode.OK,
+        "message": f"Removed {removed_count} worktrees older than {age} days",
+    }
+
+
+def emit(payload: dict[str, Any], as_json: bool) -> None:
+    payload = {
+        "version": 1,
+        "log_path": str(LOG_PATH),
+        **payload,
+    }
+    if as_json:
+        print(json.dumps(payload))
+        return
+
+    action = payload.get("action", "")
+    if action in {"worktree.create", "worktree.resolve", "plant"} and payload.get(
+        "path"
+    ):
+        print(payload["path"])
+    elif action == "worktree.list" and isinstance(payload.get("worktrees"), list):
+        for path in payload["worktrees"]:
+            print(path)
+    else:
+        print(payload.get("message", "ok"))
+
+
+def resolve_worktree_project_argument(project_arg: str | None) -> str:
+    if project_arg:
+        return project_arg
+
+    try:
+        project = Project.from_path(Path.cwd())
+    except AfforesterError as error:
+        raise AfforesterError(
+            ExitCode.INVALID_INPUT,
+            (
+                "No --project provided and current directory is not inside a "
+                f"{PROJECTS_SUFFIX} project. Use --project <path>."
+            ),
+        ) from error
+
+    return str(project.root_path)
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Manage deterministic git worktrees under ~/Projects"
+    )
+    parser.add_argument(
+        "--json", action="store_true", help="Emit structured JSON output"
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    clean_parser = subparsers.add_parser("clean", help="Remove stale worktrees")
     clean_parser.add_argument(
+        "-a", "--age", type=int, default=30, help="Age in days before cleanup"
+    )
+    clean_parser.add_argument(
+        "--no-prune", action="store_true", help="Skip git worktree prune"
+    )
+    clean_parser.add_argument(
+        "-f", "--force", action="store_true", help="Force remove stale worktrees"
+    )
+
+    plant_parser = subparsers.add_parser(
+        "plant", help="Clone and register a repo in forest"
+    )
+    plant_parser.add_argument(
+        "repo_uri", help="Git URI, e.g. git@github.com:owner/repo.git"
+    )
+
+    worktree_parser = subparsers.add_parser("worktree", help="Manage worktrees")
+    worktree_parser.add_argument(
+        "action", choices=["create", "remove", "list", "resolve"], help="Action"
+    )
+    worktree_parser.add_argument(
+        "name", nargs="?", help="Worktree/branch name (optional for create)"
+    )
+    worktree_parser.add_argument(
         "-p",
-        "--prune",
-        help="Prune old worktrees first.",
-        action="store_true",
-        default=True,
+        "--project",
+        help=(
+            "Project path (.tree root or child). "
+            "Defaults to current directory when inside a project."
+        ),
     )
-    clean_parser.add_argument(
-        "-f",
-        "--force",
-        help="Force remove worktrees.",
-        action="store_true",
-        default=False,
+    worktree_parser.add_argument(
+        "--pull", action="store_true", help="Fetch origin before creation"
+    )
+    worktree_parser.add_argument(
+        "--default-worktree",
+        help="Default worktree name for interactive create mode",
+    )
+    worktree_parser.add_argument(
+        "-f", "--force", action="store_true", help="Force remove"
     )
 
-    plant_parser = subparsers.add_parser("plant")
-    plant_parser.add_argument("repo_uri", help="The git repo uri to plant.")
+    return parser.parse_args()
 
-    worktree_parser = subparsers.add_parser("worktree")
-    worktree_parser.add_argument("action", help="The action to perform.", choices=["add", "remove"])
-    worktree_parser.add_argument("branch", help="The branch to manage.")
-    worktree_parser.add_argument("-p", "--project", help="The project to manage.")
 
-    args = parser.parse_args()
+def main() -> int:
+    args = parse_args()
+    try:
+        if args.command == "plant":
+            emit(plant(args.repo_uri), args.json)
+            return ExitCode.OK
 
-    if args.command == "clean":
-        clean(args.age, args.prune, args.force)
-    elif args.command == "plant":
-        plant(args.repo_uri)
-    elif args.command == "worktree":
-        worktree = Worktree(args.project)
-        if args.action == "add":
-            worktree.add(args.branch)
-        elif args.action == "remove":
-            worktree.remove(args.branch)
+        if args.command == "clean":
+            emit(clean(args.age, prune=not args.no_prune, force=args.force), args.json)
+            return ExitCode.OK
+
+        if args.command == "worktree":
+            resolved_project = resolve_worktree_project_argument(args.project)
+            if args.action == "create":
+                emit(
+                    create_worktree(
+                        resolved_project,
+                        args.name,
+                        args.pull,
+                        args.default_worktree,
+                    ),
+                    args.json,
+                )
+                return ExitCode.OK
+            if args.action == "remove":
+                if not args.name:
+                    raise AfforesterError(
+                        ExitCode.INVALID_INPUT, "worktree name is required for remove"
+                    )
+                emit(
+                    remove_worktree(resolved_project, args.name, args.force), args.json
+                )
+                return ExitCode.OK
+            if args.action == "list":
+                emit(list_worktrees(resolved_project), args.json)
+                return ExitCode.OK
+            if args.action == "resolve":
+                emit(resolve_worktree(resolved_project, args.name), args.json)
+                return ExitCode.OK
+
+        raise AfforesterError(ExitCode.INVALID_INPUT, "Unsupported command")
+    except AfforesterError as error:
+        payload = {
+            "ok": False,
+            "code": error.code,
+            "message": error.message,
+        }
+        if args.json:
+            emit(payload, as_json=True)
+        else:
+            print(f"git-afforester: {error.message}", file=sys.stderr)
+            print(f"git-afforester: log: {LOG_PATH}", file=sys.stderr)
+        return error.code
+    except Exception as error:  # pragma: no cover - defensive fallback
+        message = f"Unexpected error: {error}"
+        if args.json:
+            emit(
+                {"ok": False, "code": ExitCode.INTERNAL, "message": message},
+                as_json=True,
+            )
+        else:
+            print(f"git-afforester: {message}", file=sys.stderr)
+            print(f"git-afforester: log: {LOG_PATH}", file=sys.stderr)
+        return ExitCode.INTERNAL
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

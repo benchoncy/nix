@@ -15,6 +15,7 @@
     fd
     unzip
     fzf
+    gum
     bash
     zsh
     podman
