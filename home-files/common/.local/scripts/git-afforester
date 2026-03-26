@@ -101,25 +101,31 @@ def run_command(
     cwd: Path | None = None,
     check: bool = True,
     input_text: str | None = None,
+    capture_stdout: bool = True,
+    capture_stderr: bool = True,
 ) -> subprocess.CompletedProcess[str]:
     run_cwd = cwd or Path.cwd()
     quoted_command = " ".join(shlex.quote(part) for part in command)
     logger.debug("$ %s (cwd=%s)", quoted_command, run_cwd)
+
+    stdout_stream = subprocess.PIPE if capture_stdout else None
+    stderr_stream = subprocess.PIPE if capture_stderr else None
     result = subprocess.run(
         command,
         cwd=run_cwd,
-        capture_output=True,
+        stdout=stdout_stream,
+        stderr=stderr_stream,
         text=True,
         input=input_text,
         check=False,
     )
     logger.debug("rc=%s", result.returncode)
-    if result.stdout.strip():
+    if capture_stdout and result.stdout and result.stdout.strip():
         logger.debug("stdout:\n%s", result.stdout.rstrip())
-    if result.stderr.strip():
+    if capture_stderr and result.stderr and result.stderr.strip():
         logger.debug("stderr:\n%s", result.stderr.rstrip())
     if check and result.returncode != 0:
-        stderr_line = (result.stderr or "").strip().splitlines()
+        stderr_line = (result.stderr or "").strip().splitlines() if capture_stderr else []
         reason = stderr_line[0] if stderr_line else "command failed"
         raise CommandError(ExitCode.GIT_FAILED, f"{reason} ({' '.join(command)})")
     return result
@@ -301,6 +307,7 @@ def prompt_worktree_name(default_worktree: str | None = None) -> tuple[str, str]
                 custom_option,
             ],
             check=False,
+            capture_stderr=False,
         )
         if chooser.returncode in {1, 130}:
             raise AfforesterError(ExitCode.INVALID_INPUT, "Worktree selection canceled")
@@ -325,7 +332,11 @@ def prompt_worktree_name(default_worktree: str | None = None) -> tuple[str, str]
         if prompt_default:
             input_command.extend(["--value", prompt_default])
 
-        response = run_command(input_command, check=False)
+        response = run_command(
+            input_command,
+            check=False,
+            capture_stderr=False,
+        )
         if response.returncode in {1, 130}:
             raise AfforesterError(ExitCode.INVALID_INPUT, "Worktree entry canceled")
         if response.returncode != 0:
@@ -544,6 +555,7 @@ def resolve_worktree(
             ["fzf", "--prompt=Worktree > "],
             check=False,
             input_text="\n".join(path.name for path in worktrees) + "\n",
+            capture_stderr=False,
         )
 
         if selection.returncode in {1, 130}:
