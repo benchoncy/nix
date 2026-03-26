@@ -15,8 +15,11 @@ Customize these placeholders before using it:
 
 - `<work-email>`
 - `<work-git-host>`
+- `<work-domain>`
 - the AWS profiles in `home-files/work/.aws/config`
 - any ticketing CLI commands in `work-ticket.sh`
+
+The example `modules/home/default.nix` also shows how to layer work-only OpenCode MCP servers on top of the shared baseline with `opencode.mcp.<name>`.
 
 The wrapper flake should:
 

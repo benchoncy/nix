@@ -1,4 +1,11 @@
 { ... }: {
+  opencode.mcp.work-docs = {
+    type = "remote";
+    url = "https://mcp.<work-domain>/mcp";
+    oauth = { };
+    enabled = true;
+  };
+
   home.file.".aws/config" = {
     source = ../../home-files/work/.aws/config;
   };

@@ -43,7 +43,7 @@ The repo supports raw dotfile copying through an explicit Home Manager manifest.
 - shared raw files live under `home-files/common/`
 - raw ownership is declared in `modules/home/capabilities/raw-files-compat.nix`
 - prefer whole app directories under `.config/<app>` instead of one giant `.config` mapping
-- keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, and `.config/ghostty/config` in Home Manager modules rather than raw copies
+- keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, `.config/ghostty/config`, and `.config/opencode/opencode.jsonc` in Home Manager modules rather than raw copies
 
 ## Reusable Exports
 
@@ -65,7 +65,7 @@ Work-specific configuration is expected to live in a separate repo that owns the
 - the private repo can compose from `darwinModules.base`, `nixosModules.base`, and `homeModules.*`
 
 If you need to recreate a minimal private work repo quickly, use `examples/work-overlay-mvp/` as a generic starting point.
-It is intentionally organization-neutral and shows the minimum shape for work-only Git, AWS, and shell-tool overrides.
+It is intentionally organization-neutral and shows the minimum shape for work-only Git, AWS, shell-tool, and OpenCode MCP overrides.
 
 For a fully pure setup, prefer a separate private wrapper flake that:
 
