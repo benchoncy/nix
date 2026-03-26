@@ -20,28 +20,7 @@ in {
       type = lib.types.submodule {
         freeformType = jsonFormat.type;
       };
-      default = {
-        "$schema" = "https://opencode.ai/config.json";
-        autoupdate = false;
-        share = "disabled";
-        watcher.ignore = [
-          "**/.git/**"
-          "**/node_modules/**"
-          "**/.cache/**"
-          "**/dist/**"
-        ];
-        permission.bash = {
-          "rm" = "ask";
-          "rm *" = "ask";
-          "git reset --hard*" = "deny";
-          "git checkout --*" = "deny";
-          "git clean -fd*" = "deny";
-          "git clean -fdx*" = "deny";
-          "git push -f*" = "deny";
-          "git push --force*" = "deny";
-          "git push --force-with-lease*" = "deny";
-        };
-      };
+      default = { };
       description = "Base OpenCode configuration, excluding MCP server definitions.";
     };
 
@@ -55,19 +34,7 @@ in {
           description = "Whether this MCP server should be enabled in the generated config.";
         };
       });
-      default = {
-        context7 = {
-          type = "remote";
-          url = "https://mcp.context7.com/mcp";
-          enabled = true;
-        };
-
-        gh_grep = {
-          type = "remote";
-          url = "https://mcp.grep.app";
-          enabled = true;
-        };
-      };
+      default = { };
       description = "Layered MCP server definitions keyed by server name.";
     };
 
@@ -81,6 +48,41 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    opencode.settings = {
+      "$schema" = lib.mkDefault "https://opencode.ai/config.json";
+      autoupdate = lib.mkDefault false;
+      share = lib.mkDefault "disabled";
+      watcher.ignore = lib.mkDefault [
+        "**/.git/**"
+        "**/node_modules/**"
+        "**/.cache/**"
+        "**/dist/**"
+      ];
+      permission.bash = lib.mkDefault {
+        "rm" = "ask";
+        "rm *" = "ask";
+        "git reset --hard*" = "deny";
+        "git checkout --*" = "deny";
+        "git clean -fd*" = "deny";
+        "git clean -fdx*" = "deny";
+        "git push -f*" = "deny";
+        "git push --force*" = "deny";
+        "git push --force-with-lease*" = "deny";
+      };
+    };
+
+    opencode.mcp.context7 = lib.mkDefault {
+      type = "remote";
+      url = "https://mcp.context7.com/mcp";
+      enabled = true;
+    };
+
+    opencode.mcp.gh_grep = lib.mkDefault {
+      type = "remote";
+      url = "https://mcp.grep.app";
+      enabled = true;
+    };
+
     home.file.".config/opencode/opencode.jsonc".text = builtins.toJSON finalConfig;
   };
 }
