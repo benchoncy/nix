@@ -464,16 +464,34 @@ def create_worktree(
             check=True,
         )
     else:
-        start_ref = (
-            f"origin/{default_branch}"
-            if ref_exists(base_path, f"refs/remotes/origin/{default_branch}")
-            else default_branch
-        )
+        if ref_exists(base_path, f"refs/heads/{default_branch}"):
+            start_ref = default_branch
+        elif ref_exists(base_path, f"refs/remotes/origin/{default_branch}"):
+            start_ref = f"origin/{default_branch}"
+        else:
+            raise AfforesterError(
+                ExitCode.NOT_FOUND,
+                f"Could not determine start ref for default branch '{default_branch}'",
+            )
+
         run_command(
             ["git", "worktree", "add", "-b", branch, str(worktree_path), start_ref],
             cwd=base_path,
             check=True,
         )
+
+        unset_upstream = run_command(
+            ["git", "branch", "--unset-upstream"],
+            cwd=worktree_path,
+            check=False,
+        )
+        if unset_upstream.returncode != 0:
+            upstream_stderr = (unset_upstream.stderr or "").lower()
+            if "upstream" not in upstream_stderr:
+                raise CommandError(
+                    ExitCode.GIT_FAILED,
+                    "Failed to clear upstream for new branch",
+                )
 
     return {
         "action": "worktree.create",
