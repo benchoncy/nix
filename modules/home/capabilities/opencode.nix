@@ -102,11 +102,11 @@ in {
 
     opencode.mcp.zotero = lib.mkDefault {
       type = "local";
-      command = [ "zotero-mcp" ];
+      command = [ "uvx" "zotero-mcp" ];
       environment = {
         ZOTERO_LOCAL = "true";
       };
-      enabled = true;
+      enabled = false;
     };
 
     home.file.".config/opencode/opencode.jsonc".text = builtins.toJSON finalConfig;
