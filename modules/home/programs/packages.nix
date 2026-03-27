@@ -33,6 +33,8 @@
     tmux
     zoxide
     zotero
+    bruno
+    bruno-cli
     nerd-fonts.hack
     # AI Agents and tools
     opencode

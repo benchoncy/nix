@@ -14,6 +14,12 @@ if [[ -f $op_socket_path ]]; then
   export SSH_AUTH_SOCK=$op_socket_path
 fi
 
+if command -v op >/dev/null 2>&1; then
+  if [[ -z "${OBSIDIAN_API_KEY:-}" ]]; then
+    export OBSIDIAN_API_KEY="$(op read 'op://Private/Obsidian.md/api key' 2>/dev/null)"
+  fi
+fi
+
 # general
 export EDITOR="nvim"
 export LANG=en_GB.UTF-8

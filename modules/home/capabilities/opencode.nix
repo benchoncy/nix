@@ -83,6 +83,32 @@ in {
       enabled = true;
     };
 
+    opencode.mcp.obsidian = lib.mkDefault {
+      type = "local";
+      command = [ "uvx" "mcp-obsidian" ];
+      environment = {
+        OBSIDIAN_API_KEY = "{env:OBSIDIAN_API_KEY}";
+        OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
+        OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
+      };
+      enabled = true;
+    };
+
+    opencode.mcp.playwright = lib.mkDefault {
+      type = "local";
+      command = [ "npx" "@playwright/mcp@latest" ];
+      enabled = false;
+    };
+
+    opencode.mcp.zotero = lib.mkDefault {
+      type = "local";
+      command = [ "zotero-mcp" ];
+      environment = {
+        ZOTERO_LOCAL = "true";
+      };
+      enabled = true;
+    };
+
     home.file.".config/opencode/opencode.jsonc".text = builtins.toJSON finalConfig;
   };
 }
