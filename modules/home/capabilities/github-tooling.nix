@@ -8,9 +8,12 @@
   };
 
   config = lib.mkIf config.github.tooling.enable {
+    programs.gh = {
+      enable = true;
+      extensions = with pkgs; [ gh-dash ];
+    };
+
     home.packages = with pkgs; [
-      github-cli
-      gh-dash
       diffnav
     ];
   };
