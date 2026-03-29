@@ -12,6 +12,11 @@ in {
       navigate = true;
       side-by-side = true;
       line-numbers = true;
+      line-numbers-left-style = "#8AADF4";
+      line-numbers-right-style = "#8AADF4";
+      line-numbers-minus-style = "#EE99A0";
+      line-numbers-plus-style = "#A6DA95";
+      line-numbers-zero-style = "#6E738D";
       syntax-theme = "Catppuccin Macchiato";
       plus-style = "syntax #1E2030";
       plus-emph-style = "syntax bold #294436";
