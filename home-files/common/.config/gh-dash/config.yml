@@ -1,0 +1,22 @@
+pager:
+  diff: diffnav
+
+theme:
+  ui:
+    sectionsShowCount: true
+    table:
+      compact: false
+  colors:
+    text:
+      primary: "#CAD3F5"
+      secondary: "#8AADF4"
+      inverted: "#181926"
+      faint: "#A5ADCB"
+      warning: "#EED49F"
+      success: "#A6DA95"
+    background:
+      selected: "#363A4F"
+    border:
+      primary: "#8AADF4"
+      secondary: "#C6A0F6"
+      faint: "#494D64"

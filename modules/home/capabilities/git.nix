@@ -7,6 +7,25 @@ let
 in {
   programs.git = {
     enable = true;
+    delta = {
+      enable = true;
+      options = {
+        navigate = true;
+        side-by-side = true;
+        line-numbers = true;
+        syntax-theme = "Catppuccin Macchiato";
+        plus-style = "syntax #1E2030";
+        plus-emph-style = "syntax bold #A6DA95";
+        minus-style = "syntax #1E2030";
+        minus-emph-style = "syntax bold #ED8796";
+        hunk-header-style = "syntax #8AADF4";
+        hunk-header-decoration-style = "#494D64 ul";
+        file-style = "bold #CAD3F5";
+        file-decoration-style = "#8AADF4";
+        commit-style = "bold #C6A0F6";
+        commit-decoration-style = "#C6A0F6";
+      };
+    };
     settings = {
       user = {
         name = "Ben Stuart";

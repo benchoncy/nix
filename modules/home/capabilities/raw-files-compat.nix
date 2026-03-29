@@ -42,6 +42,14 @@ let
       source = commonRoot + "/.config/starship.toml";
     }
     {
+      target = ".config/gh-dash/config.yml";
+      source = commonRoot + "/.config/gh-dash/config.yml";
+    }
+    {
+      target = ".config/diffnav/config.yml";
+      source = commonRoot + "/.config/diffnav/config.yml";
+    }
+    {
       target = ".aws/cli/alias";
       source = commonRoot + "/.aws/cli/alias";
     }

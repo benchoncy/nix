@@ -16,6 +16,7 @@
     unzip
     fzf
     gum
+    delta
     diffnav
     bash
     zsh
