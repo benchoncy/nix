@@ -110,5 +110,9 @@ in {
     };
 
     home.file.".config/opencode/opencode.jsonc".text = builtins.toJSON finalConfig;
+    home.file.".config/opencode/tui.jsonc".text = builtins.toJSON {
+      "$schema" = "https://opencode.ai/tui.json";
+      theme = "catppuccin-macchiato";
+    };
   };
 }

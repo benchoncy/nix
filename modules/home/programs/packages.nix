@@ -16,6 +16,7 @@
     unzip
     fzf
     gum
+    diffnav
     bash
     zsh
     podman

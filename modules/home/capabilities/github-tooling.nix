@@ -12,9 +12,5 @@
       enable = true;
       extensions = with pkgs; [ gh-dash ];
     };
-
-    home.packages = with pkgs; [
-      diffnav
-    ];
   };
 }

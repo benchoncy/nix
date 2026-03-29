@@ -1,9 +1,6 @@
-# Config
-alias dotconfig="$EDITOR ~/Projects/github.com/benchoncy/nix.tree/dotfiles-convert"
-alias vimconfig="$EDITOR ~/.config/nvim"
-
 # Editor
 alias vim="nvim"
+alias v="nvim"
 
 # cd
 alias cd="z"

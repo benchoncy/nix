@@ -51,10 +51,3 @@ Concern labeling rule:
 Decision pressure:
 - Challenge at least one previously accepted decision each round.
 - If no new high-priority concerns appear, state that explicitly.
-
-When discussion converges (or after two rounds without new high-priority concerns), explicitly suggest handoff:
-"We look converged. Run /review-plan to produce an action plan?"
-
-Hybrid handoff rule:
-- Never auto-handoff.
-- Only proceed to planning when the user explicitly asks or runs /review-plan.

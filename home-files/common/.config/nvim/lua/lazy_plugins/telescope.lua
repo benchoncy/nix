@@ -30,7 +30,9 @@ return {
         pcall(require('telescope').load_extension, 'ui-select')
 
         local builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Fuzzy find files' })
+        vim.keymap.set('n', '<leader>ff', function()
+            builtin.find_files { hidden = true }
+        end, { desc = 'Fuzzy find files' })
         vim.keymap.set('n', '<leader>fg', builtin.git_files, { desc = 'Fuzzy find git files' })
         vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Fuzzy find help tags' })
         vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = 'Fuzzy find keymaps' })

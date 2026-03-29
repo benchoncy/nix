@@ -26,6 +26,7 @@ in {
       alias = {
         hist = "log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short";
         af = "!git-afforester";
+        diffnav = "!f() { git diff \"$@\" | diffnav; }; f";
       };
     };
   };
