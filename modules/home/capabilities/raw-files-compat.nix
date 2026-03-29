@@ -46,10 +46,6 @@ let
       source = commonRoot + "/.aws/cli/alias";
     }
     {
-      target = ".config/opencode/agents/build-cautious.md";
-      source = commonRoot + "/.config/opencode/agents/build-cautious.md";
-    }
-    {
       target = ".config/opencode/agents/peer-review.md";
       source = commonRoot + "/.config/opencode/agents/peer-review.md";
     }
@@ -60,10 +56,6 @@ let
     {
       target = ".config/opencode/commands/open-pr.md";
       source = commonRoot + "/.config/opencode/commands/open-pr.md";
-    }
-    {
-      target = ".config/opencode/commands/review-plan.md";
-      source = commonRoot + "/.config/opencode/commands/review-plan.md";
     }
     {
       target = ".config/opencode/skills/consensus-planning/SKILL.md";
