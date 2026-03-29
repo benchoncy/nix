@@ -7,5 +7,6 @@
     "displaylink"
     "obsidian"
     "firefox"
+    "languagetool-desktop"
   ];
 }

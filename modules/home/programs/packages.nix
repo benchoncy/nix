@@ -26,6 +26,7 @@
     go
     nodejs_24
     python313
+    nixd
     granted
     chezmoi
     pre-commit

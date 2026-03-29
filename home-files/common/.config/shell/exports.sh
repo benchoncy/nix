@@ -18,6 +18,14 @@ if command -v op >/dev/null 2>&1; then
   if [[ -z "${OBSIDIAN_API_KEY:-}" ]]; then
     export OBSIDIAN_API_KEY="$(op read 'op://Private/Obsidian.md/api key' 2>/dev/null)"
   fi
+
+  if [[ -z "${LANGUAGETOOL_USERNAME:-}" ]]; then
+    export LANGUAGETOOL_USERNAME="$(op read 'op://Private/LanguageTool/username' 2>/dev/null)"
+  fi
+
+  if [[ -z "${LANGUAGETOOL_API_KEY:-}" ]]; then
+    export LANGUAGETOOL_API_KEY="$(op read 'op://Private/LanguageTool/api key' 2>/dev/null)"
+  fi
 fi
 
 # general

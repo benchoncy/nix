@@ -48,10 +48,64 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    home.packages = with pkgs; [
+      gopls
+      rust-analyzer
+      clang-tools
+      bash-language-server
+      typescript-language-server
+      vscode-langservers-extracted
+      marksman
+      taplo
+      ansible-language-server
+      tofu-ls
+      ruff
+      ty
+    ];
+
     opencode.settings = {
       "$schema" = lib.mkDefault "https://opencode.ai/config.json";
       autoupdate = lib.mkDefault false;
       share = lib.mkDefault "disabled";
+      lsp = lib.mkDefault {
+        pyright.disabled = true;
+        terraform.disabled = true;
+
+        ruff = {
+          command = [ "ruff" "server" ];
+          extensions = [ ".py" ".pyi" ];
+        };
+
+        ty = {
+          command = [ "ty" "server" ];
+          extensions = [ ".py" ".pyi" ];
+        };
+
+        ansible-language-server = {
+          command = [ "ansible-language-server" "--stdio" ];
+          extensions = [ ".yml" ".yaml" ];
+        };
+
+        tofu-ls = {
+          command = [ "tofu-ls" "serve" ];
+          extensions = [ ".tf" ".tfvars" ];
+        };
+
+        marksman = {
+          command = [ "marksman" "server" ];
+          extensions = [ ".md" ".markdown" ];
+        };
+
+        taplo = {
+          command = [ "taplo" "lsp" "stdio" ];
+          extensions = [ ".toml" ];
+        };
+
+        json-lsp = {
+          command = [ "vscode-json-language-server" "--stdio" ];
+          extensions = [ ".json" ".jsonc" ];
+        };
+      };
       watcher.ignore = lib.mkDefault [
         "**/.git/**"
         "**/node_modules/**"

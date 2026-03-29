@@ -15,6 +15,7 @@
         force = true;
         packages = with pkgs.nur.repos.rycee.firefox-addons; [
           firefox-color
+          languagetool
           onepassword-password-manager
           ublock-origin
           granted
