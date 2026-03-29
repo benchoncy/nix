@@ -1,4 +1,22 @@
 { ... }: {
+  ai = {
+    enable = true;
+
+    opencode = {
+      enable = true;
+    };
+
+    nvim = {
+      enable = false;
+    };
+
+    providers = {
+      githubCopilot.enable = false;
+      supermaven.enable = false;
+      openai.enable = false;
+    };
+  };
+
   opencode.mcp.work-docs = {
     type = "remote";
     url = "https://mcp.<work-domain>/mcp";

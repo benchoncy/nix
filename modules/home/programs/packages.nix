@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ config, lib, pkgs, ... }: {
   home.packages = with pkgs; [
     coreutils
     gcc
@@ -37,8 +37,6 @@
     bruno
     bruno-cli
     nerd-fonts.hack
-    # AI Agents and tools
-    opencode
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
     obsidian
@@ -47,5 +45,7 @@
   ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
     # For Darwin only
     ghostty-bin
+  ] ++ lib.optionals (config.ai.enable && config.ai.opencode.enable) [
+    opencode
   ];
 }

@@ -1,5 +1,6 @@
 { ... }: {
   imports = [
+    ./ai-policy.nix
     ./core.nix
     ./git.nix
     ./github-tooling.nix
