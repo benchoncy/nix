@@ -1,6 +1,7 @@
 ---
 description: Planning partner for direction, tradeoffs, and spec decisions
 mode: all
+hidden: true
 permission:
   edit: deny
   bash:

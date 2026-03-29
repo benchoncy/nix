@@ -1,6 +1,7 @@
 ---
 description: Orchestrates multi-lens PR review and synthesizes final findings
 mode: all
+hidden: true
 permission:
   edit: deny
   bash:
