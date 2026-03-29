@@ -50,8 +50,8 @@ let
       source = commonRoot + "/.aws/cli/alias";
     }
     {
-      target = ".config/opencode/agents/peer-review.md";
-      source = commonRoot + "/.config/opencode/agents/peer-review.md";
+      target = ".config/opencode/agents/consensus-planning.md";
+      source = commonRoot + "/.config/opencode/agents/consensus-planning.md";
     }
     {
       target = ".config/opencode/agents/pr-review-orchestrator.md";
@@ -98,8 +98,8 @@ let
       source = commonRoot + "/.config/opencode/skills/test-driven-development/SKILL.md";
     }
     {
-      target = ".config/opencode/skills/consensus-planning/SKILL.md";
-      source = commonRoot + "/.config/opencode/skills/consensus-planning/SKILL.md";
+      target = ".config/opencode/skills/consensus-plan/SKILL.md";
+      source = commonRoot + "/.config/opencode/skills/consensus-plan/SKILL.md";
     }
   ];
 

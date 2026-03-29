@@ -14,7 +14,7 @@ description: Define a change through a concise spec before implementation and ke
 
 ## When not to use me
 - Do not use this for trivial edits where a full change spec would add more ceremony than clarity.
-- Do not use this as a substitute for `consensus-planning` when the solution is still contested or unclear.
+- Do not use this as a substitute for `consensus-plan` when the solution is still contested or unclear.
 - Do not use this as a substitute for `test-driven-development` once implementation should be driven by failing tests or checks.
 
 ## Spec artifact
