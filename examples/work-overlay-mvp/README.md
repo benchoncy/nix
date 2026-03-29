@@ -20,6 +20,7 @@ Customize these placeholders before using it:
 - any ticketing CLI commands in `work-ticket.sh`
 
 The example `modules/home/default.nix` also shows how to layer work-only OpenCode MCP servers on top of the shared baseline with `opencode.mcp.<name>`.
+It also demonstrates the recommended `gh-dash` machine default host setup for mixed public/work GitHub usage.
 
 The wrapper flake should:
 

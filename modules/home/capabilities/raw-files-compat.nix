@@ -42,10 +42,6 @@ let
       source = commonRoot + "/.config/starship.toml";
     }
     {
-      target = ".config/gh-dash/config.yml";
-      source = commonRoot + "/.config/gh-dash/config.yml";
-    }
-    {
       target = ".config/diffnav/config.yml";
       source = commonRoot + "/.config/diffnav/config.yml";
     }
@@ -101,6 +97,7 @@ let
     ".ssh/config"
     ".aws/config"
     ".config/ghostty/config"
+    ".config/gh-dash/config.yml"
     ".config/opencode/opencode.jsonc"
   ];
 

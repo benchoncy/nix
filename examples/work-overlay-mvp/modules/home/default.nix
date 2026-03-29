@@ -39,6 +39,11 @@
     source = ../../home-files/work/.config/shell/tools/work-ticket.sh;
   };
 
+  github.tooling = {
+    enable = true;
+    ghDash.host = "<work-git-host>";
+  };
+
   programs.git.includes = [
     {
       condition = "gitdir:~/Projects/<work-git-host>/";
