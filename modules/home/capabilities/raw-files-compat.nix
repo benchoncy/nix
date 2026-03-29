@@ -54,12 +54,48 @@ let
       source = commonRoot + "/.config/opencode/agents/peer-review.md";
     }
     {
+      target = ".config/opencode/agents/pr-review-orchestrator.md";
+      source = commonRoot + "/.config/opencode/agents/pr-review-orchestrator.md";
+    }
+    {
+      target = ".config/opencode/agents/pr-review-balanced.md";
+      source = commonRoot + "/.config/opencode/agents/pr-review-balanced.md";
+    }
+    {
+      target = ".config/opencode/agents/pr-review-critical.md";
+      source = commonRoot + "/.config/opencode/agents/pr-review-critical.md";
+    }
+    {
+      target = ".config/opencode/agents/pr-review-security.md";
+      source = commonRoot + "/.config/opencode/agents/pr-review-security.md";
+    }
+    {
+      target = ".config/opencode/agents/pr-review-tester.md";
+      source = commonRoot + "/.config/opencode/agents/pr-review-tester.md";
+    }
+    {
       target = ".config/opencode/commands/consensus-plan.md";
       source = commonRoot + "/.config/opencode/commands/consensus-plan.md";
     }
     {
+      target = ".config/opencode/commands/review.md";
+      source = commonRoot + "/.config/opencode/commands/review.md";
+    }
+    {
       target = ".config/opencode/commands/open-pr.md";
       source = commonRoot + "/.config/opencode/commands/open-pr.md";
+    }
+    {
+      target = ".config/opencode/skills/pr-review-foundation/SKILL.md";
+      source = commonRoot + "/.config/opencode/skills/pr-review-foundation/SKILL.md";
+    }
+    {
+      target = ".config/opencode/skills/spec-driven-development/SKILL.md";
+      source = commonRoot + "/.config/opencode/skills/spec-driven-development/SKILL.md";
+    }
+    {
+      target = ".config/opencode/skills/test-driven-development/SKILL.md";
+      source = commonRoot + "/.config/opencode/skills/test-driven-development/SKILL.md";
     }
     {
       target = ".config/opencode/skills/consensus-planning/SKILL.md";
