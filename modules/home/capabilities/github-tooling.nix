@@ -6,6 +6,13 @@ let
 
   ghDashConfig = lib.recursiveUpdate {
     pager.diff = "diffnav";
+    keybindings.prs = [
+      {
+        key = "R";
+        name = "review";
+        command = "\"$HOME/.local/scripts/gh-dash-pr-review\" \"{{.RepoName}}\" \"{{.RepoPath}}\" \"{{.PrNumber}}\"";
+      }
+    ];
     repoPaths = {
       ":owner/:repo" = "~/Projects/${ghDashCfg.host}/:owner/:repo.tree/${ghDashCfg.worktree}";
     };

@@ -119,6 +119,11 @@ let
       source = commonRoot + "/.local/scripts/tmux-windowizer";
       executable = true;
     }
+    {
+      target = ".local/scripts/gh-dash-pr-review";
+      source = commonRoot + "/.local/scripts/gh-dash-pr-review";
+      executable = true;
+    }
   ];
 
   rawEntries = commonRawDirs
