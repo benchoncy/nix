@@ -455,6 +455,7 @@ def create_worktree(
                 "git",
                 "worktree",
                 "add",
+                "--track",
                 "-b",
                 branch,
                 str(worktree_path),
@@ -475,23 +476,19 @@ def create_worktree(
             )
 
         run_command(
-            ["git", "worktree", "add", "-b", branch, str(worktree_path), start_ref],
+            [
+                "git",
+                "worktree",
+                "add",
+                "--no-track",
+                "-b",
+                branch,
+                str(worktree_path),
+                start_ref,
+            ],
             cwd=base_path,
             check=True,
         )
-
-        unset_upstream = run_command(
-            ["git", "branch", "--unset-upstream"],
-            cwd=worktree_path,
-            check=False,
-        )
-        if unset_upstream.returncode != 0:
-            upstream_stderr = (unset_upstream.stderr or "").lower()
-            if "upstream" not in upstream_stderr:
-                raise CommandError(
-                    ExitCode.GIT_FAILED,
-                    "Failed to clear upstream for new branch",
-                )
 
     return {
         "action": "worktree.create",
