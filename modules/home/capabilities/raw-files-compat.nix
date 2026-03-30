@@ -54,6 +54,34 @@ let
       source = commonRoot + "/.config/opencode/agents/consensus-planning.md";
     }
     {
+      target = ".config/opencode/agents/foreman.md";
+      source = commonRoot + "/.config/opencode/agents/foreman.md";
+    }
+    {
+      target = ".config/opencode/agents/crew-delivery-orchestrator.md";
+      source = commonRoot + "/.config/opencode/agents/crew-delivery-orchestrator.md";
+    }
+    {
+      target = ".config/opencode/agents/crew-planner.md";
+      source = commonRoot + "/.config/opencode/agents/crew-planner.md";
+    }
+    {
+      target = ".config/opencode/agents/crew-explorer.md";
+      source = commonRoot + "/.config/opencode/agents/crew-explorer.md";
+    }
+    {
+      target = ".config/opencode/agents/crew-implementer.md";
+      source = commonRoot + "/.config/opencode/agents/crew-implementer.md";
+    }
+    {
+      target = ".config/opencode/agents/crew-tester.md";
+      source = commonRoot + "/.config/opencode/agents/crew-tester.md";
+    }
+    {
+      target = ".config/opencode/agents/crew-reviewer.md";
+      source = commonRoot + "/.config/opencode/agents/crew-reviewer.md";
+    }
+    {
       target = ".config/opencode/agents/pr-review-orchestrator.md";
       source = commonRoot + "/.config/opencode/agents/pr-review-orchestrator.md";
     }
