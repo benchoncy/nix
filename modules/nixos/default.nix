@@ -53,4 +53,11 @@
     extraGroups = [ "networkmanager" "wheel" ];
     hashedPassword = "$6$PEaenklbBc4q03wf$QEWk29c/LTnucySq0Vs2nXgB19jEJ2IlypODbKWuBScBIDPXsbQe1gJK4Z9x.Tr0D6PUpC5aezd/zZbsroaNK.";
   };
+
+  # Enable automatic garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 }
