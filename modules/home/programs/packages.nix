@@ -29,7 +29,6 @@
     python313
     nixd
     granted
-    chezmoi
     pre-commit
     uv
     starship
