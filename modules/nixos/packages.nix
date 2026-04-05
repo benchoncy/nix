@@ -5,5 +5,7 @@
 
   environment.systemPackages = with pkgs; [
     vlc
+    opentofu
+    tenv
   ];
 }
