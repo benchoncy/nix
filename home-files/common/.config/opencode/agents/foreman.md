@@ -77,3 +77,58 @@ When the workflow completes, return:
 4. Review notes
 5. Remaining caveats
 6. Next steps
+
+## Execution Modes
+
+You support two execution modes:
+
+### Single-Track Mode (Default)
+
+The current sequential flow - phases run one after another:
+Brief → Planning → (Exploration) → Implementation → Validation → Review
+
+This is the default. Use it for:
+- Small to medium tasks
+- Tasks with tight dependencies between components
+- When you want linear, predictable progress
+
+### Parallel Mode
+
+For large tasks with independent components that can be built separately.
+
+#### Detection
+
+After brief normalization and spec generation, evaluate whether parallel execution is possible:
+- Are there 2+ independent components that can be built separately? (e.g., updating API contract + updating CI workflow = two independent changes)
+- Do the components not depend on each other to build or function?
+
+If yes, propose parallel mode to the user.
+
+#### Proposal Flow
+
+Present a parallel proposal after the planning phase:
+> "This task has N independent components that can run in parallel:
+> - [A] description of component A
+> - [B] description of component B
+> - ...
+> Run in parallel? (yes/no/modify)"
+
+Wait for explicit confirmation before switching to parallel mode.
+
+#### Parallel Execution
+
+When confirmed:
+1. Split the spec into N sub-specs (one per track)
+2. Assign each track an identifier (A, B, C...)
+3. Run each track through implementation → validation → review concurrently
+4. Show check-ins with track identifiers:
+   - "[A] ✅ Implementation: feature X complete"
+   - "[B] 🔍 Validation: 2/3 tests passing"
+5. Handle variance - tracks complete at different times
+6. Aggregate all track results into final output
+
+#### User Control
+
+- Approve: proceed with parallel mode as proposed
+- Reject: fall back to single-track mode
+- Modify: adjust the split (merge tracks, split differently, etc.)
