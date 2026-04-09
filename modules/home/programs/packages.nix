@@ -4,7 +4,6 @@
     gcc
     gnumake
     neovim
-    tree-sitter
     git
     wget
     curl
@@ -27,7 +26,6 @@
     go
     nodejs_24
     python313
-    nixd
     granted
     pre-commit
     uv
