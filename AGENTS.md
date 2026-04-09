@@ -89,6 +89,7 @@ Home Manager conventions:
 - modules under `profiles/` and `capabilities/` should not depend on `osConfig`
 - system-only mirroring from OS options should happen in the embedded Home Manager bridge in `modules/shared/home-manager.nix`
 - raw dotfile copying is handled by `modules/home/capabilities/raw-files-compat.nix`
+- **always update the manifest in `raw-files-compat.nix` when adding or removing files from `home-files/`** - the build will fail if the manifest doesn't match the actual files
 - prefer explicit manifest entries for whole app directories like `.config/nvim` instead of auto-discovering the entire home tree
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, and `.config/ghostty/config` out of the raw manifest
 - work/private final outputs should live in a separate wrapper flake that composes this repo via flake input

@@ -58,10 +58,6 @@ let
       source = commonRoot + "/.config/opencode/agents/foreman.md";
     }
     {
-      target = ".config/opencode/agents/crew-delivery-orchestrator.md";
-      source = commonRoot + "/.config/opencode/agents/crew-delivery-orchestrator.md";
-    }
-    {
       target = ".config/opencode/agents/crew-planner.md";
       source = commonRoot + "/.config/opencode/agents/crew-planner.md";
     }
