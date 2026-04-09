@@ -36,6 +36,27 @@
             }];
             definedAliases = [ "@claude" ];
           };
+          nixos = {
+            name = "NixOS Packages";
+            urls = [{
+              template = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}";
+            }];
+            definedAliases = [ "@nix" ];
+          };
+          youtube = {
+            name = "YouTube";
+            urls = [{
+              template = "https://www.youtube.com/results?search_query={searchTerms}";
+            }];
+            definedAliases = [ "@yt" ];
+          };
+          github = {
+            name = "GitHub";
+            urls = [{
+              template = "https://github.com/search?q={searchTerms}";
+            }];
+            definedAliases = [ "@gh" ];
+          };
         };
       };
       settings = {
