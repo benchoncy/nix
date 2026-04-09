@@ -8,6 +8,7 @@
     ./opencode.nix
     ./programs-base.nix
     ./raw-files-compat.nix
+    ./secrets.nix
     ./shell-extras.nix
     ./tmux.nix
   ];
