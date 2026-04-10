@@ -41,6 +41,8 @@ in
       communityPlugins = [
         { pkg = plugins.advanced-tables; enable = true; }
         { pkg = plugins.auto-link-title; enable = true; }
+        { pkg = plugins.languagetool-integration; enable = true; }
+        { pkg = plugins.local-rest-api; enable = true; }
         { pkg = plugins.remotely-save; enable = true; }
         {
           pkg = plugins.zotero-integration;
