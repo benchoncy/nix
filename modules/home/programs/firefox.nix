@@ -108,6 +108,11 @@
           installation_mode = "force_installed";
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/zotero-scholar/latest.xpi";
         };
+
+        "gdpr@cavi.au.dk" = {
+          installation_mode = "force_installed";
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/consent-o-matic/latest.xpi";
+        };
       };
     };
   };
