@@ -125,6 +125,18 @@ let
       target = ".config/opencode/skills/consensus-plan/SKILL.md";
       source = commonRoot + "/.config/opencode/skills/consensus-plan/SKILL.md";
     }
+    {
+      target = ".config/opencode/skills/refactoring/SKILL.md";
+      source = commonRoot + "/.config/opencode/skills/refactoring/SKILL.md";
+    }
+    {
+      target = ".config/opencode/skills/refactoring/code-smells.md";
+      source = commonRoot + "/.config/opencode/skills/refactoring/code-smells.md";
+    }
+    {
+      target = ".config/opencode/skills/refactoring/techniques.md";
+      source = commonRoot + "/.config/opencode/skills/refactoring/techniques.md";
+    }
   ];
 
   commonExecutableFiles = [
