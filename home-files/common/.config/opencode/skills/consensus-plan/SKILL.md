@@ -43,4 +43,4 @@ Convergence criteria (stop when any condition is true):
 6. Consensus summary (rounds used, stop reason, confidence 1-5)
 7. Open questions (if any)
 
-Keep the final output concise, concrete, and executable.
+Output should be concise - aim for terse, executable prose over forced structure. More sections only when they actually add clarity.
