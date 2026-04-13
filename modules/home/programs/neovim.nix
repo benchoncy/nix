@@ -1,7 +1,9 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
     tree-sitter
+    ansible
     ansible-language-server
+    ansible-lint
     bash-language-server
     clang-tools
     docker-language-server
