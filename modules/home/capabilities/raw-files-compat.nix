@@ -137,6 +137,18 @@ let
       target = ".config/opencode/skills/software-refactoring/techniques.md";
       source = commonRoot + "/.config/opencode/skills/software-refactoring/techniques.md";
     }
+    {
+      target = ".config/opencode/skills/software-design-patterns/SKILL.md";
+      source = commonRoot + "/.config/opencode/skills/software-design-patterns/SKILL.md";
+    }
+    {
+      target = ".config/opencode/skills/software-design-patterns/patterns.md";
+      source = commonRoot + "/.config/opencode/skills/software-design-patterns/patterns.md";
+    }
+    {
+      target = ".config/opencode/skills/software-design-patterns/application.md";
+      source = commonRoot + "/.config/opencode/skills/software-design-patterns/application.md";
+    }
   ];
 
   commonExecutableFiles = [
