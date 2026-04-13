@@ -126,16 +126,16 @@ let
       source = commonRoot + "/.config/opencode/skills/consensus-plan/SKILL.md";
     }
     {
-      target = ".config/opencode/skills/refactoring/SKILL.md";
-      source = commonRoot + "/.config/opencode/skills/refactoring/SKILL.md";
+      target = ".config/opencode/skills/software-refactoring/SKILL.md";
+      source = commonRoot + "/.config/opencode/skills/software-refactoring/SKILL.md";
     }
     {
-      target = ".config/opencode/skills/refactoring/code-smells.md";
-      source = commonRoot + "/.config/opencode/skills/refactoring/code-smells.md";
+      target = ".config/opencode/skills/software-refactoring/code-smells.md";
+      source = commonRoot + "/.config/opencode/skills/software-refactoring/code-smells.md";
     }
     {
-      target = ".config/opencode/skills/refactoring/techniques.md";
-      source = commonRoot + "/.config/opencode/skills/refactoring/techniques.md";
+      target = ".config/opencode/skills/software-refactoring/techniques.md";
+      source = commonRoot + "/.config/opencode/skills/software-refactoring/techniques.md";
     }
   ];
 

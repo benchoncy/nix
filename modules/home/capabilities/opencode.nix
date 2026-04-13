@@ -145,7 +145,7 @@ in {
         OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
         OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
       };
-      enabled = true;
+      enabled = false;
     };
 
     opencode.mcp.playwright = lib.mkDefault {

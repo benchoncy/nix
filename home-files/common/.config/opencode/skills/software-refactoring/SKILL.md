@@ -1,5 +1,5 @@
 ---
-name: refactoring
+name: software-refactoring
 description: Identify code smells and apply refactoring techniques to improve code quality
 ---
 
