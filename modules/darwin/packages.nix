@@ -5,8 +5,6 @@
   homebrew.enable = true;
   homebrew.casks = [
     "displaylink"
-    "obsidian"
-    "firefox"
     "languagetool-desktop"
   ];
 }
