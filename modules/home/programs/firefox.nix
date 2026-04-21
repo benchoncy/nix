@@ -1,6 +1,6 @@
 { lib, pkgs, ... }: {
   programs.firefox = {
-    enable = true;
+    enable = if pkgs.stdenv.isDarwin then false else true;
     languagePacks = [ "en-GB" ];
     profiles.default = {
       search = {
