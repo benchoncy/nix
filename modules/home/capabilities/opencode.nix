@@ -57,7 +57,6 @@ in {
       vscode-langservers-extracted
       marksman
       taplo
-      ansible-language-server
       tofu-ls
       ruff
       ty
@@ -79,11 +78,6 @@ in {
         ty = {
           command = [ "ty" "server" ];
           extensions = [ ".py" ".pyi" ];
-        };
-
-        ansible-language-server = {
-          command = [ "ansible-language-server" "--stdio" ];
-          extensions = [ ".yml" ".yaml" ];
         };
 
         tofu-ls = {
@@ -108,6 +102,7 @@ in {
       };
       watcher.ignore = lib.mkDefault [
         "**/.git/**"
+        "**/.ansible/**"
         "**/node_modules/**"
         "**/.cache/**"
         "**/dist/**"

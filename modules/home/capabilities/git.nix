@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   signingProgram = if pkgs.stdenv.isDarwin then
     "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
@@ -42,6 +42,7 @@ in {
       core = {
         editor = "nvim";
         autocrlf = "input";
+        excludesfile = "${config.xdg.configHome}/git/ignore";
       };
       init.defaultBranch = "main";
       pull.rebase = true;
@@ -56,4 +57,8 @@ in {
       };
     };
   };
+
+  xdg.configFile."git/ignore".text = ''
+    .ansible/
+  '';
 }
