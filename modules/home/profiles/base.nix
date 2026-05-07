@@ -1,6 +1,7 @@
 { ... }: {
   imports = [
     ../assets.nix
-    ../capabilities
+    ../modules
+    ../programs/packages.nix
   ];
 }

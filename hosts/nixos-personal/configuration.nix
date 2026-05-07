@@ -2,31 +2,27 @@
   imports = [ 
     ./hardware-configuration.nix  # Include the results of the hardware scan.
     ./settings.nix                # Static settings for this host
-    ../../modules/shared
     ../../modules/nixos 
+    ../../modules/shared
   ];
 
   # Enable Gnome Module
   gnome.enable = true;
 
-  # Enable 3D Printing Module
-  _3dPrinting.enable = true;
-
-  ai = {
-    enable = true;
-
-    opencode = {
+  # Home Manager profiles
+  homeProfiles = {
+    ai = {
       enable = true;
+      opencode.enable = true;
+      nvim.enable = true;
+      providers = {
+        githubCopilot.enable = true;
+        supermaven.enable = true;
+      };
     };
-
-    nvim = {
-      enable = true;
-    };
-
-    providers = {
-      githubCopilot.enable = true;
-      supermaven.enable = true;
-    };
+    developer.enable = true;
+    developer.python.enable = true;
+    _3dPrinting.enable = true;
   };
 
   system.stateVersion = "25.05";

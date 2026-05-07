@@ -1,0 +1,8 @@
+# Work AWS CLI aliases
+# Customize with your work AWS profiles
+
+[profile work]
+region = us-east-1
+
+[profile work-prod]
+region = us-west-2

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, osConfig, ... }:
 let
   jsonFormat = pkgs.formats.json { };
   cfg = config.opencode;
@@ -47,7 +47,7 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf osConfig.homeProfiles.ai.opencode.enable {
     home.packages = with pkgs; [
       gopls
       rust-analyzer

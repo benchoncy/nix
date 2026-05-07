@@ -72,11 +72,11 @@ Shared Home Manager config imported through the system modules.
 
 - `default.nix` is the Home Manager root.
 - `profiles/` contains capability-composed entrypoints for embedded and standalone Home Manager usage.
-- `capabilities/` contains reusable, standalone-safe Home Manager building blocks.
+- `modules/` contains group modules (base, developer, etc.) with their own options.
 - `programs/` contains common user tooling and app configuration.
 - `modules/` contains feature-oriented user config.
 - `assets.nix` copies tracked assets into `~/.config/userdata/`.
-- `home-files/common/` contains shared raw dotfiles copied by manifest.
+- Raw dotfiles are distributed to their respective program/module directories (e.g., `programs/neovim/config/`, `programs/shell/config/`).
 
 Private work overlay conventions:
 
@@ -86,13 +86,40 @@ Private work overlay conventions:
 
 Home Manager conventions:
 
-- modules under `profiles/` and `capabilities/` should not depend on `osConfig`
-- system-only mirroring from OS options should happen in the embedded Home Manager bridge in `modules/shared/home-manager.nix`
-- raw dotfile copying is handled by `modules/home/capabilities/raw-files-compat.nix`
-- **always update the manifest in `raw-files-compat.nix` when adding or removing files from `home-files/`** - the build will fail if the manifest doesn't match the actual files
+- modules under `profiles/` and `modules/` should not depend on `osConfig`
+- raw dotfile copying is handled by `modules/home/modules/base/raw-files-compat.nix`
+- raw files are distributed to their respective program modules (e.g., shell config in `programs/shell.nix`, neovim config in `programs/neovim.nix`)
+- Raw dotfiles are now distributed to their respective program/module directories - no central manifest needed
 - prefer explicit manifest entries for whole app directories like `.config/nvim` instead of auto-discovering the entire home tree
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, and `.config/ghostty/config` out of the raw manifest
 - work/private final outputs should live in a separate wrapper flake that composes this repo via flake input
+
+## Home Manager Profile Options
+
+The Home Manager configuration uses a modular profile system with options that can be enabled in host configurations:
+
+### `homeProfiles.developer.enable`
+Enables the developer profile. Includes by default:
+- bruno + bruno-cli
+
+Optional sub-options (must also have `homeProfiles.developer.enable = true`):
+- `homeProfiles.developer.python.enable` - python313, uv, pre-commit
+- `homeProfiles.developer.github.enable` - gh CLI, gh-dash
+- `homeProfiles.developer.opencode.enable` - opencode program + config files
+- `homeProfiles.developer.aws.enable` - awscli2
+
+### `homeProfiles._3dPrinting.enable`
+Enables 3D printing tools (Cura, FreeCAD, OctoPrint)
+
+### `homeProfiles.ai`
+AI tooling and policy. Options:
+
+- `homeProfiles.ai.enable` - master switch for AI tooling
+- `homeProfiles.ai.opencode.enable` - opencode installation + config
+- `homeProfiles.ai.nvim.enable` - AI Neovim integrations
+- `homeProfiles.ai.providers.githubCopilot.enable` - GitHub Copilot access
+- `homeProfiles.ai.providers.supermaven.enable` - Supermaven access
+- `homeProfiles.ai.providers.openai.enable` - OpenAI access
 
 Reusable flake exports:
 
@@ -104,19 +131,43 @@ Reusable flake exports:
 
 ## Feature Toggle Pattern
 
-This repo commonly enables a feature at the OS layer and mirrors it into Home Manager.
+This repo uses two patterns for feature toggles:
 
-Pattern:
+### Pattern 1: System-level Options (User features at system level)
 
-1. Define an option in a system or shared module.
-2. Enable it from the host config.
-3. In the Home Manager module, default the matching option from `osConfig.<option>`.
+Features that are primarily user-facing but defined at the system level:
 
-Examples:
+1. Define an option in `modules/shared/options.nix` (e.g., `homeProfiles.*`)
+2. Enable it from the NixOS/Darwin host config
+3. The Home Manager module reads from `osConfig.homeProfiles.*`
 
-- `gnome.enable`
-- `hyprland.enable`
-- `_3dPrinting.enable`
+**Current options using this pattern:**
+
+- `homeProfiles.ai.*` - AI tooling (enable, opencode, nvim, providers)
+- `homeProfiles.developer.*` - developer tools (enable, python, github, opencode, aws)
+- `homeProfiles._3dPrinting.enable` - 3D printing tools
+
+This pattern keeps user configuration at the system level (where it's easier to manage in host configs) and mirrors to Home Manager via `osConfig`.
+
+### Pattern 2: System Options (For OS-level features)
+
+Features that require system-level configuration use system options:
+
+1. Define an option in a system module (e.g., NixOS module)
+2. Enable it from the host config at the system level
+3. The Home Manager module mirrors from `osConfig.<option>`
+
+**Current options using this pattern:**
+
+- `gnome.enable` - NixOS Gnome module (mirrors to HM for themes, extensions, dock)
+- `hyprland.enable` - NixOS Hyprland module (mirrors to HM for waybar, keybindings)
+
+Note: `homeProfiles.*` was previously called "Pattern 1" but is now merged with Pattern 2 since both use system-level options with osConfig mirroring.
+
+### Why the split?
+
+- **Desktop environments** (gnome, hyprland) are system-level choices that automatically need user-level configs (themes, extensions, keybindings). The mirroring ensures user config follows the system choice.
+- **User tools** (ai, developer, 3dprinting) are purely user-level choices that users enable explicitly via `homeProfiles.*` options.
 
 This keeps host files simple and ensures user-level config follows the selected system features.
 

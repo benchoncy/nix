@@ -38,12 +38,67 @@ Work-only standalone Home Manager outputs are expected to live in the private wr
 
 ## Raw Dotfiles
 
-The repo supports raw dotfile copying through an explicit Home Manager manifest.
+The repo supports raw dotfile copying through program/module directories.
 
-- shared raw files live under `home-files/common/`
-- raw ownership is declared in `modules/home/capabilities/raw-files-compat.nix`
+- Raw dotfiles are distributed to their respective program/module directories:
+  - `programs/neovim/config/` - neovim configuration
+  - `programs/shell/config/` - shell configuration (zshrc, bashrc, starship, shell tools)
+  - `programs/scripts/` - user scripts (tmux-sessionizer, git-afforester, etc.)
+  - `programs/git/config/diffnav/` - diffnav configuration
+  - `programs/tmux/config/` - tmux configuration
+  - `modules/developer/opencode/config/` - opencode agents, commands, skills
+  - `modules/developer/github/scripts/` - github helper scripts
+  - `modules/developer/aws/config/` - aws configuration
 - prefer whole app directories under `.config/<app>` instead of one giant `.config` mapping
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, `.config/ghostty/config`, and `.config/opencode/opencode.jsonc` in Home Manager modules rather than raw copies
+
+## Home Manager Profiles
+
+The Home Manager configuration uses a modular profile system with options that can be enabled in host configurations.
+
+**Note:** There are two patterns for feature toggles - user-level features use `homeProfiles.*` options, while system-level features (like desktop environments) use osConfig mirroring. See AGENTS.md for full documentation.
+
+### `homeProfiles.developer.enable`
+Enables the developer profile. Includes by default:
+- bruno + bruno-cli
+
+Optional sub-options (must also have `homeProfiles.developer.enable = true`):
+- `homeProfiles.developer.python.enable` - python313, uv, pre-commit
+- `homeProfiles.developer.github.enable` - gh CLI, gh-dash
+- `homeProfiles.developer.opencode.enable` - opencode program + config files
+- `homeProfiles.developer.aws.enable` - awscli2
+
+### `homeProfiles._3dPrinting.enable`
+Enables 3D printing tools (Cura, FreeCAD, OctoPrint)
+
+### `homeProfiles.ai`
+AI tooling and policy. Options:
+
+- `homeProfiles.ai.enable` - master switch for AI tooling
+- `homeProfiles.ai.opencode.enable` - opencode installation + config
+- `homeProfiles.ai.nvim.enable` - AI Neovim integrations
+- `homeProfiles.ai.providers.githubCopilot.enable` - GitHub Copilot access
+- `homeProfiles.ai.providers.supermaven.enable` - Supermaven access
+- `homeProfiles.ai.providers.openai.enable` - OpenAI access
+
+Example host configuration:
+```nix
+homeProfiles = {
+  ai = {
+    enable = true;
+    opencode.enable = true;
+    nvim.enable = true;
+    providers = {
+      githubCopilot.enable = true;
+      supermaven.enable = true;
+    };
+  };
+  developer.enable = true;
+  developer.python.enable = true;
+  developer.opencode.enable = true;
+  _3dPrinting.enable = true;
+};
+```
 
 ## Reusable Exports
 

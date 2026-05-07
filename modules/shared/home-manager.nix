@@ -1,14 +1,5 @@
-{ inputs, username, ... }: {
-  home-manager = {
-    users."${username}".imports = [
-      ../home
-      inputs.catppuccin.homeModules.catppuccin
-    ];
-
-    backupFileExtension = "bkp";
-    useGlobalPkgs = true;
-    extraSpecialArgs = {
-      inherit inputs username;
-    };
-  };
+{ inputs, ... }: {
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+  ];
 }

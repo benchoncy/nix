@@ -1,10 +1,23 @@
-{ lib, osConfig, ... }: {
-  config = {
-    ai.enable = lib.mkDefault (osConfig.ai.enable or false);
-    ai.opencode.enable = lib.mkDefault (osConfig.ai.opencode.enable or false);
-    ai.nvim.enable = lib.mkDefault (osConfig.ai.nvim.enable or false);
-    ai.providers.githubCopilot.enable = lib.mkDefault (osConfig.ai.providers.githubCopilot.enable or false);
-    ai.providers.supermaven.enable = lib.mkDefault (osConfig.ai.providers.supermaven.enable or false);
-    ai.providers.openai.enable = lib.mkDefault (osConfig.ai.providers.openai.enable or false);
+{ config, lib, osConfig, ... }:
+let
+  cfg = osConfig.homeProfiles.ai;
+in {
+  config = lib.mkIf cfg.enable {
+    home.file.".config/userdata/ai-policy.json".text = builtins.toJSON {
+      enable = cfg.enable;
+      opencode = {
+        enable = cfg.opencode.enable;
+      };
+      nvim = {
+        enable = cfg.nvim.enable;
+      };
+      providers = {
+        githubCopilot.enable = cfg.providers.githubCopilot.enable;
+        supermaven.enable = cfg.providers.supermaven.enable;
+        openai.enable = cfg.providers.openai.enable;
+      };
+    };
+
+    opencode.enable = cfg.enable && cfg.opencode.enable;
   };
 }

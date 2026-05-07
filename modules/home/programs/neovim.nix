@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   home.packages = with pkgs; [
     tree-sitter
     ansible
@@ -24,4 +24,8 @@
     yaml-language-server
     nixd
   ];
+
+  home.file = {
+    ".config/nvim".source = ./config;
+  };
 }

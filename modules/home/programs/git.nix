@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   signingProgram = if pkgs.stdenv.isDarwin then
     "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
@@ -61,4 +61,6 @@ in {
   xdg.configFile."git/ignore".text = ''
     .ansible/
   '';
+
+  home.file."${config.xdg.configHome}/diffnav/config.yml".source = ./config/diffnav/config.yml;
 }

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, osConfig, ... }: {
   home.packages = with pkgs; [
     coreutils
     gcc
@@ -25,16 +25,11 @@
     luarocks
     go
     nodejs_24
-    python313
     granted
-    pre-commit
-    uv
     starship
     tmux
     zoxide
     zotero
-    bruno
-    bruno-cli
     nerd-fonts.hack
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
@@ -44,7 +39,7 @@
   ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
     # For Darwin only
     ghostty-bin
-  ] ++ lib.optionals (config.ai.enable && config.ai.opencode.enable) [
+  ] ++ lib.optionals (osConfig.homeProfiles.ai.enable && osConfig.homeProfiles.ai.opencode.enable) [
     opencode
   ];
 }
