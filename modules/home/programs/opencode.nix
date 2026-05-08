@@ -49,6 +49,7 @@ in {
 
   config = lib.mkIf osConfig.homeProfiles.ai.opencode.enable {
     home.packages = with pkgs; [
+      opencode
       gopls
       rust-analyzer
       clang-tools

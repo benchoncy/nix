@@ -67,6 +67,12 @@ Optional sub-options (must also have `homeProfiles.developer.enable = true`):
 - `homeProfiles.developer.github.enable` - gh CLI, gh-dash
 - `homeProfiles.developer.opencode.enable` - opencode program + config files
 - `homeProfiles.developer.aws.enable` - awscli2
+- `homeProfiles.developer.go.enable` - Go toolchain
+- `homeProfiles.developer.rust.enable` - Rust toolchain (cargo, rust)
+- `homeProfiles.developer.lua.enable` - Lua and LuaRocks
+- `homeProfiles.developer.containers.enable` - Container tools (Podman)
+- `homeProfiles.developer.javascript.enable` - Node.js JavaScript runtime
+- `homeProfiles.developer.tofu.enable` - OpenTofu and tenv version manager
 
 ### `homeProfiles._3dPrinting.enable`
 Enables 3D printing tools (Cura, FreeCAD, OctoPrint)
@@ -95,6 +101,7 @@ homeProfiles = {
   };
   developer.enable = true;
   developer.python.enable = true;
+  developer.tofu.enable = true;
   developer.opencode.enable = true;
   _3dPrinting.enable = true;
 };

@@ -6,6 +6,12 @@
       ./github.nix
       ./opencode.nix
       ./aws.nix
+      ./go.nix
+      ./rust.nix
+      ./lua.nix
+      ./containers.nix
+      ./javascript.nix
+      ./tofu.nix
     ];
   };
 }

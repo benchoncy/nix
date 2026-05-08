@@ -22,6 +22,7 @@
     };
     developer.enable = true;
     developer.python.enable = true;
+    developer.tofu.enable = true;
     _3dPrinting.enable = true;
   };
 

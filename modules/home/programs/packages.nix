@@ -19,12 +19,6 @@
     diffnav
     bash
     zsh
-    podman
-    cargo
-    lua
-    luarocks
-    go
-    nodejs_24
     granted
     starship
     tmux
@@ -39,7 +33,5 @@
   ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
     # For Darwin only
     ghostty-bin
-  ] ++ lib.optionals (osConfig.homeProfiles.ai.enable && osConfig.homeProfiles.ai.opencode.enable) [
-    opencode
   ];
 }

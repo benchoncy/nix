@@ -107,6 +107,12 @@ Optional sub-options (must also have `homeProfiles.developer.enable = true`):
 - `homeProfiles.developer.github.enable` - gh CLI, gh-dash
 - `homeProfiles.developer.opencode.enable` - opencode program + config files
 - `homeProfiles.developer.aws.enable` - awscli2
+- `homeProfiles.developer.go.enable` - Go toolchain
+- `homeProfiles.developer.rust.enable` - Rust toolchain (cargo, rust)
+- `homeProfiles.developer.lua.enable` - Lua and LuaRocks
+- `homeProfiles.developer.containers.enable` - Container tools (Podman)
+- `homeProfiles.developer.javascript.enable` - Node.js JavaScript runtime
+- `homeProfiles.developer.tofu.enable` - OpenTofu and tenv version manager
 
 ### `homeProfiles._3dPrinting.enable`
 Enables 3D printing tools (Cura, FreeCAD, OctoPrint)
@@ -144,7 +150,7 @@ Features that are primarily user-facing but defined at the system level:
 **Current options using this pattern:**
 
 - `homeProfiles.ai.*` - AI tooling (enable, opencode, nvim, providers)
-- `homeProfiles.developer.*` - developer tools (enable, python, github, opencode, aws)
+- `homeProfiles.developer.*` - developer tools (enable, python, github, opencode, aws, go, rust, lua, containers, javascript, tofu)
 - `homeProfiles._3dPrinting.enable` - 3D printing tools
 
 This pattern keeps user configuration at the system level (where it's easier to manage in host configs) and mirrors to Home Manager via `osConfig`.

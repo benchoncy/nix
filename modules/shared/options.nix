@@ -29,6 +29,18 @@
         opencode.enable = lib.mkEnableOption "OpenCode config files";
 
         aws.enable = lib.mkEnableOption "AWS CLI and alias";
+
+        go.enable = lib.mkEnableOption "Go toolchain";
+
+        rust.enable = lib.mkEnableOption "Rust toolchain";
+
+        lua.enable = lib.mkEnableOption "Lua and LuaRocks";
+
+        containers.enable = lib.mkEnableOption "Container tools (Podman)";
+
+        javascript.enable = lib.mkEnableOption "Node.js JavaScript runtime";
+
+        tofu.enable = lib.mkEnableOption "OpenTofu and tenv version manager";
       };
 
       _3dPrinting.enable = lib.mkEnableOption "Enable 3D printing profile (Cura, FreeCAD, OctoPrint)";

@@ -3,6 +3,7 @@
     ./core.nix
     ./secrets.nix
     ./raw-files-compat.nix
+    ../../programs/packages.nix
     ../../programs/ghostty.nix
     ../../programs/shell.nix
     ../../programs/scripts.nix
