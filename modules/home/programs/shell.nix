@@ -1,8 +1,8 @@
 { lib, ... }: {
   home.file = {
-    ".zshrc".source = ./config/.zshrc;
-    ".bashrc".source = ./config/.bashrc;
-    ".config/shell".source = ./config/shell;
-    ".config/starship.toml".source = ./config/starship.toml;
+    ".zshrc".source = ./shell/config/.zshrc;
+    ".bashrc".source = ./shell/config/.bashrc;
+    ".config/shell".source = ./shell/config/shell;
+    ".config/starship.toml".source = ./shell/config/starship.toml;
   };
 }
