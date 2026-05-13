@@ -42,7 +42,7 @@ in {
   options.github.ghDash = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = "Whether to manage the gh-dash configuration file.";
     };
 
@@ -68,6 +68,11 @@ in {
   };
 
   config = lib.mkIf ghDashCfg.enable {
+    home.file.".local/scripts/gh-dash-pr-review" = {
+      source = ../modules/developer/github/scripts/gh-dash-pr-review.sh;
+      executable = true;
+    };
+
     xdg.configFile."gh-dash/config.yml".text = ''
       # yaml-language-server: $schema=https://gh-dash.dev/schema.json
       ${lib.generators.toYAML { } ghDashConfig}

@@ -1,6 +1,7 @@
 { ... }: {
   imports = [
     ../assets.nix
-    ../modules
+    ../modules/base
+    ../programs
   ];
 }

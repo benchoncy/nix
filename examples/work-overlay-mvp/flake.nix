@@ -9,7 +9,6 @@
     };
     nix-darwin.follows = "shared/nix-darwin";
     home-manager.follows = "shared/home-manager";
-    nur.follows = "shared/nur";
     catppuccin.follows = "shared/catppuccin";
   };
 
@@ -26,7 +25,6 @@
 
     mkPkgs = system': import nixpkgs {
       system = system';
-      overlays = [ inputs.nur.overlays.default ];
       config.allowUnfree = true;
     };
   in {

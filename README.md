@@ -30,6 +30,7 @@ Use `make update` to refresh this repo's flake inputs.
 ## Home Manager Only
 
 The flake exposes standalone Home Manager outputs for dotfiles-only workflows.
+Use `homeModules.base` for standalone Home Manager composition, and `homeModules.system` only through the embedded Home Manager system path.
 
 - `home-manager switch --flake .#nixos-bstuart-home`
 - `make home-manager`
@@ -54,7 +55,10 @@ The repo supports raw dotfile copying through program/module directories.
 
 ## Home Manager Profiles
 
-The Home Manager configuration uses a modular profile system with options that can be enabled in host configurations.
+The Home Manager configuration uses a modular profile system with options that are enabled from NixOS or Darwin host configurations.
+
+- `homeProfiles.*` is system-level input for embedded Home Manager via `osConfig`
+- standalone Home Manager modules should set Home Manager option namespaces directly (for example `opencode.*` or `github.ghDash.*`)
 
 **Note:** There are two patterns for feature toggles - user-level features use `homeProfiles.*` options, while system-level features (like desktop environments) use osConfig mirroring. See AGENTS.md for full documentation.
 
@@ -114,7 +118,7 @@ The flake also exposes reusable module entrypoints intended for wrapper flakes a
 - `darwinModules.base` - shared macOS system module stack
 - `nixosModules.base` - shared NixOS system module stack
 - `homeModules.base` - standalone-safe Home Manager base profile
-- `homeModules.system` - Home Manager profile intended for embedded system use
+- `homeModules.system` - Home Manager profile intended for embedded system use via `home-manager.users.<name>.imports`
 
 Wrapper flakes should prefer these exports over copying host composition logic directly.
 
@@ -125,6 +129,8 @@ Work-specific configuration is expected to live in a separate repo that owns the
 - the private repo should export a top-level wrapper flake
 - the private repo should provide `modules/home/default.nix`
 - the private repo can compose from `darwinModules.base`, `nixosModules.base`, and `homeModules.*`
+- private system hosts should enable shared features through `homeProfiles.*` in the host config and layer private HM overrides with `home-manager.users.<name>.imports`
+- private standalone HM outputs should import `homeModules.base` and set direct HM options in their private module
 
 If you need to recreate a minimal private work repo quickly, use `examples/work-overlay-mvp/` as a generic starting point.
 It is intentionally organization-neutral and shows the minimum shape for work-only Git, AWS, shell-tool, and OpenCode MCP overrides.

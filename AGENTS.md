@@ -41,12 +41,11 @@ Cross-platform system configuration.
 - `default.nix` aggregates shared modules.
 - `packages.nix` enables shared system packages.
 - `options.nix` defines shared custom options.
-- `home-manager.nix` wires Home Manager into the system build for `users."${username}"`.
+- `home-manager.nix` configures shared embedded Home Manager defaults for `users."${username}"`; platform bootstraps live in `modules/nixos/default.nix` and `modules/darwin/default.nix`.
 
 Notable behavior:
 
 - unfree packages are allowed globally
-- the NUR overlay is enabled globally
 - flakes are enabled via `nix.settings.experimental-features`
 - Home Manager uses `backupFileExtension = "bkp"`
 
@@ -86,12 +85,14 @@ Private work overlay conventions:
 
 Home Manager conventions:
 
-- modules under `profiles/` and `modules/` should not depend on `osConfig`
+- `profiles/base.nix` must remain standalone-safe and only import `osConfig`-free modules
+- `profiles/system.nix` is the embedded/system-oriented layer and can import `osConfig`-mirrored modules
 - raw dotfile copying is handled by `modules/home/modules/base/raw-files-compat.nix`
 - raw files are distributed to their respective program modules (e.g., shell config in `programs/shell.nix`, neovim config in `programs/neovim.nix`)
 - Raw dotfiles are now distributed to their respective program/module directories - no central manifest needed
 - prefer explicit manifest entries for whole app directories like `.config/nvim` instead of auto-discovering the entire home tree
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, and `.config/ghostty/config` out of the raw manifest
+- option-defining Home Manager program modules belong in the stable programs layer imported by `profiles/base.nix`
 - work/private final outputs should live in a separate wrapper flake that composes this repo via flake input
 
 ## Home Manager Profile Options
@@ -132,7 +133,7 @@ Reusable flake exports:
 - `darwinModules.base` is the shared macOS system module stack
 - `nixosModules.base` is the shared NixOS system module stack
 - `homeModules.base` is the standalone-safe Home Manager base profile
-- `homeModules.system` is the embedded/system-oriented Home Manager profile
+- `homeModules.system` is the embedded/system-oriented Home Manager profile layered into `home-manager.users.<name>.imports`
 - private wrapper flakes should compose from these exports instead of duplicating host assembly logic
 
 ## Feature Toggle Pattern
@@ -145,7 +146,7 @@ Features that are primarily user-facing but defined at the system level:
 
 1. Define an option in `modules/shared/options.nix` (e.g., `homeProfiles.*`)
 2. Enable it from the NixOS/Darwin host config
-3. The Home Manager module reads from `osConfig.homeProfiles.*`
+3. The embedded Home Manager system profile reads from `osConfig.homeProfiles.*`
 
 **Current options using this pattern:**
 
@@ -217,6 +218,6 @@ Notes:
 ## Useful Repo-Specific Facts
 
 - NixOS setup depends on DisplayLink and the README calls out the need to prefetch its non-free blob.
-- Firefox config uses NUR-provided addons in `modules/home/programs/firefox.nix`.
+- Firefox config manages addons directly in `modules/home/programs/firefox.nix`.
 - Home assets are tracked in `assets/` and copied into the user's home directory declaratively.
 - The repo currently provides one personal NixOS machine output and reusable module exports for private wrapper flakes.

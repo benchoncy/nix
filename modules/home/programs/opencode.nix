@@ -1,4 +1,4 @@
-{ config, lib, pkgs, osConfig, ... }:
+{ config, lib, pkgs, ... }:
 let
   jsonFormat = pkgs.formats.json { };
   cfg = config.opencode;
@@ -12,7 +12,7 @@ in {
   options.opencode = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = "Whether to manage OpenCode configuration files.";
     };
 
@@ -47,7 +47,7 @@ in {
     };
   };
 
-  config = lib.mkIf osConfig.homeProfiles.ai.opencode.enable {
+  config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       opencode
       gopls

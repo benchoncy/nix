@@ -1,20 +1,6 @@
 { ... }: {
-  # Enable AI and developer profiles
-  homeProfiles = {
-    ai = {
-      enable = true;
-      opencode.enable = true;
-      nvim.enable = false;
-      providers = {
-        githubCopilot.enable = false;
-        supermaven.enable = false;
-        openai.enable = false;
-      };
-    };
-    developer.enable = true;
-    developer.github.enable = true;
-    developer.opencode.enable = true;
-  };
+  opencode.enable = true;
+  github.ghDash.enable = true;
 
   # Work-only OpenCode MCP servers
   opencode.mcp.work-docs = {
@@ -43,7 +29,6 @@
   };
 
   # gh-dash configuration for work GitHub host
-  # Note: requires homeProfiles.developer.github.enable = true
   github.ghDash.host = "<work-git-host>";
 
   programs.git.includes = [
