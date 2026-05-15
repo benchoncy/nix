@@ -76,7 +76,7 @@ Optional sub-options (must also have `homeProfiles.developer.enable = true`):
 - `homeProfiles.developer.lua.enable` - Lua and LuaRocks
 - `homeProfiles.developer.containers.enable` - Container tools (Podman)
 - `homeProfiles.developer.javascript.enable` - Node.js JavaScript runtime
-- `homeProfiles.developer.tofu.enable` - OpenTofu and tenv version manager
+- `homeProfiles.developer.tofu.enable` - tenv-managed OpenTofu/Terraform tooling
 
 ### `homeProfiles._3dPrinting.enable`
 Enables 3D printing tools (Cura, FreeCAD, OctoPrint)

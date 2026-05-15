@@ -40,7 +40,7 @@
 
         javascript.enable = lib.mkEnableOption "Node.js JavaScript runtime";
 
-        tofu.enable = lib.mkEnableOption "OpenTofu and tenv version manager";
+        tofu.enable = lib.mkEnableOption "tenv-managed OpenTofu/Terraform tooling";
       };
 
       _3dPrinting.enable = lib.mkEnableOption "Enable 3D printing profile (Cura, FreeCAD, OctoPrint)";
