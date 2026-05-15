@@ -1,15 +1,15 @@
 { lib, ... }: {
   home.file = {
     ".local/scripts/tmux-sessionizer" = {
-      source = ./tmux-sessionizer.sh;
+      source = ./scripts/tmux-sessionizer.sh;
       executable = true;
     };
     ".local/scripts/tmux-windowizer" = {
-      source = ./tmux-windowizer.sh;
+      source = ./scripts/tmux-windowizer.sh;
       executable = true;
     };
     ".local/scripts/git-afforester" = {
-      source = ./git-afforester.py;
+      source = ./scripts/git-afforester.py;
       executable = true;
     };
   };

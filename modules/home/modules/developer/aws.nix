@@ -5,7 +5,7 @@
     ];
 
     home.file = {
-      ".aws/cli/alias".source = ./config/cli/alias;
+      ".aws/cli/alias".source = ./aws/config/cli/alias;
     };
   };
 }
