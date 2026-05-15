@@ -62,5 +62,5 @@ in {
     .ansible/
   '';
 
-  home.file."${config.xdg.configHome}/diffnav/config.yml".source = ./config/diffnav/config.yml;
+  home.file."${config.xdg.configHome}/diffnav/config.yml".source = ./git/config/diffnav/config.yml;
 }

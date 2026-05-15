@@ -8,6 +8,6 @@
       vim-tmux-navigator
       catppuccin
     ];
-    extraConfig = builtins.readFile ./config/tmux.conf;
+    extraConfig = builtins.readFile ./tmux/config/tmux.conf;
   };
 }
