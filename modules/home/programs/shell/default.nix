@@ -33,6 +33,10 @@
       if [[ -f "$HOME/.config/shell/secrets.env" ]]; then
         source "$HOME/.config/shell/secrets.env"
       fi
+
+      # Bind Up arrow to fzf history search (override zsh-autocomplete)
+      bindkey '\e[A' fzf-history-widget
+      bindkey '\eOA' fzf-history-widget
     '';
   };
 
