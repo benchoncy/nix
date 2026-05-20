@@ -3,5 +3,8 @@
     home.packages = with pkgs; [
       tenv
     ];
+    home.sessionVariables = {
+      TENV_AUTO_INSTALL = "true";
+    };
   };
 }
