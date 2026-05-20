@@ -6,5 +6,13 @@
     home.sessionVariables = {
       TENV_AUTO_INSTALL = "true";
     };
+
+    home.file.".config/shell/tools/tf.sh".text = ''
+      if [ -x "$(command -v terraform)" ]; then
+          alias tf="terraform"
+      else
+          alias tf="tofu"
+      fi
+    '';
   };
 }

@@ -68,8 +68,13 @@ in {
   };
 
   config = lib.mkIf ghDashCfg.enable {
+    programs.gh = {
+      enable = true;
+      extensions = with pkgs; [ gh-dash ];
+    };
+
     home.file.".local/scripts/gh-dash-pr-review" = {
-      source = ../modules/developer/github/scripts/gh-dash-pr-review.sh;
+      source = ./scripts/gh-dash-pr-review.sh;
       executable = true;
     };
 

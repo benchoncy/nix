@@ -138,8 +138,7 @@ in {
       command = [ "uvx" "mcp-obsidian" ];
       environment = {
         OBSIDIAN_API_KEY = "{env:OBSIDIAN_API_KEY}";
-        OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
-        OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
+        OBSIDIAN_HOST = "{env:OBSIDIAN_PORT}";
       };
       enabled = false;
     };
@@ -164,5 +163,13 @@ in {
       "$schema" = "https://opencode.ai/tui.json";
       theme = "catppuccin-macchiato";
     };
+
+    home.file.".config/opencode/agents".source = ./config/agents;
+    home.file.".config/opencode/commands".source = ./config/commands;
+    home.file.".config/opencode/skills".source = ./config/skills;
+
+    home.file.".config/shell/tools/opencode.sh".text = ''
+      alias oc="opencode"
+    '';
   };
 }

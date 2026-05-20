@@ -27,6 +27,6 @@
   ];
 
   home.file = {
-    ".config/nvim".source = ./neovim/config;
+    ".config/nvim".source = ./config;
   };
 }

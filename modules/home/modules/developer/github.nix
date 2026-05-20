@@ -1,5 +1,5 @@
-{ config, lib, osConfig, ... }: {
-  config = lib.mkIf osConfig.homeProfiles.developer.github.enable {
-    github.ghDash.enable = true;
-  };
+{ lib, osConfig, ... }: {
+  imports = lib.optionals (osConfig.homeProfiles.developer.github.enable or false) [
+    ../../programs/github
+  ];
 }

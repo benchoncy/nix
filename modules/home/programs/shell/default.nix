@@ -1,6 +1,6 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
-  shellConfigRoot = ./shell/config/shell;
+  shellConfigRoot = ./config/shell;
 
   collectShellEntries = dir: relPath:
     lib.flatten (lib.mapAttrsToList
@@ -22,8 +22,12 @@ let
   defaultShellFiles = lib.listToAttrs (collectShellEntries shellConfigRoot "");
 in {
   config.home.file = {
-    ".zshrc".source = ./shell/config/.zshrc;
-    ".bashrc".source = ./shell/config/.bashrc;
-    ".config/starship.toml".source = ./shell/config/starship.toml;
+    ".zshrc".source = ./config/.zshrc;
+    ".bashrc".source = ./config/.bashrc;
+    ".config/starship.toml".source = ./config/starship.toml;
+    ".zsh/zsh-autosuggestions" = {
+      source = "${pkgs.zsh-autosuggestions}/share/zsh/plugins/zsh-autosuggestions";
+      recursive = true;
+    };
   } // defaultShellFiles;
 }
