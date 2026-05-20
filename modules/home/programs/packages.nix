@@ -4,6 +4,7 @@
     gcc
     gnumake
     neovim
+    python313
     git
     wget
     curl
