@@ -23,5 +23,8 @@ fi
 export EDITOR="nvim"
 export LANG=en_GB.UTF-8
 
+# tenv
+export TENV_AUTO_INSTALL=true
+
 # custom scripts
 export PATH="$PATH:$HOME/.local/scripts:$HOME/.local/bin"
