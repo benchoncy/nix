@@ -1,7 +1,8 @@
 { lib, pkgs, ... }: {
   programs.firefox = {
-    enable = if pkgs.stdenv.isDarwin then false else true;
-    languagePacks = [ "en-GB" ];
+    enable = true;
+    package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
+    languagePacks = lib.mkIf (!pkgs.stdenv.isDarwin) [ "en-GB" ];
     profiles.default = {
       search = {
         default = "ddg";
