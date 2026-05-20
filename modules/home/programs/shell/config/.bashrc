@@ -8,7 +8,7 @@ source $HOME/.config/shell/init.sh
 eval "$(fzf --bash)"
 
 # Initialize zoxide
-eval "$(zoxide init bash)"
+eval "$(zoxide init bash --cmd cd)"
 
 # Start starship prompt
 eval "$(starship init bash)"
