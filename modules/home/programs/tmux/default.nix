@@ -21,14 +21,14 @@
     executable = true;
   };
 
-  home.file.".config/shell/tools/tmux.sh".text = ''
-    alias t="tmux"
-    alias ta="tmux attach"
-    alias tn="tmux new-session -A -s"
-    alias td="tmux detach-client"
-    alias tl="tmux list-sessions"
-    alias tkill="tmux kill-session -t"
-    alias ts="tmux-sessionizer"
-    alias tw="tmux-windowizer"
-  '';
+  programs.zsh.shellAliases = {
+    t = "tmux";
+    ta = "tmux attach";
+    tn = "tmux new-session -A -s";
+    td = "tmux detach-client";
+    tl = "tmux list-sessions";
+    tkill = "tmux kill-session -t";
+    ts = "tmux-sessionizer";
+    tw = "tmux-windowizer";
+  };
 }

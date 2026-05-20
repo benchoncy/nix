@@ -41,6 +41,12 @@
         javascript.enable = lib.mkEnableOption "Node.js JavaScript runtime";
 
         tofu.enable = lib.mkEnableOption "tenv-managed OpenTofu/Terraform tooling";
+
+        tofu.alias = lib.mkOption {
+          type = lib.types.str;
+          default = "tofu";
+          description = "Command that the tf shell alias points to";
+        };
       };
 
       _3dPrinting.enable = lib.mkEnableOption "Enable 3D printing profile (Cura, FreeCAD, OctoPrint)";

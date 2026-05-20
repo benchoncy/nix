@@ -10,11 +10,10 @@
     whoami = sts get-caller-identity
   '';
 
-  home.file.".config/shell/tools/aws.sh".text = ''
-    # Granted.dev assume
-    alias assume="source assume"
-    alias asr='assume $(aws configure list-profiles | fzf)'    # [as]sume [r]ole
-    alias asc='assume $(aws configure list-profiles | fzf) -c' # [as]sume [c]onsole
-    alias ast='assume $(aws configure list-profiles | fzf) -t' # [as]sume [t]erminal
-  '';
+  programs.zsh.shellAliases = {
+    assume = "source assume";
+    asr = "assume $(aws configure list-profiles | fzf)";
+    asc = "assume $(aws configure list-profiles | fzf) -c";
+    ast = "assume $(aws configure list-profiles | fzf) -t";
+  };
 }

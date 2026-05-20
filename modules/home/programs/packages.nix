@@ -14,18 +14,9 @@
     yq
     fd
     unzip
-    fzf
     gum
-    delta
-    diffnav
     bash
-    zsh
-    granted
-    starship
-    tmux
-    zoxide
     zotero
-    nerd-fonts.hack
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
     obsidian
