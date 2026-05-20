@@ -23,6 +23,7 @@
     typescript-language-server
     yaml-language-server
     nixd
+    nodejs_24
   ];
 
   home.file = {
