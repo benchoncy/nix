@@ -36,7 +36,7 @@
 
         lua.enable = lib.mkEnableOption "Lua and LuaRocks";
 
-        containers.enable = lib.mkEnableOption "Container tools (Podman)";
+        containers.enable = lib.mkEnableOption "Container and Kubernetes tools";
 
         javascript.enable = lib.mkEnableOption "Node.js JavaScript runtime";
 
