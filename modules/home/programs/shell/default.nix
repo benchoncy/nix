@@ -5,6 +5,13 @@
     enable = true;
     enableCompletion = true;
     autosuggestion.enable = true;
+    plugins = [
+      {
+        name = "zsh-autocomplete";
+        src = pkgs.zsh-autocomplete;
+        file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
+      }
+    ];
 
     history.size = 10000;
     history.path = "$HOME/.zsh_history";
