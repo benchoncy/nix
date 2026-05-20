@@ -1,4 +1,4 @@
-{ inputs, hostname, username, displayname, ... }: {
+{ inputs, hostname, username, displayname, pkgs, ... }: {
   imports = [
     inputs.home-manager.nixosModules.default # Include home-manager module
     inputs.catppuccin.nixosModules.catppuccin # Include catppuccin theme module
@@ -46,12 +46,16 @@
     jack.enable = true;
   };
 
+  # Enable zsh as the default shell
+  programs.zsh.enable = true;
+
   # Setup user account.
   users.users.${username} = {
     isNormalUser = true;
     description = "${displayname}";
     extraGroups = [ "networkmanager" "wheel" ];
     hashedPassword = "$6$PEaenklbBc4q03wf$QEWk29c/LTnucySq0Vs2nXgB19jEJ2IlypODbKWuBScBIDPXsbQe1gJK4Z9x.Tr0D6PUpC5aezd/zZbsroaNK.";
+    shell = pkgs.zsh;
   };
 
   # Enable automatic garbage collection
