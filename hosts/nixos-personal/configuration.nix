@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, username, ... }: {   
+{ ... }: {   
   imports = [ 
     ./hardware-configuration.nix  # Include the results of the hardware scan.
     ./settings.nix                # Static settings for this host
@@ -11,6 +11,8 @@
 
   # Home Manager profiles
   homeProfiles = {
+
+    # AI Policy
     ai = {
       enable = true;
       opencode.enable = true;
@@ -20,9 +22,16 @@
         supermaven.enable = true;
       };
     };
-    developer.enable = true;
-    developer.python.enable = true;
-    developer.tofu.enable = true;
+
+    # Dev setup
+    developer = {
+      enable = true;
+      python.enable = true;
+      containers.enable = true;
+      tofu.enable = true;
+    };
+
+    # Additional profiles
     _3dPrinting.enable = true;
   };
 
