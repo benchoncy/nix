@@ -24,8 +24,8 @@ source $HOME/.config/shell/init.sh
 # Load fzf integration
 source <(fzf --zsh)
 
-# Initialize zoxide
-eval "$(zoxide init zsh --cmd cd)"
-
 # Start starship prompt
 eval "$(starship init zsh)"
+
+# Initialize zoxide
+eval "$(zoxide init zsh --cmd cd)"
