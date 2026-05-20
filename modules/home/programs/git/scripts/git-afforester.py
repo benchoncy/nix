@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+#
+# /// script
+# requires-python = ">=3.12"
+# ///
 """git-afforester: deterministic project/worktree manager."""
 
 from __future__ import annotations
