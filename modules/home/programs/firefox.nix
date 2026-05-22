@@ -191,8 +191,23 @@ in {
           };
         };
         settings = {
-          "browser.startup.homepage" = "https://duckduckgo.com";
+          "browser.startup.homepage" = "about:home";
+          "browser.newtabpage.enabled" = true;
+          "browser.startup.page" = 3;
+          "browser.link.open_newwindow" = 3;
           "browser.bookmarks.showMobileBookmarks" = true;
+          "privacy.userContext.enabled" = true;
+          "privacy.userContext.ui.enabled" = true;
+          "browser.tabs.groups.enabled" = true;
+          "browser.newtabpage.activity-stream.showSearch" = true;
+          "browser.newtabpage.activity-stream.feeds.topsites" = false;
+          "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+          "browser.newtabpage.activity-stream.feeds.section.highlights" = false;
+          "browser.newtabpage.activity-stream.showSponsored" = false;
+          "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+          "browser.newtabpage.activity-stream.showSponsoredCheckboxes" = false;
+          "signon.rememberSignons" = false;
+          "dom.security.https_only_mode" = true;
           "browser.uiCustomization.state" = builtins.toJSON browserUiCustomizationState;
           "browser.theme.follow-system-theme" = true;
         };
