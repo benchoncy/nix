@@ -29,4 +29,11 @@
   home.file = {
     ".config/nvim".source = ./config;
   };
+
+  shell.secretRefs = {
+    # Used by LanguageTool via ltex-ls
+    LANGUAGETOOL_USERNAME = lib.mkDefault "op://Private/LanguageTool/username";
+    # Used by LanguageTool via ltex-ls
+    LANGUAGETOOL_API_KEY = lib.mkDefault "op://Private/LanguageTool/api key";
+  };
 }

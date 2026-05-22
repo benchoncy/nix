@@ -143,6 +143,11 @@ in {
       enabled = false;
     };
 
+    shell.secretRefs = {
+      # Used by Obsidian MCP
+      OBSIDIAN_API_KEY = lib.mkDefault "op://Private/Obsidian.md/api key";
+    };
+
     opencode.mcp.playwright = lib.mkDefault {
       type = "local";
       command = [ "npx" "@playwright/mcp@latest" ];
