@@ -52,7 +52,7 @@ in {
 
         # Inject 1Password secrets into the shell when available.
         if command -v op >/dev/null 2>&1; then
-          if shell_secrets="$(command op inject -i \"$HOME/.config/shell/secrets.zsh.tmpl\" 2>/dev/null)"; then
+          if shell_secrets="$(command op inject -i $HOME/.config/shell/secrets.zsh.tmpl 2>/dev/null)"; then
             eval "$shell_secrets" || print -u2 -- "warning: failed to load shell secrets"
           else
             print -u2 -- "warning: failed to load shell secrets"
