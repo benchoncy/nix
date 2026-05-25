@@ -32,6 +32,27 @@ Customize these placeholders before using it:
 The example `modules/home/default.nix` also shows how to layer work-only OpenCode MCP servers on top of the shared baseline with `opencode.mcp.<name>`.
 It also demonstrates the recommended `gh-dash` machine default host setup for mixed public/work GitHub usage.
 
+## OpenCode Overrides
+
+Use two layers for OpenCode in the wrapper:
+
+- shared prompts, commands, and skills stay in the shared repo under `modules/home/programs/opencode/config/`
+- wrapper-local or machine-local JSON overrides go through `opencode.extraConfig`
+
+Because `modules/home/default.nix` is a Home Manager module, it can set `opencode.*` directly:
+
+```nix
+opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+```
+
+If a single embedded host needs a different override, set the Home Manager option from the host under `home-manager.users.${username}`:
+
+```nix
+home-manager.users.${username}.opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+```
+
+Keep prompts in markdown agent files. If a field needs to vary by machine, leave it out of the shared markdown agent definition and set it from JSON instead.
+
 The wrapper flake should:
 
 - pull the shared repo as a normal flake input

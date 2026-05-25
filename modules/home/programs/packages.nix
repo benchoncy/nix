@@ -16,6 +16,7 @@
     unzip
     gum
     bash
+    chromium
     zotero
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only

@@ -57,9 +57,8 @@ The repo supports raw dotfile copying through program/module directories.
   - `programs/scripts/` - user scripts (tmux-sessionizer, git-afforester, etc.)
   - `programs/git/config/diffnav/` - diffnav configuration
   - `programs/tmux/config/` - tmux configuration
-  - `modules/developer/opencode/config/` - opencode agents, commands, skills
-  - `modules/developer/github/scripts/` - github helper scripts
-  - `modules/developer/aws/config/` - aws configuration
+  - `modules/home/programs/opencode/config/` - opencode agents, commands, skills
+  - `modules/home/programs/github/scripts/` - github helper scripts
 - prefer whole app directories under `.config/<app>` instead of one giant `.config` mapping
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, `.config/ghostty/config`, and `.config/opencode/opencode.jsonc` in Home Manager modules rather than raw copies
 
@@ -120,6 +119,34 @@ homeProfiles = {
   _3dPrinting.enable = true;
 };
 ```
+
+## OpenCode Configuration
+
+OpenCode is managed in two layers:
+
+- raw agents, commands, and skills live in `modules/home/programs/opencode/config/`
+- `~/.config/opencode/opencode.jsonc` is generated from the Home Manager `opencode.*` options
+
+Recommended convention:
+
+- keep shared prompts and shared agent behavior in markdown files under `agents/`
+- use `opencode.extraConfig` for machine-specific JSON overrides
+- for per-machine agent model selection, set `opencode.extraConfig.agent."<agent-name>".model`
+- if an agent field needs to vary by machine, leave it out of the shared markdown agent file and set it from JSON instead
+
+Standalone Home Manager modules can set `opencode.*` directly:
+
+```nix
+opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+```
+
+Embedded Home Manager hosts need the `home-manager.users.<name>.` prefix because `opencode.*` is a Home Manager option namespace, not a NixOS or nix-darwin system option namespace:
+
+```nix
+home-manager.users.${username}.opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+```
+
+If you want to avoid that prefix in an embedded host, put the override in a user Home Manager module imported via `home-manager.users.<name>.imports`.
 
 ## Reusable Exports
 
