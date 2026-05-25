@@ -1,4 +1,4 @@
-{ lib, inputs, ... }: {
+{ lib, ... }: {
   imports = [
     ./packages.nix
     ./options.nix
@@ -6,13 +6,13 @@
   ];
 
   nixpkgs = {
-    config.allowUnfree = true;
+    config.allowUnfree = lib.mkDefault true;
   };
 
   nix = {
     enable = lib.mkDefault true;
     settings = {
-        experimental-features = "nix-command flakes";
+      experimental-features = [ "nix-command" "flakes" ];
     };
   };
 }

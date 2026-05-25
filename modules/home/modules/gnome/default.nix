@@ -33,7 +33,6 @@
           disabled-extensions = with pkgs.gnomeExtensions; [];
           enabled-extensions = with pkgs.gnomeExtensions; [
             appindicator.extensionUuid
-            pop-shell.extensionUuid
           ];
 
           favorite-apps = config.gnome.favoriteApps;

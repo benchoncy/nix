@@ -1,9 +1,7 @@
-{ ... }: {   
-  imports = [ 
+{ ... }: {
+  imports = [
     ./hardware-configuration.nix  # Include the results of the hardware scan.
     ./settings.nix                # Static settings for this host
-    ../../modules/nixos 
-    ../../modules/shared
   ];
 
   # Enable Gnome Module

@@ -1,4 +1,4 @@
-# WIP: This is a work in progress, I would not recommend using, or taking insperation from this config yet.
+# Experimental/unsupported: kept opt-in for local testing only.
 { config, osConfig, lib, ... }: {
   imports = [
     ./waybar.nix
@@ -8,11 +8,13 @@
     hyprland.enable = lib.mkOption {
       type = lib.types.bool;
       default = osConfig.hyprland.enable or false;
-      description = "Enable Hyprland specific settings and packages.";
+      description = "Enable experimental, unsupported Hyprland-specific settings and packages.";
     };
   };
 
   config = lib.mkIf config.hyprland.enable {
+    warnings = [ "Home Manager Hyprland support in this repo is experimental and unsupported." ];
+
     hyprland.waybar.enable = lib.mkDefault true;
 
     wayland.windowManager.hyprland = {

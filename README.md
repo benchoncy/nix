@@ -9,7 +9,8 @@ This repository contains Nix configurations for target systems with the intent o
 To use this configuration on NixOS, follow these steps:
 1. Follow the [NixOS installation instructions](https://nixos.org/manual/nixos/stable/index.html#sec-installation) to install NixOS
 2. Follow the [wiki instructions](https://nixos.wiki/wiki/Displaylink) to prefetch the DisplayLink non-free blob.
-3. use `make nixos-rebuild` to create a new configuration
+3. Run `make nixos-rebuild` to switch the default host (`NIXOS_HOST=nixos-bstuart`)
+4. Override the target explicitly when needed: `make nixos-rebuild NIXOS_HOST=<flake-host>`
 
 ## MacOS (Darwin)
 
@@ -27,15 +28,24 @@ Run `nix flake check` to test changes made to the flake before committing or ini
 
 Use `make update` to refresh this repo's flake inputs.
 
+This shared repo only ships explicit rebuild targets for the outputs it defines:
+
+- `make nixos-rebuild` → `sudo nixos-rebuild switch --flake .#$(NIXOS_HOST)`
+- `make home-manager` → `home-manager switch --flake .#$(HOME_HOST)`
+
+Darwin rebuilds should be run from a private wrapper flake that owns the final macOS host outputs.
+
 ## Home Manager Only
 
-The flake exposes standalone Home Manager outputs for dotfiles-only workflows.
+The flake exposes a standalone Home Manager output for the shared personal Linux dotfiles workflow.
 Use `homeModules.base` for standalone Home Manager composition, and `homeModules.system` only through the embedded Home Manager system path.
+
+For this repo, the exported standalone target is the personal `nixos-bstuart-home` output on `x86_64-linux`:
 
 - `home-manager switch --flake .#nixos-bstuart-home`
 - `make home-manager`
 
-Work-only standalone Home Manager outputs are expected to live in the private wrapper flake, not this shared repo.
+Work-only or macOS standalone Home Manager outputs are expected to live in the private wrapper flake, not this shared repo.
 
 ## Raw Dotfiles
 
@@ -67,7 +77,7 @@ Enables the developer profile. Includes by default:
 - bruno + bruno-cli
 
 Optional sub-options (must also have `homeProfiles.developer.enable = true`):
-- `homeProfiles.developer.python.enable` - python313, uv, pre-commit
+- `homeProfiles.developer.python.enable` - uv, pre-commit
 - `homeProfiles.developer.github.enable` - gh CLI, gh-dash
 - `homeProfiles.developer.opencode.enable` - opencode program + config files
 - `homeProfiles.developer.aws.enable` - awscli2
@@ -79,7 +89,7 @@ Optional sub-options (must also have `homeProfiles.developer.enable = true`):
 - `homeProfiles.developer.tofu.enable` - tenv-managed OpenTofu/Terraform tooling
 
 ### `homeProfiles._3dPrinting.enable`
-Enables 3D printing tools (Cura, FreeCAD, OctoPrint)
+Enables 3D printing tools (Cura, Cura OctoPrint plugin, FreeCAD)
 
 ### `homeProfiles.ai`
 AI tooling and policy. Options:
@@ -121,6 +131,11 @@ The flake also exposes reusable module entrypoints intended for wrapper flakes a
 - `homeModules.system` - Home Manager profile intended for embedded system use via `home-manager.users.<name>.imports`
 
 Wrapper flakes should prefer these exports over copying host composition logic directly.
+
+## Experimental Features
+
+- `hyprland.enable` remains available as an explicit opt-in, but it is experimental and unsupported in this repo.
+- The NixOS host in this repo consumes `nixosModules.base`; keep host files focused on host selection and overrides.
 
 ## Private Work Overlay
 

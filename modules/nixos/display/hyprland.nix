@@ -1,7 +1,9 @@
 { config, pkgs, lib, ... }: {
-  options.hyprland.enable = lib.mkEnableOption "Enable Hyprland";
+  options.hyprland.enable = lib.mkEnableOption "Enable experimental, unsupported Hyprland";
   
   config = lib.mkIf config.hyprland.enable {
+    warnings = [ "Hyprland support in this repo is experimental and unsupported." ];
+
     programs.hyprland = {
       enable = true;
     };

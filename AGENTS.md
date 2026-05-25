@@ -104,7 +104,7 @@ Enables the developer profile. Includes by default:
 - bruno + bruno-cli
 
 Optional sub-options (must also have `homeProfiles.developer.enable = true`):
-- `homeProfiles.developer.python.enable` - python313, uv, pre-commit
+- `homeProfiles.developer.python.enable` - uv, pre-commit
 - `homeProfiles.developer.github.enable` - gh CLI, gh-dash
 - `homeProfiles.developer.opencode.enable` - opencode program + config files
 - `homeProfiles.developer.aws.enable` - awscli2
@@ -116,7 +116,7 @@ Optional sub-options (must also have `homeProfiles.developer.enable = true`):
 - `homeProfiles.developer.tofu.enable` - tenv-managed OpenTofu/Terraform tooling
 
 ### `homeProfiles._3dPrinting.enable`
-Enables 3D printing tools (Cura, FreeCAD, OctoPrint)
+Enables 3D printing tools (Cura, Cura OctoPrint plugin, FreeCAD)
 
 ### `homeProfiles.ai`
 AI tooling and policy. Options:
@@ -152,7 +152,7 @@ Features that are primarily user-facing but defined at the system level:
 
 - `homeProfiles.ai.*` - AI tooling (enable, opencode, nvim, providers)
 - `homeProfiles.developer.*` - developer tools (enable, python, github, opencode, aws, go, rust, lua, containers, javascript, tofu)
-- `homeProfiles._3dPrinting.enable` - 3D printing tools
+- `homeProfiles._3dPrinting.enable` - 3D printing tools (Cura, Cura OctoPrint plugin, FreeCAD)
 
 This pattern keeps user configuration at the system level (where it's easier to manage in host configs) and mirrors to Home Manager via `osConfig`.
 
@@ -167,7 +167,7 @@ Features that require system-level configuration use system options:
 **Current options using this pattern:**
 
 - `gnome.enable` - NixOS Gnome module (mirrors to HM for themes, extensions, dock)
-- `hyprland.enable` - NixOS Hyprland module (mirrors to HM for waybar, keybindings)
+- `hyprland.enable` - experimental/unsupported NixOS Hyprland module (mirrors to HM for waybar, keybindings)
 
 Note: `homeProfiles.*` was previously called "Pattern 1" but is now merged with Pattern 2 since both use system-level options with osConfig mirroring.
 
@@ -184,14 +184,14 @@ This keeps host files simple and ensures user-level config follows the selected 
 - Use `default.nix` files as directory aggregators.
 - Preserve cross-platform behavior where possible; many modules branch on `pkgs.stdenv.isLinux` and `pkgs.stdenv.isDarwin`.
 - Pass host/user identity through `specialArgs` in `flake.nix`; existing modules rely on those values.
-- Treat `modules/home/modules/hyprland/default.nix` as experimental; it is explicitly marked WIP.
+- Treat `modules/home/modules/hyprland/default.nix` as experimental/unsupported.
 
 ## Build And Validation
 
 Preferred commands:
 
 - `nix flake check`
-- `sudo nixos-rebuild switch --flake .`
+- `sudo nixos-rebuild switch --flake .#nixos-bstuart`
 
 Convenience aliases exist in `Makefile`:
 
@@ -202,7 +202,7 @@ Convenience aliases exist in `Makefile`:
 
 Notes:
 
-- `make nixos-rebuild` and `make home-manager` rely on the shared flake defaults.
+- `make nixos-rebuild` and `make home-manager` use explicit flake output selectors, with `NIXOS_HOST`/`HOME_HOST` override support.
 - work/private outputs should be provided by a separate private wrapper flake, which should consume this repo via a normal flake input.
 
 ## Editing Guidance For Future Agents
@@ -211,7 +211,6 @@ Notes:
 - Do not update `flake.lock` unless intentionally bumping inputs.
 - Do not commit generated `result` symlinks or incidental `*.bkp` backup files.
 - Be careful around credentials and authentication-related config:
-  - `modules/shared/packages.nix` exports `CUSTOM_1P_SIGNING_PROGRAM`
   - `modules/nixos/default.nix` contains a committed `hashedPassword`; never replace this with plaintext secrets
 - Preserve the existing division between system config, user config, and host-specific overrides.
 

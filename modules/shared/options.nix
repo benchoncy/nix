@@ -20,7 +20,7 @@
       developer = {
         enable = lib.mkEnableOption "Enable developer profile";
 
-        python.enable = lib.mkEnableOption "Python and tooling";
+        python.enable = lib.mkEnableOption "uv and pre-commit tooling";
 
         bruno.enable = lib.mkEnableOption "Bruno API client";
 
@@ -49,7 +49,7 @@
         };
       };
 
-      _3dPrinting.enable = lib.mkEnableOption "Enable 3D printing profile (Cura, FreeCAD, OctoPrint)";
+      _3dPrinting.enable = lib.mkEnableOption "Enable 3D printing profile (Cura, Cura OctoPrint plugin, FreeCAD)";
     };
   };
 }

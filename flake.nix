@@ -59,7 +59,8 @@
       "nixos-bstuart" = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./hosts/nixos-personal/configuration.nix 
+          self.nixosModules.base
+          ./hosts/nixos-personal/configuration.nix
         ];
         specialArgs = {
           inherit inputs;
