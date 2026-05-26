@@ -51,13 +51,43 @@ in {
         }
 
         # Inject 1Password secrets into the shell when available.
-        if command -v op >/dev/null 2>&1; then
-          if shell_secrets="$(command op inject -i $HOME/.config/shell/secrets.zsh.tmpl 2>/dev/null)"; then
-            eval "$shell_secrets" || print -u2 -- "warning: failed to load shell secrets"
-          else
-            print -u2 -- "warning: failed to load shell secrets"
+        shell_secrets_cache_dir="$HOME/.local/state/shell"
+        shell_secrets_cache="$shell_secrets_cache_dir/op-secrets.zsh"
+        shell_secrets_template="$HOME/.config/shell/secrets.zsh.tmpl"
+
+        shell_generate_secrets_cache() {
+          mkdir -p -m 700 "$shell_secrets_cache_dir" 2>/dev/null || {
+            print -u2 -- "warning: failed to prepare shell secrets cache directory"
+            return 1
+          }
+
+          if [ ! -f "$shell_secrets_cache" ]; then
+            if ! command -v op >/dev/null 2>&1; then
+              print -u2 -- "warning: op is unavailable; shell secrets not loaded"
+              return 1
+            fi
+
+            if ! (umask 077 && command op inject -i "$shell_secrets_template" >| "$shell_secrets_cache" 2>/dev/null); then
+              rm -f "$shell_secrets_cache"
+              print -u2 -- "warning: failed to generate shell secrets cache"
+              return 1
+            fi
           fi
+        }
+
+        if [ ! -f "$shell_secrets_cache" ]; then
+          shell_generate_secrets_cache
         fi
+
+        if [ -f "$shell_secrets_cache" ]; then
+          . "$shell_secrets_cache" || print -u2 -- "warning: failed to load shell secrets cache"
+        fi
+
+        secrets-refresh() {
+          rm -f "$shell_secrets_cache"
+          shell_generate_secrets_cache || return 1
+          [ -f "$shell_secrets_cache" ] && . "$shell_secrets_cache"
+        }
 
         # Bind Up arrow to fzf history search (override zsh-autocomplete)
         bindkey '\e[A' fzf-history-widget
