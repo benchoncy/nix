@@ -10,14 +10,14 @@ in
     vaults."Documents/Obsidian/main".enable = true;
 
     defaultSettings = {
-      app = {
-        defaultViewMode = "preview";
-        livePreview = false;
-        readableLineLength = true;
-        newFileLocation = "folder";
-        newFileFolderPath = "inbox";
-        attachmentFolderPath = "./attachments";
-      };
+        app = {
+          defaultViewMode = "preview";
+          livePreview = false;
+          readableLineLength = true;
+          newFileLocation = "folder";
+          newFileFolderPath = "inbox";
+          attachmentFolderPath = "./attachments";
+        };
 
       corePlugins = [
         { name = "daily-notes"; settings = { folder = "journal"; template = "_config/templates/Journal entry"; format = "YYYY/MM-MMM/YYYY-MM-DD"; autorun = false; }; }
@@ -61,7 +61,7 @@ in
               {
                 name = "Import Source";
                 outputPathTemplate = "inbox/{{citekey}}.md";
-                imageOutputPathTemplate = "assets/{{citekey}}/";
+                imageOutputPathTemplate = "zettelkasten/attachments/{{citekey}}/";
                 imageBaseNameTemplate = "image";
                 templatePath = "_config/zoteroplugin/templates/source.md";
                 cslStyle = "apa";
