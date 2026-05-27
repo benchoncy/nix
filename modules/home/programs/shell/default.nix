@@ -20,11 +20,23 @@ in {
   config = {
     home.packages = with pkgs; [ nerd-fonts.hack ];
 
+    home.activation.invalidateZshCompletionDump = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run rm -f $VERBOSE_ARG "$HOME/.zcompdump" "$HOME/.zcompdump.zwc"
+    '';
+
     xdg.configFile."shell/secrets.zsh.tmpl".text = secretsTemplateText;
 
     programs.zsh = {
       enable = true;
       enableCompletion = true;
+      completionInit = ''
+        autoload -U compinit
+        if [[ ! -f "$HOME/.zcompdump" ]]; then
+          compinit -d "$HOME/.zcompdump"
+        else
+          compinit -C -d "$HOME/.zcompdump"
+        fi
+      '';
       autosuggestion.enable = true;
       plugins = [
         {
