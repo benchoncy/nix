@@ -138,14 +138,20 @@ in {
       command = [ "uvx" "mcp-obsidian" ];
       environment = {
         OBSIDIAN_API_KEY = "{env:OBSIDIAN_API_KEY}";
-        OBSIDIAN_HOST = "{env:OBSIDIAN_PORT}";
+        OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
+        OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
       };
-      enabled = false;
+      enabled = true;
     };
 
     shell.secretRefs = {
       # Used by Obsidian MCP
       OBSIDIAN_API_KEY = lib.mkDefault "op://Private/Obsidian.md/api key";
+    };
+
+    home.sessionVariables = {
+      OBSIDIAN_HOST = lib.mkDefault "127.0.0.1";
+      OBSIDIAN_PORT = lib.mkDefault "27124";
     };
 
     opencode.mcp.playwright = lib.mkDefault {
@@ -168,6 +174,16 @@ in {
       "$schema" = "https://opencode.ai/tui.json";
       theme = "catppuccin-macchiato";
     };
+
+    home.file."Documents/Obsidian/main/zettelkasten/AGENTS.md".text = ''
+      # Zettelkasten workflow
+
+      - Vault path: `~/Documents/Obsidian/main`; treat this vault as the source of truth for zettelkasten work.
+      - Work from existing structure: capture quick notes in `inbox/`, daily notes in `journal/`, templates in `_config/templates/`, and keep files linked instead of duplicating content.
+      - Store images and other binary assets in the configured attachments location and reference them from notes.
+      - Prefer append or targeted patch updates over full-note rewrites so existing links, headings, and context stay intact.
+      - Delete or remove notes only when the user explicitly asks for it.
+    '';
 
     home.file.".config/opencode/agents".source = ./config/agents;
     home.file.".config/opencode/commands".source = ./config/commands;
