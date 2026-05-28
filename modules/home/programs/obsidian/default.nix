@@ -75,4 +75,11 @@ in
       ];
     };
   };
+
+  home.file.".local/scripts/mknote" = {
+    source = ./scripts/mknote.sh;
+    executable = true;
+  };
+
+  programs.zsh.shellAliases.mn = "mknote";
 }
