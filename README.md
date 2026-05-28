@@ -67,7 +67,8 @@ The repo supports raw dotfile copying through program/module directories.
 The Home Manager configuration uses a modular profile system with options that are enabled from NixOS or Darwin host configurations.
 
 - `homeProfiles.*` is system-level input for embedded Home Manager via `osConfig`
-- standalone Home Manager modules should set Home Manager option namespaces directly (for example `opencode.*` or `github.ghDash.*`)
+- standalone Home Manager modules should set Home Manager option namespaces directly (for example `opencode.*`)
+- `homeProfiles.developer.github.enable` imports the GitHub program module, which installs gh/gh-dash and exposes `github.ghDash.*` customization options
 
 **Note:** There are two patterns for feature toggles - user-level features use `homeProfiles.*` options, while system-level features (like desktop environments) use osConfig mirroring. See AGENTS.md for full documentation.
 

@@ -9,7 +9,6 @@
     ./tmux
     ./git
     ./opencode
-    ./github
     ./aws
     ./podman.nix
     ./k8s

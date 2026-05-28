@@ -40,12 +40,6 @@ let
   } ghDashCfg.settings;
 in {
   options.github.ghDash = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Whether to manage the gh-dash configuration file.";
-    };
-
     host = lib.mkOption {
       type = lib.types.str;
       default = "github.com";
@@ -67,7 +61,7 @@ in {
     };
   };
 
-  config = lib.mkIf ghDashCfg.enable {
+  config = {
     programs.gh = {
       enable = true;
       extensions = with pkgs; [ gh-dash ];
