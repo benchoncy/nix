@@ -182,8 +182,8 @@ in {
       experimental.allowSubAgents = true;
       compress = {
         permission = "allow";
-        nudgeForce = "strong";
-        nudgeFrequency = 3;
+        nudgeForce = "medium";
+        nudgeFrequency = 5;
         minContextLimit = 30000;
         maxContextLimit = 75000;
       };

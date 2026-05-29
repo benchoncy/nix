@@ -3,7 +3,6 @@ description: Validates scoped changes with focused checks and TDD where appropri
 mode: subagent
 hidden: true
 temperature: 0.1
-steps: 5
 permission:
   edit: deny
   task:
