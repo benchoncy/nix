@@ -17,7 +17,6 @@
     gum
     bash
     google-chrome
-    zotero
   ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
     # For Linux only
     obsidian

@@ -1,6 +1,7 @@
 { ... }: {
   imports = [
     ./packages.nix
+    ./zotero.nix
     ./ghostty.nix
     ./shell
     ./neovim
