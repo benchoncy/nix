@@ -2,6 +2,7 @@
 description: Balanced reviewer for correctness, regressions, and merge readiness
 mode: subagent
 hidden: true
+steps: 4
 permission:
   edit: deny
   bash:

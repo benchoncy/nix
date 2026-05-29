@@ -3,6 +3,7 @@ description: Read-only reconnaissance specialist for files, patterns, and repo c
 mode: subagent
 hidden: true
 temperature: 0.1
+steps: 4
 permission:
   edit: deny
   bash:

@@ -3,6 +3,7 @@ description: Final bounded reviewer for correctness, regressions, and missing va
 mode: subagent
 hidden: true
 temperature: 0.1
+steps: 4
 permission:
   edit: deny
   bash:

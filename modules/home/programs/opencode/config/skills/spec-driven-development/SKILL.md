@@ -4,7 +4,7 @@ description: Define a change through a concise spec before implementation and ke
 ---
 ## What I do
 - Turn an intended change into a small, structured spec before implementation begins.
-- Keep requirements, constraints, design intent, validation, and task slices explicit.
+- Keep requirements, constraints, design intent, validation, and implementation tasks explicit.
 - Use the spec as the source of truth for the active change while work is in progress.
 
 ## When to use me
@@ -34,7 +34,7 @@ Section guidance:
 - Requirements and constraints: functional expectations, invariants, compatibility needs, platform limits, safety constraints.
 - Design intent: why this approach is being taken and what boundaries or tradeoffs matter.
 - Validation: how we will know the change is correct.
-- Task breakdown: small implementation slices in a sensible order.
+- Task breakdown: small implementation tasks in a sensible order.
 
 ## Workflow
 1. Start from the requested change and current repo context.
@@ -56,18 +56,19 @@ Section guidance:
 - Do not duplicate large amounts of code or markdown into the spec.
 - Do not let the spec become stale; update it when reality changes.
 - Do not treat the spec as permanent truth beyond the active change unless the user explicitly wants a long-lived spec.
-- Prefer small, reviewable task slices over large speculative task lists.
+- Prefer small, reviewable implementation tasks over large speculative task lists.
 
 ## Exit criteria
-- The change goal, scope, constraints, validation, and task slices are explicit.
+- The change goal, scope, constraints, validation, and implementation tasks are explicit.
 - The spec is precise enough to guide implementation without repeated ambiguity.
 - The spec reflects any material design or scope changes discovered during execution.
 - Validation is defined in a way that fits the kind of change being made.
 
 ## Output format
 1. Change spec
-2. Current task slice
-3. Validation plan
-4. Open questions or assumptions
+2. Tasks
+3. Current task
+4. Validation plan
+5. Open questions or assumptions
 
 Keep the output concise, concrete, and executable.

@@ -8,9 +8,9 @@ description: Build an implementation-ready plan by iterating with the consensus-
 - Keep only unresolved high-impact concerns in scope each round.
 
 ## When to use me
-- The user needs a robust plan for non-trivial implementation work.
-- There are architecture or sequencing decisions with meaningful risk.
-- You want convergence through critique, not a one-shot plan.
+- Use me when a plan benefits from challenge: ambiguous direction, meaningful tradeoffs, risky sequencing, architecture decisions, or multiple plausible approaches.
+- Use me when the user asks for planning, strategy, tradeoffs, or whether an approach is sensible and a quick self-check is not enough.
+- Do not use me for tiny edits, obvious implementation steps, routine config changes, or already-approved specs.
 
 ## Workflow
 1. Draft an initial plan from current conversation context.
@@ -19,11 +19,13 @@ description: Build an implementation-ready plan by iterating with the consensus-
 4. Repeat steps 2-3 until convergence or round cap.
 
 Round cap:
-- Maximum 6 challenge rounds.
+- Default maximum: 2 challenge rounds.
+- Stop after 1 round when no high-impact concerns remain.
+- Use up to 6 rounds only when the user explicitly asks for deep consensus or unresolved high-impact concerns remain.
 
 Convergence criteria (stop when any condition is true):
 - The `consensus-planning` agent explicitly indicates convergence.
-- No new high-priority concerns appear for 2 consecutive rounds.
+- No high-impact concerns remain after a challenge round.
 - The process reaches 6 rounds.
 
 ## Per-round rules
@@ -35,12 +37,12 @@ Convergence criteria (stop when any condition is true):
 - If unknowns remain, choose best-effort defaults and list targeted follow-up questions.
 
 ## Output format
-1. Goal
-2. Decisions taken
-3. Ordered action plan
-4. Risks and mitigations
-5. Verification checklist
-6. Consensus summary (rounds used, stop reason, confidence 1-5)
-7. Open questions (if any)
+1. Recommendation
+2. Tasks
+3. Risks
+4. Validation
+5. Open questions
 
-Output should be concise - aim for terse, executable prose over forced structure. More sections only when they actually add clarity.
+Output should be concise: aim for terse, executable prose over report-shaped structure. Keep the default output under 250 words unless the user asks for detail.
+
+Only include round count, stop reason, or confidence if the user explicitly asks for a formal consensus report or if unresolved high-impact risk remains.

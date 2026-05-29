@@ -3,6 +3,7 @@ description: Aggressively challenges implementation assumptions in review artifa
 mode: subagent
 hidden: true
 temperature: 0.1
+steps: 4
 permission:
   edit: deny
   bash:

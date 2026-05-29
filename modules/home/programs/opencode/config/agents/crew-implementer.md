@@ -3,6 +3,7 @@ description: Executes scoped changes against an approved spec
 mode: subagent
 hidden: true
 temperature: 0.1
+steps: 10
 permission:
   task:
     "*": deny

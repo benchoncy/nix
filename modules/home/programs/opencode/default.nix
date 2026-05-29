@@ -66,6 +66,9 @@ in {
     opencode.settings = {
       "$schema" = lib.mkDefault "https://opencode.ai/config.json";
       autoupdate = lib.mkDefault false;
+      plugin = lib.mkDefault [
+        "@tarquinen/opencode-dcp"
+      ];
       share = lib.mkDefault "disabled";
       lsp = lib.mkDefault {
         pyright.disabled = true;
@@ -170,6 +173,28 @@ in {
     };
 
     home.file.".config/opencode/opencode.jsonc".text = builtins.toJSON finalConfig;
+    home.file.".config/opencode/dcp.jsonc".text = builtins.toJSON {
+      "$schema" = "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json";
+      enabled = true;
+      debug = false;
+      pruneNotification = "minimal";
+      pruneNotificationType = "toast";
+      experimental.allowSubAgents = true;
+      compress = {
+        permission = "allow";
+        nudgeForce = "strong";
+        nudgeFrequency = 3;
+        minContextLimit = 30000;
+        maxContextLimit = 75000;
+      };
+      strategies = {
+        deduplication.enabled = true;
+        purgeErrors = {
+          enabled = true;
+          turns = 4;
+        };
+      };
+    };
     home.file.".config/opencode/tui.jsonc".text = builtins.toJSON {
       "$schema" = "https://opencode.ai/tui.json";
       theme = "catppuccin-macchiato";

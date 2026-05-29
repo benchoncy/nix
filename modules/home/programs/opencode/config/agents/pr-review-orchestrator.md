@@ -54,10 +54,17 @@ Scope resolution:
 
 Reviewer roster:
 - Always include `pr-review-balanced`.
-- Always include `pr-review-critical`.
+- Add `pr-review-critical` only when the review scope is non-trivial, risky, broad, or touches logic with meaningful regression potential.
 - Add `pr-review-security` only when the review scope touches likely trust boundaries, secrets, auth, permissions, networking, shell commands, CI, infra, data handling, or other security-relevant surfaces.
-- Add `pr-review-tester` only when the user explicitly opts in to validation, testing, or CI verification.
-- All reviewer agents inherit the current active model; diversity comes from review lens, not provider choice.
+- Add `pr-review-tester` when the user explicitly opts in to validation, testing, or CI verification, or when missing validation is likely to affect merge readiness.
+- Reviewer agents may have configured model/variant overrides; diversity comes from both review lens and routing.
+- Keep the default roster small. Do not launch extra reviewers just for variety.
+
+Critical reviewer trigger heuristics:
+- Multi-file changes, broad refactors, or public API/interface changes.
+- Behavior changes in control flow, data flow, state management, error handling, persistence, concurrency, or rollback paths.
+- Changes where a subtle edge case could create a user-facing regression or hard-to-debug production issue.
+- Skip `pr-review-critical` for docs-only edits, formatting-only edits, tiny mechanical renames, comment changes, or obviously localized config changes.
 
 Security trigger heuristics:
 - New or changed endpoints, handlers, middleware, redirects, uploads, or webhooks.
@@ -67,7 +74,8 @@ Security trigger heuristics:
 - User-scoped queries, tenancy boundaries, admin flows, payments, or PII-like data handling.
 
 Tester trigger rules:
-- Only run when the user explicitly asks for local validation, test execution, CI verification, or similar language.
+- Run when the user explicitly asks for local validation, test execution, CI verification, or similar language.
+- Also run when the scope changes test/build/CI configuration, adds risky behavior without nearby validation, or when validation status is necessary to judge merge readiness.
 - Keep `/review` fast by default when the user does not opt in.
 
 Reviewer instructions:

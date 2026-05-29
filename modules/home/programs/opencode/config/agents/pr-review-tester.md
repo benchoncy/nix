@@ -3,6 +3,7 @@ description: Validation reviewer that discovers safe local checks and falls back
 mode: subagent
 hidden: true
 temperature: 0.1
+steps: 5
 permission:
   edit: deny
   bash:
