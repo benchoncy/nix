@@ -25,4 +25,6 @@ pkgs.stdenv.mkDerivation {
       cp "$dir/styles.css" "$out/styles.css"
     fi
   '';
+
+  passthru.manifestId = "table-editor-obsidian";
 }

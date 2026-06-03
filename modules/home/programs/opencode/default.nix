@@ -8,6 +8,35 @@ let
       mcp = cfg.mcp;
     })
     cfg.extraConfig;
+
+  opencodeSessionizer = pkgs.writeShellScriptBin "opencode-sessionizer" ''
+    if ! selected="$(${lib.getExe pkgs.opencode} session list --format json \
+      | ${lib.getExe pkgs.jq} -r '.[] | [
+          (.updated / 1000 | localtime | strftime("%Y-%m-%d %H:%M")),
+          (.title // "Untitled"),
+          (.directory // ""),
+          .id
+        ] | @tsv' \
+      | ${lib.getExe pkgs.fzf} \
+          --delimiter=$'\t' \
+          --with-nth=1,2,3 \
+          --prompt='opencode sessions> ' \
+          --header='Last used | Title | Directory')"; then
+      exit 0
+    fi
+
+    if [ -z "$selected" ]; then
+      exit 0
+    fi
+
+    session_id="$(printf '%s\n' "$selected" | ${pkgs.coreutils}/bin/cut -f4)"
+
+    if [ -z "$session_id" ]; then
+      exit 1
+    fi
+
+    exec ${lib.getExe pkgs.opencode} --session "$session_id"
+  '';
 in {
   options.opencode = {
     enable = lib.mkOption {
@@ -50,6 +79,7 @@ in {
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       opencode
+      opencodeSessionizer
       gopls
       rust-analyzer
       clang-tools
@@ -205,5 +235,6 @@ in {
     home.file.".config/opencode/skills".source = ./config/skills;
 
     programs.zsh.shellAliases.oc = "opencode";
+    programs.zsh.shellAliases.os = "opencode-sessionizer";
   };
 }

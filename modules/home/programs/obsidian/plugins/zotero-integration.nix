@@ -29,4 +29,6 @@ pkgs.stdenv.mkDerivation {
       name = "styles.css";
     }} $out/styles.css
   '';
+
+  passthru.manifestId = "obsidian-zotero-desktop-connector";
 }

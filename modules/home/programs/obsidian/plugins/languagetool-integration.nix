@@ -26,4 +26,6 @@ pkgs.stdenv.mkDerivation {
       sha256 = "sha256-8RnXm7GrNJ/jyJL7At89RexPIj7VNHlEvjMn5LYkmFo=";
     }} $out/styles.css
   '';
+
+  passthru.manifestId = "obsidian-languagetool-plugin";
 }
