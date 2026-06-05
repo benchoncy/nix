@@ -37,13 +37,21 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z $session_name ]]; then
-    mode=$(printf "new\nsearch\n" | fzf --prompt="Session Mode > ")
+    if ! command -v gum > /dev/null; then
+        echo "gum is required for interactive session selection." >&2
+        exit 1
+    fi
+
+    mode=$(gum choose \
+        --header "Session" \
+        "search existing session" \
+        "enter new session")
 
     case "$mode" in
-        new)
-            read -r -p "New session name: " session_name
+        "enter new session")
+            session_name=$(gum input --prompt "Session name > ")
             ;;
-        search)
+        "search existing session")
             session_options=""
 
             tmux_sessions=$(tmux list-sessions -F "#S|tmux session - #{session_windows} windows, created: #{t:session_created}#{?session_attached, (attached),}" 2> /dev/null)
