@@ -174,7 +174,7 @@ in {
         OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
         OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
       };
-      enabled = true;
+      enabled = false;
     };
 
     shell.secretRefs = {
@@ -199,7 +199,7 @@ in {
       environment = {
         ZOTERO_LOCAL = "true";
       };
-      enabled = true;
+      enabled = false;
     };
 
     home.file.".config/opencode/opencode.jsonc".text = builtins.toJSON finalConfig;
