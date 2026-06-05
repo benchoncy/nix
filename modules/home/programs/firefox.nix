@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   firefoxCfg = config.programs.firefox;
+  nixosChannel = lib.trivial.release;
 
   defaultToolbarExtensionEntries = [
     {
@@ -131,6 +132,7 @@ in {
   config = {
     programs.firefox = {
       enable = true;
+      configPath = ".mozilla/firefox";
       package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
       languagePacks = lib.mkIf (!pkgs.stdenv.isDarwin) [ "en-GB" ];
       profiles.default = {
@@ -170,7 +172,7 @@ in {
             nixos = {
               name = "NixOS Packages";
               urls = [{
-                template = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}";
+                template = "https://search.nixos.org/packages?channel=${nixosChannel}&query={searchTerms}";
               }];
               definedAliases = [ "@nix" ];
             };

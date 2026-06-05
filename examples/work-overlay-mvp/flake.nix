@@ -2,7 +2,7 @@
   description = "Generic work wrapper flake example";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     shared = {
       url = "github:benchoncy/nix";
       inputs.nixpkgs.follows = "nixpkgs";
