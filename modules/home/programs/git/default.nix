@@ -12,26 +12,12 @@ in {
     enableGitIntegration = true;
     options = {
       navigate = true;
-      side-by-side = true;
+      side-by-side = false;
       line-numbers = true;
-      line-numbers-left-style = "#8AADF4";
-      line-numbers-right-style = "#8AADF4";
-      line-numbers-minus-style = "#EE99A0";
-      line-numbers-plus-style = "#A6DA95";
-      line-numbers-zero-style = "#6E738D";
-      syntax-theme = "Catppuccin Macchiato";
-      plus-style = "syntax #1E2030";
-      plus-emph-style = "syntax bold #294436";
-      minus-style = "syntax #1E2030";
-      minus-emph-style = "syntax bold #4B2C3A";
-      hunk-header-style = "syntax #8AADF4";
-      hunk-header-decoration-style = "#494D64 ul";
-      file-style = "bold #CAD3F5";
-      file-decoration-style = "#8AADF4";
-      commit-style = "bold #C6A0F6";
-      commit-decoration-style = "#C6A0F6";
     };
   };
+
+  catppuccin.delta.enable = true;
 
   programs.git = {
     enable = true;
