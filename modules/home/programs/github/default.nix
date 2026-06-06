@@ -1,9 +1,8 @@
 { config, lib, pkgs, ... }:
 let
-  yamlFormat = pkgs.formats.yaml { };
   ghDashCfg = config.github.ghDash;
 
-  ghDashConfig = lib.recursiveUpdate {
+  ghDashSettings = lib.recursiveUpdate {
     pager.diff = "diffnav";
     keybindings.prs = [
       {
@@ -15,27 +14,9 @@ let
     repoPaths = {
       ":owner/:repo" = "~/Projects/${ghDashCfg.host}/:owner/:repo.tree/${ghDashCfg.worktree}";
     };
-    theme = {
-      ui = {
-        sectionsShowCount = true;
-        table.compact = false;
-      };
-      colors = {
-        text = {
-          primary = "#CAD3F5";
-          secondary = "#8ADF4";
-          inverted = "#181926";
-          faint = "#A5ADCB";
-          warning = "#EED49F";
-          success = "#A6DA95";
-        };
-        background.selected = "#363A4F";
-        border = {
-          primary = "#8AADF4";
-          secondary = "#C6A0F6";
-          faint = "#494D64";
-        };
-      };
+    theme.ui = {
+      sectionsShowCount = true;
+      table.compact = false;
     };
   } ghDashCfg.settings;
 in {
@@ -53,9 +34,7 @@ in {
     };
 
     settings = lib.mkOption {
-      type = lib.types.submodule {
-        freeformType = yamlFormat.type;
-      };
+      type = lib.types.attrs;
       default = { };
       description = "Additional gh-dash configuration merged over the shared defaults.";
     };
@@ -64,17 +43,18 @@ in {
   config = {
     programs.gh = {
       enable = true;
-      extensions = with pkgs; [ gh-dash ];
     };
+
+    programs.gh-dash = {
+      enable = true;
+      settings = ghDashSettings;
+    };
+
+    catppuccin."gh-dash".enable = true;
 
     home.file.".local/scripts/gh-dash-pr-review" = {
       source = ./scripts/gh-dash-pr-review.sh;
       executable = true;
     };
-
-    xdg.configFile."gh-dash/config.yml".text = ''
-      # yaml-language-server: $schema=https://gh-dash.dev/schema.json
-      ${lib.generators.toYAML { } ghDashConfig}
-    '';
   };
 }

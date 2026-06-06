@@ -95,7 +95,6 @@ Enables 3D printing tools (Cura, Cura OctoPrint plugin, FreeCAD)
 AI tooling and policy. Options:
 
 - `homeProfiles.ai.enable` - master switch for AI tooling
-- `homeProfiles.ai.opencode.enable` - opencode installation + config
 - `homeProfiles.ai.nvim.enable` - AI Neovim integrations
 - `homeProfiles.ai.providers.githubCopilot.enable` - GitHub Copilot access
 - `homeProfiles.ai.providers.supermaven.enable` - Supermaven access
@@ -106,7 +105,7 @@ Example host configuration:
 homeProfiles = {
   ai = {
     enable = true;
-    opencode.enable = true;
+    developer.opencode.enable = true;
     nvim.enable = true;
     providers = {
       githubCopilot.enable = true;

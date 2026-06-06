@@ -2,7 +2,6 @@
   homeProfiles = {
     ai = {
       enable = true;
-      opencode.enable = true;
       nvim.enable = false;
       providers = {
         githubCopilot.enable = false;

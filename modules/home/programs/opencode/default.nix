@@ -1,14 +1,5 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
 let
-  jsonFormat = pkgs.formats.json { };
-  cfg = config.opencode;
-
-  finalConfig = lib.recursiveUpdate
-    (lib.recursiveUpdate cfg.settings {
-      mcp = cfg.mcp;
-    })
-    cfg.extraConfig;
-
   opencodeSessionizer = pkgs.writeShellScriptBin "opencode-sessionizer" ''
     if ! selected="$(${lib.getExe pkgs.opencode} session list --format json \
       | ${lib.getExe pkgs.jq} -r '.[] | [
@@ -38,45 +29,7 @@ let
     exec ${lib.getExe pkgs.opencode} --session "$session_id"
   '';
 in {
-  options.opencode = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Whether to manage OpenCode configuration files.";
-    };
-
-    settings = lib.mkOption {
-      type = lib.types.submodule {
-        freeformType = jsonFormat.type;
-      };
-      default = { };
-      description = "Base OpenCode configuration, excluding MCP server definitions.";
-    };
-
-    mcp = lib.mkOption {
-      type = lib.types.attrsOf (lib.types.submodule {
-        freeformType = jsonFormat.type;
-
-        options.enabled = lib.mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "Whether this MCP server should be enabled in the generated config.";
-        };
-      });
-      default = { };
-      description = "Layered MCP server definitions keyed by server name.";
-    };
-
-    extraConfig = lib.mkOption {
-      type = lib.types.submodule {
-        freeformType = jsonFormat.type;
-      };
-      default = { };
-      description = "Final OpenCode config overrides merged after settings and MCP definitions.";
-    };
-  };
-
-  config = lib.mkIf cfg.enable {
+  config = {
     home.packages = with pkgs; [
       opencode
       opencodeSessionizer
@@ -93,116 +46,116 @@ in {
       ty
     ];
 
-    opencode.settings = {
-      "$schema" = lib.mkDefault "https://opencode.ai/config.json";
-      autoupdate = lib.mkDefault false;
-      plugin = lib.mkDefault [
-        "@tarquinen/opencode-dcp"
-      ];
-      share = lib.mkDefault "disabled";
-      lsp = lib.mkDefault {
-        pyright.disabled = true;
-        terraform.disabled = true;
+    programs.opencode = {
+      enable = true;
+      settings = {
+        "$schema" = "https://opencode.ai/config.json";
+        autoupdate = false;
+        plugin = [
+          "@tarquinen/opencode-dcp"
+        ];
+        share = "disabled";
+        lsp = {
+          pyright.disabled = true;
+          terraform.disabled = true;
 
-        ruff = {
-          command = [ "ruff" "server" ];
-          extensions = [ ".py" ".pyi" ];
+          ruff = {
+            command = [ "ruff" "server" ];
+            extensions = [ ".py" ".pyi" ];
+          };
+
+          ty = {
+            command = [ "ty" "server" ];
+            extensions = [ ".py" ".pyi" ];
+          };
+
+          tofu-ls = {
+            command = [ "tofu-ls" "serve" ];
+            extensions = [ ".tf" ".tfvars" ];
+          };
+
+          marksman = {
+            command = [ "marksman" "server" ];
+            extensions = [ ".md" ".markdown" ];
+          };
+
+          taplo = {
+            command = [ "taplo" "lsp" "stdio" ];
+            extensions = [ ".toml" ];
+          };
+
+          json-lsp = {
+            command = [ "vscode-json-language-server" "--stdio" ];
+            extensions = [ ".json" ".jsonc" ];
+          };
         };
-
-        ty = {
-          command = [ "ty" "server" ];
-          extensions = [ ".py" ".pyi" ];
+        watcher.ignore = [
+          "**/.git/**"
+          "**/.ansible/**"
+          "**/node_modules/**"
+          "**/.cache/**"
+          "**/dist/**"
+        ];
+        permission.bash = {
+          "rm" = "ask";
+          "rm *" = "ask";
+          "git reset --hard*" = "deny";
+          "git checkout --*" = "deny";
+          "git clean -fd*" = "deny";
+          "git clean -fdx*" = "deny";
+          "git push -f*" = "deny";
+          "git push --force*" = "deny";
+          "git push --force-with-lease*" = "deny";
         };
-
-        tofu-ls = {
-          command = [ "tofu-ls" "serve" ];
-          extensions = [ ".tf" ".tfvars" ];
-        };
-
-        marksman = {
-          command = [ "marksman" "server" ];
-          extensions = [ ".md" ".markdown" ];
-        };
-
-        taplo = {
-          command = [ "taplo" "lsp" "stdio" ];
-          extensions = [ ".toml" ];
-        };
-
-        json-lsp = {
-          command = [ "vscode-json-language-server" "--stdio" ];
-          extensions = [ ".json" ".jsonc" ];
+        mcp = {
+          context7 = {
+            type = "remote";
+            url = "https://mcp.context7.com/mcp";
+            enabled = true;
+          };
+          gh_grep = {
+            type = "remote";
+            url = "https://mcp.grep.app";
+            enabled = true;
+          };
+          obsidian = {
+            type = "local";
+            command = [ "uvx" "mcp-obsidian" ];
+            environment = {
+              OBSIDIAN_API_KEY = "{env:OBSIDIAN_API_KEY}";
+              OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
+              OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
+            };
+            enabled = false;
+          };
+          playwright = {
+            type = "local";
+            command = [ "npx" "@playwright/mcp@latest" ];
+            enabled = false;
+          };
+          zotero = {
+            type = "local";
+            command = [ "uvx" "zotero-mcp" ];
+            environment = {
+              ZOTERO_LOCAL = "true";
+            };
+            enabled = false;
+          };
         };
       };
-      watcher.ignore = lib.mkDefault [
-        "**/.git/**"
-        "**/.ansible/**"
-        "**/node_modules/**"
-        "**/.cache/**"
-        "**/dist/**"
-      ];
-      permission.bash = lib.mkDefault {
-        "rm" = "ask";
-        "rm *" = "ask";
-        "git reset --hard*" = "deny";
-        "git checkout --*" = "deny";
-        "git clean -fd*" = "deny";
-        "git clean -fdx*" = "deny";
-        "git push -f*" = "deny";
-        "git push --force*" = "deny";
-        "git push --force-with-lease*" = "deny";
-      };
+      agents = lib.mapAttrs' (filename: _:
+        lib.nameValuePair (lib.removeSuffix ".md" filename) (./config/agents + "/${filename}")
+      ) (lib.filterAttrs (n: v: v == "regular") (builtins.readDir ./config/agents));
+      commands = lib.mapAttrs' (filename: _:
+        lib.nameValuePair (lib.removeSuffix ".md" filename) (./config/commands + "/${filename}")
+      ) (lib.filterAttrs (n: v: v == "regular") (builtins.readDir ./config/commands));
+      skills = lib.mapAttrs' (dirname: _:
+        lib.nameValuePair dirname (./config/skills + "/${dirname}")
+      ) (lib.filterAttrs (n: v: v == "directory") (builtins.readDir ./config/skills));
     };
 
-    opencode.mcp.context7 = lib.mkDefault {
-      type = "remote";
-      url = "https://mcp.context7.com/mcp";
-      enabled = true;
-    };
+    catppuccin.opencode.enable = true;
 
-    opencode.mcp.gh_grep = lib.mkDefault {
-      type = "remote";
-      url = "https://mcp.grep.app";
-      enabled = true;
-    };
-
-    opencode.mcp.obsidian = lib.mkDefault {
-      type = "local";
-      command = [ "uvx" "mcp-obsidian" ];
-      environment = {
-        OBSIDIAN_API_KEY = "{env:OBSIDIAN_API_KEY}";
-        OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
-        OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
-      };
-      enabled = false;
-    };
-
-    shell.secretRefs = {
-      # Used by Obsidian MCP
-      OBSIDIAN_API_KEY = lib.mkDefault "op://Private/Obsidian.md/api key";
-    };
-
-    home.sessionVariables = {
-      OBSIDIAN_HOST = lib.mkDefault "127.0.0.1";
-      OBSIDIAN_PORT = lib.mkDefault "27124";
-    };
-
-    opencode.mcp.playwright = lib.mkDefault {
-      type = "local";
-      command = [ "npx" "@playwright/mcp@latest" ];
-      enabled = false;
-    };
-
-    opencode.mcp.zotero = lib.mkDefault {
-      type = "local";
-      command = [ "uvx" "zotero-mcp" ];
-      environment = {
-        ZOTERO_LOCAL = "true";
-      };
-      enabled = false;
-    };
-
-    home.file.".config/opencode/opencode.jsonc".text = builtins.toJSON finalConfig;
     home.file.".config/opencode/dcp.jsonc".text = builtins.toJSON {
       "$schema" = "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json";
       enabled = true;
@@ -225,16 +178,19 @@ in {
         };
       };
     };
-    home.file.".config/opencode/tui.jsonc".text = builtins.toJSON {
-      "$schema" = "https://opencode.ai/tui.json";
-      theme = "catppuccin-macchiato";
-    };
-    
-    home.file.".config/opencode/agents".source = ./config/agents;
-    home.file.".config/opencode/commands".source = ./config/commands;
-    home.file.".config/opencode/skills".source = ./config/skills;
 
-    programs.zsh.shellAliases.oc = "opencode";
-    programs.zsh.shellAliases.os = "opencode-sessionizer";
+    shell.secretRefs = {
+      OBSIDIAN_API_KEY = "op://Private/Obsidian.md/api key";
+    };
+
+    home.sessionVariables = {
+      OBSIDIAN_HOST = "127.0.0.1";
+      OBSIDIAN_PORT = "27124";
+    };
+
+    programs.zsh.shellAliases = {
+      oc = "opencode";
+      os = "opencode-sessionizer";
+    };
   };
 }

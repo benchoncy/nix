@@ -29,7 +29,7 @@ Customize these placeholders before using it:
 - the AWS profiles in `modules/home/aws/config/cli/alias`
 - any ticketing CLI commands in `modules/home/shell/tools/work-ticket.sh`
 
-The example `modules/home/default.nix` also shows how to layer work-only OpenCode MCP servers on top of the shared baseline with `opencode.mcp.<name>`.
+The example `modules/home/default.nix` also shows how to layer work-only OpenCode MCP servers on top of the shared baseline with `programs.opencode.settings.mcp.<name>`.
 It also demonstrates the recommended `github.ghDash.host` customization for mixed public/work GitHub usage; GitHub tooling is still enabled by `homeProfiles.developer.github.enable`.
 
 ## OpenCode Overrides
@@ -37,18 +37,18 @@ It also demonstrates the recommended `github.ghDash.host` customization for mixe
 Use two layers for OpenCode in the wrapper:
 
 - shared prompts, commands, and skills stay in the shared repo under `modules/home/programs/opencode/config/`
-- wrapper-local or machine-local JSON overrides go through `opencode.extraConfig`
+- wrapper-local or machine-local JSON overrides go through `programs.opencode.settings`
 
-Because `modules/home/default.nix` is a Home Manager module, it can set `opencode.*` directly:
+Because `modules/home/default.nix` is a Home Manager module, it can set `programs.opencode.*` directly:
 
 ```nix
-opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+programs.opencode.settings.agent."pr-review-orchestrator".model = "openai/gpt-5";
 ```
 
 If a single embedded host needs a different override, set the Home Manager option from the host under `home-manager.users.${username}`:
 
 ```nix
-home-manager.users.${username}.opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+home-manager.users.${username}.programs.opencode.settings.agent."pr-review-orchestrator".model = "openai/gpt-5";
 ```
 
 Keep prompts in markdown agent files. If a field needs to vary by machine, leave it out of the shared markdown agent definition and set it from JSON instead.

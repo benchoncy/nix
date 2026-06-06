@@ -7,14 +7,16 @@ let
 in {
   config = lib.mkMerge [
     {
-      opencode.enable = true;
+      programs.opencode = {
+        enable = true;
 
-      # Work-only OpenCode MCP servers
-      opencode.mcp.work-docs = {
-        type = "remote";
-        url = "https://mcp.<work-domain>/mcp";
-        oauth = { };
-        enabled = true;
+        # Work-only OpenCode MCP servers
+        settings.mcp.work-docs = {
+          type = "remote";
+          url = "https://mcp.<work-domain>/mcp";
+          oauth = { };
+          enabled = true;
+        };
       };
 
       # AWS config (work-specific)

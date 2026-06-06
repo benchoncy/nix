@@ -6,10 +6,11 @@
       continuum
       yank
       vim-tmux-navigator
-      catppuccin
     ];
     extraConfig = builtins.readFile ./config/tmux.conf;
   };
+
+  catppuccin.tmux.enable = true;
 
   home.file.".local/scripts/tmux-sessionizer" = {
     source = ./scripts/tmux-sessionizer.sh;

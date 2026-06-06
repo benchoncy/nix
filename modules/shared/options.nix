@@ -4,7 +4,6 @@
       ai = {
         enable = lib.mkEnableOption "Enable AI tooling and policy";
 
-        opencode.enable = lib.mkEnableOption "OpenCode installation and config";
 
         nvim.enable = lib.mkEnableOption "AI Neovim integrations";
 

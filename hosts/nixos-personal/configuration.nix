@@ -13,7 +13,6 @@
     # AI Policy
     ai = {
       enable = true;
-      opencode.enable = true;
       nvim.enable = true;
       providers = {
         githubCopilot.enable = true;
@@ -24,6 +23,7 @@
     # Dev setup
     developer = {
       enable = true;
+      opencode.enable = true;
       python.enable = true;
       containers.enable = true;
       tofu.enable = true;
