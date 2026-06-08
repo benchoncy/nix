@@ -125,27 +125,26 @@ homeProfiles = {
 OpenCode is managed in two layers:
 
 - raw agents, commands, skills, and plugins live in `modules/home/programs/opencode/config/`
-- `~/.config/opencode/opencode.jsonc` is generated from the Home Manager `opencode.*` options
+- `~/.config/opencode/opencode.jsonc` is generated from the Home Manager `programs.opencode.settings` options
 - the shared baseline installs `rtk` for OpenCode users and links `~/.config/opencode/plugins/rtk.ts` from `pkgs.rtk.src + "/hooks/opencode/rtk.ts"`
 
 Recommended convention:
 
 - keep shared prompts and shared agent behavior in markdown files under `agents/`
-- use `opencode.extraConfig` for machine-specific JSON overrides
-- wrappers or private modules can override the RTK hook source with `opencode.rtk.pluginSource`
-- for per-machine agent model selection, set `opencode.extraConfig.agent."<agent-name>".model`
+- use `programs.opencode.settings` for machine-specific JSON overrides
+- for per-machine agent model selection, set `programs.opencode.settings.agent."<agent-name>".model`
 - if an agent field needs to vary by machine, leave it out of the shared markdown agent file and set it from JSON instead
 
-Standalone Home Manager modules can set `opencode.*` directly:
+Standalone Home Manager modules can set `programs.opencode.*` directly:
 
 ```nix
-opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+programs.opencode.settings.agent."pr-review-orchestrator".model = "openai/gpt-5";
 ```
 
-Embedded Home Manager hosts need the `home-manager.users.<name>.` prefix because `opencode.*` is a Home Manager option namespace, not a NixOS or nix-darwin system option namespace:
+Embedded Home Manager hosts need the `home-manager.users.<name>.` prefix because `programs.opencode.*` is a Home Manager option namespace, not a NixOS or nix-darwin system option namespace:
 
 ```nix
-home-manager.users.${username}.opencode.extraConfig.agent."pr-review-orchestrator".model = "openai/gpt-5";
+home-manager.users.${username}.programs.opencode.settings.agent."pr-review-orchestrator".model = "openai/gpt-5";
 ```
 
 If you want to avoid that prefix in an embedded host, put the override in a user Home Manager module imported via `home-manager.users.<name>.imports`.
