@@ -57,7 +57,7 @@ The repo supports raw dotfile copying through program/module directories.
   - `programs/scripts/` - user scripts (tmux-sessionizer, git-afforester, etc.)
   - `programs/git/config/diffnav/` - diffnav configuration
   - `programs/tmux/config/` - tmux configuration
-  - `modules/home/programs/opencode/config/` - opencode agents, commands, skills
+  - `modules/home/programs/opencode/config/` - opencode agents, commands, skills, plugins
   - `modules/home/programs/github/scripts/` - github helper scripts
 - prefer whole app directories under `.config/<app>` instead of one giant `.config` mapping
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, `.config/ghostty/config`, and `.config/opencode/opencode.jsonc` in Home Manager modules rather than raw copies
@@ -124,13 +124,15 @@ homeProfiles = {
 
 OpenCode is managed in two layers:
 
-- raw agents, commands, and skills live in `modules/home/programs/opencode/config/`
+- raw agents, commands, skills, and plugins live in `modules/home/programs/opencode/config/`
 - `~/.config/opencode/opencode.jsonc` is generated from the Home Manager `opencode.*` options
+- the shared baseline installs `rtk` for OpenCode users and links `~/.config/opencode/plugins/rtk.ts` from `pkgs.rtk.src + "/hooks/opencode/rtk.ts"`
 
 Recommended convention:
 
 - keep shared prompts and shared agent behavior in markdown files under `agents/`
 - use `opencode.extraConfig` for machine-specific JSON overrides
+- wrappers or private modules can override the RTK hook source with `opencode.rtk.pluginSource`
 - for per-machine agent model selection, set `opencode.extraConfig.agent."<agent-name>".model`
 - if an agent field needs to vary by machine, leave it out of the shared markdown agent file and set it from JSON instead
 

@@ -36,7 +36,7 @@ It also demonstrates the recommended `github.ghDash.host` customization for mixe
 
 Use two layers for OpenCode in the wrapper:
 
-- shared prompts, commands, and skills stay in the shared repo under `modules/home/programs/opencode/config/`
+- shared prompts, commands, skills, and plugins stay in the shared repo under `modules/home/programs/opencode/config/`
 - wrapper-local or machine-local JSON overrides go through `programs.opencode.settings`
 
 Because `modules/home/default.nix` is a Home Manager module, it can set `programs.opencode.*` directly:

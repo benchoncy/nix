@@ -33,6 +33,7 @@ in {
     home.packages = with pkgs; [
       opencode
       opencodeSessionizer
+      rtk
       gopls
       rust-analyzer
       clang-tools
@@ -178,6 +179,15 @@ in {
         };
       };
     };
+    home.file.".config/opencode/tui.jsonc".text = builtins.toJSON {
+      "$schema" = "https://opencode.ai/tui.json";
+      theme = "catppuccin-macchiato";
+    };
+
+    home.file.".config/opencode/agents".source = ./config/agents;
+    home.file.".config/opencode/commands".source = ./config/commands;
+    home.file.".config/opencode/skills".source = ./config/skills;
+    home.file.".config/opencode/plugins/rtk.ts".source = pkgs.rtk.src + "/hooks/opencode/rtk.ts";
 
     shell.secretRefs = {
       OBSIDIAN_API_KEY = "op://Private/Obsidian.md/api key";
