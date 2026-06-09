@@ -7,5 +7,5 @@
   # - .aws/config
   # - .config/ghostty/config
   # - .config/gh-dash/config.yml
-  # - .config/opencode/opencode.jsonc
+  # - .config/opencode/opencode.json
 }

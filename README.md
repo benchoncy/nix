@@ -60,7 +60,7 @@ The repo supports raw dotfile copying through program/module directories.
   - `modules/home/programs/opencode/config/` - opencode agents, commands, skills, plugins
   - `modules/home/programs/github/scripts/` - github helper scripts
 - prefer whole app directories under `.config/<app>` instead of one giant `.config` mapping
-- keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, `.config/ghostty/config`, and `.config/opencode/opencode.jsonc` in Home Manager modules rather than raw copies
+- keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, `.config/ghostty/config`, and `.config/opencode/opencode.json` in Home Manager modules rather than raw copies
 
 ## Home Manager Profiles
 
@@ -125,7 +125,8 @@ homeProfiles = {
 OpenCode is managed in two layers:
 
 - raw agents, commands, skills, and plugins live in `modules/home/programs/opencode/config/`
-- `~/.config/opencode/opencode.jsonc` is generated from the Home Manager `programs.opencode.settings` options
+- `~/.config/opencode/opencode.json` is generated from the Home Manager `programs.opencode.settings` options
+- `~/.config/opencode/tui.json` is generated from the Home Manager `programs.opencode.tui` options
 - the shared baseline installs `rtk` for OpenCode users and links `~/.config/opencode/plugins/rtk.ts` from `pkgs.rtk.src + "/hooks/opencode/rtk.ts"`
 
 Recommended convention:

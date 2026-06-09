@@ -144,6 +144,10 @@ in {
           };
         };
       };
+      tui = {
+        "$schema" = "https://opencode.ai/tui.json";
+        theme = "catppuccin-macchiato";
+      };
       agents = lib.mapAttrs' (filename: _:
         lib.nameValuePair (lib.removeSuffix ".md" filename) (./config/agents + "/${filename}")
       ) (lib.filterAttrs (n: v: v == "regular") (builtins.readDir ./config/agents));
@@ -179,14 +183,6 @@ in {
         };
       };
     };
-    home.file.".config/opencode/tui.jsonc".text = builtins.toJSON {
-      "$schema" = "https://opencode.ai/tui.json";
-      theme = "catppuccin-macchiato";
-    };
-
-    home.file.".config/opencode/agents".source = ./config/agents;
-    home.file.".config/opencode/commands".source = ./config/commands;
-    home.file.".config/opencode/skills".source = ./config/skills;
     home.file.".config/opencode/plugins/rtk.ts".source = pkgs.rtk.src + "/hooks/opencode/rtk.ts";
 
     shell.secretRefs = {
