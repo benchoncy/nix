@@ -2,6 +2,8 @@
 let
   firefoxCfg = config.programs.firefox;
   nixosChannel = lib.trivial.release;
+  firefoxProfileName = "default";
+  firefoxProfilePath = "default";
 
   defaultToolbarExtensionEntries = [
     {
@@ -132,10 +134,13 @@ in {
   config = {
     programs.firefox = {
       enable = true;
-      configPath = ".mozilla/firefox";
       package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
       languagePacks = lib.mkIf (!pkgs.stdenv.isDarwin) [ "en-GB" ];
-      profiles.default = {
+      profiles.${firefoxProfileName} = {
+        id = 0;
+        name = firefoxProfileName;
+        path = firefoxProfilePath;
+        isDefault = true;
         search = {
           default = "ddg";
           force = true;
