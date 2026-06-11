@@ -1,7 +1,15 @@
-{ ... }: {
+{ config, ... }: {
   imports = [
     ./hardware-configuration.nix  # Include the results of the hardware scan.
     ./settings.nix                # Static settings for this host
+  ];
+
+  # Enable 16GB swap file
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16 * 1024; # 16GB in MiB
+    }
   ];
 
   # Enable Gnome Module
