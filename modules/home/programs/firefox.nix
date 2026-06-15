@@ -266,6 +266,11 @@ in {
             installation_mode = "force_installed";
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/consent-o-matic/latest.xpi";
           };
+
+          "{81b74d53-9416-4fb3-afa2-ab46684b253b}" = {
+            installation_mode = "force_installed";
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/tabwrangler/latest.xpi";
+          };
         };
       };
     };
