@@ -37,7 +37,7 @@
 
         containers.enable = lib.mkEnableOption "Container and Kubernetes tools";
 
-        javascript.enable = lib.mkEnableOption "Node.js JavaScript runtime";
+        javascript.enable = lib.mkEnableOption "Node.js JavaScript runtime with fnm and pnpm";
 
         tofu.enable = lib.mkEnableOption "tenv-managed OpenTofu/Terraform tooling";
 
