@@ -52,7 +52,6 @@ in {
       settings = {
         "$schema" = "https://opencode.ai/config.json";
         autoupdate = false;
-        default_agent = "plan";
         plugin = [
           "@tarquinen/opencode-dcp"
         ];
