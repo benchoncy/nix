@@ -54,6 +54,7 @@ in {
         autoupdate = false;
         plugin = [
           "@tarquinen/opencode-dcp"
+          "@slkiser/opencode-quota"
         ];
         share = "disabled";
         lsp = {
@@ -147,6 +148,9 @@ in {
       tui = {
         "$schema" = "https://opencode.ai/tui.json";
         theme = "catppuccin-macchiato";
+        plugin = [
+          "@slkiser/opencode-quota"
+        ];
       };
       agents = lib.mapAttrs' (filename: _:
         lib.nameValuePair (lib.removeSuffix ".md" filename) (./config/agents + "/${filename}")
