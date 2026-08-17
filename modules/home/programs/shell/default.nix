@@ -28,15 +28,7 @@ in {
 
     programs.zsh = {
       enable = true;
-      enableCompletion = true;
-      completionInit = ''
-        autoload -U compinit
-        if [[ ! -f "$HOME/.zcompdump" ]]; then
-          compinit -d "$HOME/.zcompdump"
-        else
-          compinit -C -d "$HOME/.zcompdump"
-        fi
-      '';
+      enableCompletion = false;
       autosuggestion.enable = true;
       plugins = [
         {
