@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     tree-sitter
     ansible
@@ -10,7 +10,6 @@
     gopls
     helm-ls
     vscode-langservers-extracted
-    ltex-ls
     lua-language-server
     marksman
     ruff
@@ -30,10 +29,4 @@
     ".config/nvim".source = ./config;
   };
 
-  shell.secretRefs = {
-    # Used by LanguageTool via ltex-ls
-    LANGUAGETOOL_USERNAME = lib.mkDefault "op://Private/LanguageTool/username";
-    # Used by LanguageTool via ltex-ls
-    LANGUAGETOOL_API_KEY = lib.mkDefault "op://Private/LanguageTool/api key";
-  };
 }

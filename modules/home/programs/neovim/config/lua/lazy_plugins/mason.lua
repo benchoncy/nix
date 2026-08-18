@@ -18,7 +18,6 @@ return {
                 "gopls",
                 "helm-ls",
                 "json-lsp",
-                "ltex-ls",
                 "lua-language-server",
                 "marksman",
                 "ruff",
