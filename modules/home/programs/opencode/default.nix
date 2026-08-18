@@ -128,7 +128,7 @@ in {
               OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
               OBSIDIAN_PORT = "{env:OBSIDIAN_PORT}";
             };
-            enabled = false;
+            enabled = true;
           };
           playwright = {
             type = "local";

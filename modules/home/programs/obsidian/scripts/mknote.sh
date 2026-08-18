@@ -117,6 +117,9 @@ append_entry() {
 
   ensure_note "$note_path" "$note_heading"
   {
+    if grep -qE '^\[[0-9]{2}:[0-9]{2}:[0-9]{2}\] ' "$note_path"; then
+      printf '\n'
+    fi
     printf '[%s] ' "$today_time"
     printf '%s\n' "$content"
   } >>"$note_path" || fail "failed to append to daily note: $note_path"
