@@ -122,7 +122,7 @@ in {
           };
           obsidian = {
             type = "local";
-            command = [ "uvx" "mcp-obsidian" ];
+            command = [ "uvx" "--from" "mcp-obsidian==0.2.2" "--with" "mcp==1.12.4" "mcp-obsidian" ];
             environment = {
               OBSIDIAN_API_KEY = "{env:OBSIDIAN_API_KEY}";
               OBSIDIAN_HOST = "{env:OBSIDIAN_HOST}";
