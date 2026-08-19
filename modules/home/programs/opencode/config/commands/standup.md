@@ -1,6 +1,6 @@
 ---
 description: Summarize recent work journal entries into standup points
-agent: zk
+agent: notes
 ---
 
 Create a concise standup update from the recent work journal.
