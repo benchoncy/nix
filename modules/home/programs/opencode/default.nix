@@ -52,11 +52,18 @@ in {
       settings = {
         "$schema" = "https://opencode.ai/config.json";
         autoupdate = false;
+        default_agent = "plan";
         plugin = [
           "@tarquinen/opencode-dcp"
           "@slkiser/opencode-quota"
         ];
         share = "disabled";
+        agent = {
+          plan.color = "info";
+          foreman.color = "success";
+          build.color = "primary";
+          notes.color = "error";
+        };
         lsp = {
           pyright.disabled = true;
           terraform.disabled = true;
