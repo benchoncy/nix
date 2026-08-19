@@ -59,9 +59,9 @@ in {
         ];
         share = "disabled";
         agent = {
-          plan.color = "info";
+          plan.color = "primary";
           foreman.color = "success";
-          build.color = "primary";
+          build.color = "secondary";
           notes.color = "error";
         };
         lsp = {
