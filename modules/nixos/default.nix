@@ -4,6 +4,7 @@
     inputs.catppuccin.nixosModules.catppuccin # Include catppuccin theme module
     ./packages.nix
     ./display
+    ./developer-vm.nix
   ];
 
   catppuccin = {

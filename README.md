@@ -85,8 +85,13 @@ Optional sub-options (must also have `homeProfiles.developer.enable = true`):
 - `homeProfiles.developer.rust.enable` - Rust toolchain (cargo, rust)
 - `homeProfiles.developer.lua.enable` - Lua and LuaRocks
 - `homeProfiles.developer.containers.enable` - Container and Kubernetes tools
+- `homeProfiles.developer.vms.enable` - libvirt and Vagrant virtual machine tooling (enabled by default with the developer profile on NixOS)
 - `homeProfiles.developer.javascript.enable` - Node.js JavaScript runtime with fnm and pnpm
 - `homeProfiles.developer.tofu.enable` - tenv-managed OpenTofu/Terraform tooling
+
+On NixOS, enabling `homeProfiles.developer.enable` also enables the libvirt daemon
+and adds the configured user to the `libvirtd` group. Set
+`homeProfiles.developer.vms.enable = false` to opt out.
 
 ### `homeProfiles._3dPrinting.enable`
 Enables 3D printing tools (Cura, Cura OctoPrint plugin, FreeCAD)

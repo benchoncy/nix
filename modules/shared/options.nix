@@ -37,6 +37,12 @@
 
         containers.enable = lib.mkEnableOption "Container and Kubernetes tools";
 
+        vms.enable = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Libvirt and Vagrant virtual machine tooling";
+        };
+
         javascript.enable = lib.mkEnableOption "Node.js JavaScript runtime with fnm and pnpm";
 
         tofu.enable = lib.mkEnableOption "tenv-managed OpenTofu/Terraform tooling";

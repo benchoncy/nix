@@ -9,6 +9,7 @@
     ./rust.nix
     ./lua.nix
     ./containers.nix
+    ./vms.nix
     ./javascript.nix
     ./tofu.nix
   ];
