@@ -5,5 +5,6 @@
     ./ai
     ./hyprland
     ./gnome
+    ./kde
   ];
 }

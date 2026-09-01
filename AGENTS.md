@@ -54,7 +54,7 @@ Notable behavior:
 Linux-only system configuration.
 
 - `default.nix` imports Home Manager's NixOS module, the Catppuccin NixOS module, package config, and display modules.
-- `display/` contains feature modules like `gnome.nix` and `hyprland.nix`.
+- `display/` contains feature modules like `gnome.nix`, `kde.nix`, and `hyprland.nix`.
 
 ### `modules/darwin/`
 
@@ -167,13 +167,15 @@ Features that require system-level configuration use system options:
 **Current options using this pattern:**
 
 - `gnome.enable` - NixOS Gnome module (mirrors to HM for themes, extensions, dock)
+- `kde.enable` - NixOS KDE Plasma module (mirrors to HM for Plasma settings)
 - `hyprland.enable` - experimental/unsupported NixOS Hyprland module (mirrors to HM for waybar, keybindings)
 
 Note: `homeProfiles.*` was previously called "Pattern 1" but is now merged with Pattern 2 since both use system-level options with osConfig mirroring.
 
 ### Why the split?
 
-- **Desktop environments** (gnome, hyprland) are system-level choices that automatically need user-level configs (themes, extensions, keybindings). The mirroring ensures user config follows the system choice.
+- **Desktop environments** (gnome, kde, hyprland) are system-level choices that automatically need user-level configs (themes, extensions, keybindings, and Plasma panels). The mirroring ensures user config follows the system choice.
+- KDE taskbar launchers are configured through the Home Manager `kde.taskbarApps` option; embedded hosts override it under `home-manager.users.<name>.kde.taskbarApps`.
 - **User tools** (ai, developer, 3dprinting) are purely user-level choices that users enable explicitly via `homeProfiles.*` options.
 
 This keeps host files simple and ensures user-level config follows the selected system features.

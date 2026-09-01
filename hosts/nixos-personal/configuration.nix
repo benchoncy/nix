@@ -12,8 +12,8 @@
     }
   ];
 
-  # Enable Gnome Module
-  gnome.enable = true;
+  # Enable KDE Plasma Module
+  kde.enable = true;
 
   # Home Manager profiles
   homeProfiles = {

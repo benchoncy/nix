@@ -11,6 +11,11 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
     catppuccin.url = "github:catppuccin/nix";
   };
 
@@ -19,7 +24,8 @@
     nix-darwin,
     nixpkgs,
     home-manager,
-    catppuccin
+    catppuccin,
+    plasma-manager
   }:
   let
     mkPkgs = system: import nixpkgs {

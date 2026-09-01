@@ -12,6 +12,16 @@ To use this configuration on NixOS, follow these steps:
 3. Run `make nixos-rebuild` to switch the default host (`NIXOS_HOST=nixos-bstuart`)
 4. Override the target explicitly when needed: `make nixos-rebuild NIXOS_HOST=<flake-host>`
 
+The personal NixOS host uses KDE Plasma. Customize the Plasma taskbar from an
+embedded Home Manager host module with `kde.taskbarApps`:
+
+```nix
+home-manager.users.ben.kde.taskbarApps = [
+  "org.kde.dolphin.desktop"
+  "firefox.desktop"
+];
+```
+
 ## MacOS (Darwin)
 
 Generic macOS support lives in this repo, but final work-machine outputs are expected to be assembled in a separate private wrapper flake (for privacy).
