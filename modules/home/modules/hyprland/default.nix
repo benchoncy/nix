@@ -1,5 +1,8 @@
 # Experimental/unsupported: kept opt-in for local testing only.
-{ config, osConfig, lib, ... }: {
+args@{ config, lib, ... }:
+let
+  osConfig = args.osConfig or {};
+in {
   imports = [
     ./waybar.nix
   ];
@@ -7,7 +10,7 @@
   options = {
     hyprland.enable = lib.mkOption {
       type = lib.types.bool;
-      default = osConfig.hyprland.enable or false;
+      default = (osConfig.hyprland.enable or false);
       description = "Enable experimental, unsupported Hyprland-specific settings and packages.";
     };
   };

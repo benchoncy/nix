@@ -1,4 +1,4 @@
-{ config, lib, pkgs, osConfig, ... }: {
+{ config, lib, pkgs, ... }: {
   home.packages = with pkgs; [
     coreutils
     gcc

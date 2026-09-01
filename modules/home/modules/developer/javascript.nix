@@ -1,5 +1,9 @@
-{ config, lib, pkgs, osConfig, ... }: {
-  config = lib.mkIf osConfig.homeProfiles.developer.javascript.enable {
+args@{ config, lib, pkgs, ... }:
+let
+  osConfig = args.osConfig or {};
+  profiles = osConfig.homeProfiles or config.homeProfiles;
+in {
+  config = lib.mkIf profiles.developer.javascript.enable {
     home.packages = with pkgs; [
       fnm
       nodejs_24

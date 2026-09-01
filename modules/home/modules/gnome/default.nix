@@ -1,9 +1,12 @@
-{ config, lib, pkgs, username, osConfig, ... }: {
+args@{ config, lib, pkgs, username, ... }:
+let
+  osConfig = args.osConfig or {};
+in {
   
   options = {
     gnome.enable = lib.mkOption {
       type = lib.types.bool;
-      default = osConfig.gnome.enable or false;
+      default = (osConfig.gnome.enable or false);
       description = "Enable GNOME specific settings and packages.";
     };
     gnome.favoriteApps = lib.mkOption {

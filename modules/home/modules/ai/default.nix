@@ -1,6 +1,7 @@
-{ config, lib, osConfig, ... }:
+args@{ config, lib, ... }:
 let
-  cfg = osConfig.homeProfiles.ai;
+  osConfig = args.osConfig or {};
+  cfg = (osConfig.homeProfiles or config.homeProfiles).ai;
 in {
   config = lib.mkIf cfg.enable {
     home.file.".config/userdata/ai-policy.json".text = builtins.toJSON {
