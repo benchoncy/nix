@@ -99,3 +99,7 @@ Useful commands:
 The bootstrap script initializes the repository and submodule but does not
 create a commit or configure a remote. Review the generated files, then commit
 them and add the private wrapper remote yourself.
+
+By default, the bootstrap script adds the shared repository using its SSH URL
+and `main` branch. Set `SHARED_REPO_URL` and `SHARED_REPO_BRANCH` when testing
+with another Git remote or branch.

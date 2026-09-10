@@ -54,14 +54,18 @@ the shared repository as `shared/`. It will not overwrite a non-empty
 destination. Review and customize the generated wrapper before committing it
 or adding its private remote.
 
-The shared repository URL used for the submodule can be overridden for testing
-with `SHARED_REPO_URL`:
+The bootstrap uses the shared repository's SSH URL and explicitly tracks its
+`main` branch by default. The repository URL and branch can be overridden for
+testing with `SHARED_REPO_URL` and `SHARED_REPO_BRANCH`:
 
 ```sh
 SHARED_REPO_URL=https://github.com/benchoncy/nix.git \
+  SHARED_REPO_BRANCH=main \
   sh ./scripts/bootstrap-wrapper.sh /tmp/nix-config-test
 ```
 
+The remote machine must have an SSH key authorized to read the shared
+repository. The script itself may still be downloaded over HTTPS.
 After bootstrapping from a remote machine:
 
 ```sh

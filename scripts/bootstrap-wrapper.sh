@@ -2,7 +2,8 @@
 
 set -u
 
-shared_repo_url=${SHARED_REPO_URL:-https://github.com/benchoncy/nix.git}
+shared_repo_url=${SHARED_REPO_URL:-git@github.com:benchoncy/nix.git}
+shared_repo_branch=${SHARED_REPO_BRANCH:-main}
 if [ "$#" -eq 0 ]; then
     if [ -z "${HOME:-}" ]; then
         printf '%s\n' 'error: HOME is not set; provide a destination argument' >&2
@@ -75,7 +76,7 @@ temporary_directory=$(mktemp -d "${TMPDIR:-/tmp}/bootstrap-wrapper.XXXXXX") || {
 }
 
 printf '%s\n' "Cloning shared configuration..."
-if ! git clone "$shared_repo_url" "$temporary_directory/shared"; then
+if ! git clone --branch "$shared_repo_branch" "$shared_repo_url" "$temporary_directory/shared"; then
     printf '%s\n' 'error: could not clone the shared repository' >&2
     exit 1
 fi
@@ -91,7 +92,7 @@ if ! git -C "$destination" init >/dev/null 2>&1; then
 fi
 
 printf '%s\n' 'Adding shared repository as a submodule...'
-if ! git -C "$destination" submodule add "$shared_repo_url" shared >/dev/null 2>&1; then
+if ! git -C "$destination" submodule add --branch "$shared_repo_branch" "$shared_repo_url" shared >/dev/null 2>&1; then
     printf '%s\n' 'error: could not add shared as a git submodule' >&2
     exit 1
 fi
