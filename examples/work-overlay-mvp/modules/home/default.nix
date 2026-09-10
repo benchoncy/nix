@@ -13,7 +13,7 @@ in {
         # Work-only OpenCode MCP servers
         settings.mcp.work-docs = {
           type = "remote";
-          url = "https://mcp.<work-domain>/mcp";
+          url = "https://mcp.example.invalid/mcp";
           oauth = { };
           enabled = true;
         };

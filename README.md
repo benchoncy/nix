@@ -31,6 +31,52 @@ To use this configuration for a work MacOS machine, follow these steps:
 2. Clone or prepare the private work wrapper repo
 3. Run `make darwin-rebuild` from the private work repo thereafter
 
+## Bootstrap a Wrapper
+
+Use the bootstrap script to create a private wrapper flake with this repository
+as a Git submodule. The default destination is `~/.nix-config`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/benchoncy/nix/main/scripts/bootstrap-wrapper.sh | sh
+```
+
+For an isolated test or a different destination, pass the destination as the
+first argument:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/benchoncy/nix/main/scripts/bootstrap-wrapper.sh \
+  | sh -s -- /tmp/nix-config-test
+```
+
+The script downloads the shared repository, copies
+`examples/work-overlay-mvp/` into the destination, initializes Git, and adds
+the shared repository as `shared/`. It will not overwrite a non-empty
+destination. Review and customize the generated wrapper before committing it
+or adding its private remote.
+
+The shared repository URL used for the submodule can be overridden for testing
+with `SHARED_REPO_URL`:
+
+```sh
+SHARED_REPO_URL=https://github.com/benchoncy/nix.git \
+  sh ./scripts/bootstrap-wrapper.sh /tmp/nix-config-test
+```
+
+After bootstrapping from a remote machine:
+
+```sh
+cd ~/.nix-config
+git add .
+git commit -m "Bootstrap wrapper flake"
+git remote add origin <private-wrapper-repository>
+git push -u origin main
+make check
+```
+
+Keep work credentials, private URLs, and machine-specific configuration in the
+wrapper. The shared repository and its example are intentionally
+organization-neutral.
+
 # Development
 
 ## Testing Changes
@@ -194,7 +240,9 @@ Work-specific configuration is expected to live in a separate repo that owns the
 If you need to recreate a minimal private work repo quickly, use `examples/work-overlay-mvp/` as a generic starting point.
 It is intentionally organization-neutral and shows the minimum shape for work-only Git, AWS, shell-tool, and OpenCode MCP overrides.
 
-For a fully pure setup, prefer a separate private wrapper flake that:
+The bootstrap template uses a local `shared` submodule so the wrapper can pin
+and review the exact shared revision. If a wrapper does not need a submodule,
+the normal flake-input alternative is:
 
 - pulls this shared repo as a normal flake input from GitHub
 - owns the final work machine outputs

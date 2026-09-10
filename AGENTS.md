@@ -16,6 +16,7 @@ It targets both NixOS and macOS via `nix-darwin`, and supports both embedded Hom
 - `Makefile`: convenience commands for rebuilds, flake checks, and input updates.
 - `README.md`: bootstrap notes, especially for first-time Darwin setup and NixOS DisplayLink setup.
 - `examples/work-overlay-mvp/`: generic recovery skeleton for a private work overlay repo.
+- `scripts/bootstrap-wrapper.sh`: curl-first wrapper bootstrap entrypoint.
 
 ## Current Hosts
 
@@ -82,6 +83,9 @@ Private work overlay conventions:
 - the private repo should export a top-level wrapper flake and `modules/home/default.nix`
 - keep the shared repo organization-neutral; use placeholders and generic examples when documenting private overlay structure
 - `examples/work-overlay-mvp/` is the generic minimum-viable overlay shape for recovery or bootstrapping
+- `scripts/bootstrap-wrapper.sh` copies that example into `$HOME/.nix-config` by default, initializes Git, and adds this repository as the `shared` submodule
+- the bootstrap destination may be overridden with the script's first positional argument for isolated testing
+- keep the example aligned with the live wrapper's Darwin, NixOS, and standalone Home Manager composition without copying private identities or secrets
 
 Home Manager conventions:
 
@@ -93,7 +97,7 @@ Home Manager conventions:
 - prefer explicit manifest entries for whole app directories like `.config/nvim` instead of auto-discovering the entire home tree
 - keep reserved/generated files like `.gitconfig`, `.ssh/config`, `.aws/config`, and `.config/ghostty/config` out of the raw manifest
 - option-defining Home Manager program modules belong in the stable programs layer imported by `profiles/base.nix`
-- work/private final outputs should live in a separate wrapper flake that composes this repo via flake input
+- work/private final outputs should live in a separate wrapper flake; the bootstrap template composes this repo through a local `shared` submodule, while normal flake inputs remain supported
 
 ## Home Manager Profile Options
 
@@ -205,7 +209,7 @@ Convenience aliases exist in `Makefile`:
 Notes:
 
 - `make nixos-rebuild` and `make home-manager` use explicit flake output selectors, with `NIXOS_HOST`/`HOME_HOST` override support.
-- work/private outputs should be provided by a separate private wrapper flake, which should consume this repo via a normal flake input.
+- work/private outputs should be provided by a separate private wrapper flake. Use the local `shared` submodule template when reproducible source pinning and remote bootstrap are desired; normal flake inputs remain a supported alternative.
 
 ## Editing Guidance For Future Agents
 
