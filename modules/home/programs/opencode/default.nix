@@ -172,6 +172,8 @@ in {
 
     catppuccin.opencode.enable = true;
 
+    xdg.configFile."opencode/opencode.json".force = true;
+
     home.file.".config/opencode/dcp.jsonc".text = builtins.toJSON {
       "$schema" = "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json";
       enabled = true;

@@ -4,6 +4,8 @@ let
   cfg = (osConfig.homeProfiles or config.homeProfiles).ai;
 in {
   config = lib.mkIf cfg.enable {
+    programs.opencode.settings.provider.openai = lib.mkIf cfg.providers.openai.enable { };
+
     home.file.".config/userdata/ai-policy.json".text = builtins.toJSON {
       enable = cfg.enable;
       nvim = {
