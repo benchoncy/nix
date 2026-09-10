@@ -135,6 +135,7 @@ in {
     programs.firefox = {
       enable = true;
       package = if pkgs.stdenv.isDarwin then null else pkgs.firefox;
+      configPath = "${config.xdg.configHome}/mozilla/firefox";
       languagePacks = lib.mkIf (!pkgs.stdenv.isDarwin) [ "en-GB" ];
       profiles.${firefoxProfileName} = {
         id = 0;
