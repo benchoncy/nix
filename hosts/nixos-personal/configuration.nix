@@ -4,6 +4,9 @@
     ./settings.nix                # Static settings for this host
   ];
 
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
   # Enable 16GB swap file
   swapDevices = [
     {
