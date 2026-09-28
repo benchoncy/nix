@@ -47,6 +47,8 @@
 
         tofu.enable = lib.mkEnableOption "tenv-managed OpenTofu/Terraform tooling";
 
+        jira.enable = lib.mkEnableOption "Jira CLI tooling";
+
         tofu.alias = lib.mkOption {
           type = lib.types.str;
           default = "tofu";

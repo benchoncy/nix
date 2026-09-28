@@ -16,5 +16,6 @@ in {
     ./vms.nix
     ./javascript.nix
     ./tofu.nix
+    ./jira.nix
   ];
 }
