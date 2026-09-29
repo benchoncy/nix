@@ -4,6 +4,11 @@ let
 in {
   home.packages = [ unstablePkgs.herdr ];
 
+  home.file.".config/herdr/config.toml".text = ''
+    [keys]
+    prefix = "ctrl+a"
+  '';
+
   home.file.".local/scripts/herdr-workspace" = {
     source = ./scripts/herdr-workspace.sh;
     executable = true;
