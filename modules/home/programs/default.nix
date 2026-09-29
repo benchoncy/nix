@@ -9,6 +9,7 @@
     ./obsidian
     ./tmux
     ./git
+    ./herdr
     ./opencode
     ./aws
     ./podman.nix
