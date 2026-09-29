@@ -95,11 +95,11 @@ worktree_path=$(realpath "$worktree_path")
 }
 
 workspace_id=
-workspace_list=$(mktemp)
-trap 'rm -f "$workspace_list"' EXIT
-herdr workspace list --json >"$workspace_list"
-jq -e '.result.workspaces | arrays' "$workspace_list" >/dev/null || {
-  printf 'Herdr workspace list returned an unexpected JSON schema.\n' >&2
+herdr_snapshot=$(mktemp)
+trap 'rm -f "$herdr_snapshot"' EXIT
+herdr api snapshot >"$herdr_snapshot"
+jq -e '.result.snapshot.panes | arrays' "$herdr_snapshot" >/dev/null || {
+  printf 'Herdr API snapshot returned an unexpected pane schema.\n' >&2
   exit 1
 }
 
@@ -110,7 +110,7 @@ while IFS=$'\t' read -r candidate_id candidate_cwd; do
     workspace_id=$candidate_id
     break
   fi
-done < <(jq -er '.result.workspaces[]? | [(.workspace_id // .id // empty), (.cwd // empty)] | @tsv' "$workspace_list")
+done < <(jq -er '.result.snapshot.panes[]? | [.workspace_id, (.cwd // .foreground_cwd // empty)] | @tsv' "$herdr_snapshot")
 
 if [[ -n "$workspace_id" ]]; then
   herdr workspace focus "$workspace_id"
@@ -124,6 +124,9 @@ else
 fi
 
 if [[ -n "$agent_kind" ]]; then
-  pane_id=$(jq -er '.result.root_pane.pane_id // .result.workspace.root_pane.pane_id // .result.workspace.root_pane_id // empty' <<<"${workspace_result:-$(herdr workspace get "$workspace_id")}")
+  herdr api snapshot >"$herdr_snapshot"
+  pane_id=$(jq -er --arg workspace_id "$workspace_id" \
+    '[.result.snapshot.panes[] | select(.workspace_id == $workspace_id) | .pane_id][0]' \
+    "$herdr_snapshot")
   herdr agent start "$agent_kind" --kind "$agent_kind" --pane "$pane_id"
 fi

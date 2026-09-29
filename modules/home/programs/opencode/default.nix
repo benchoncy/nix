@@ -1,5 +1,18 @@
 { lib, pkgs, ... }:
 let
+  herdrIntegrationVersion = "v0.9.1";
+  herdrIntegrationAsset = path: hash: pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/herdrdev/herdr/${herdrIntegrationVersion}/src/integration/assets/${path}";
+    inherit hash;
+  };
+
+  herdrAgentState = herdrIntegrationAsset "opencode/herdr-agent-state.js"
+    "sha256-Gmrr9mMjJP7GPR3iJnN7n6azXz3bUc5odDnma2x8tHU=";
+  herdrTuiSession = herdrIntegrationAsset "opencode/herdr-tui-session.js"
+    "sha256-+bXC2xabDww4p4vCyDQReGc7wNAOX3BXdlrqc93Ff5U=";
+  herdrTuiV2 = herdrIntegrationAsset "opencode/tui.js"
+    "sha256-lLjRB+GrW/+iMg47fxVNGEiiFniHhaKbhtc1urNa+eg=";
+
   opencodeSessionizer = pkgs.writeShellScriptBin "opencode-sessionizer" ''
     if ! selected="$(${lib.getExe pkgs.opencode} session list --format json \
       | ${lib.getExe pkgs.jq} -r '.[] | [
@@ -56,6 +69,7 @@ in {
         plugin = [
           "@tarquinen/opencode-dcp"
           "@slkiser/opencode-quota"
+          "./plugins/herdr-agent-state.js"
         ];
         share = "disabled";
         agent = {
@@ -157,6 +171,7 @@ in {
         theme = "catppuccin-macchiato";
         plugin = [
           "@slkiser/opencode-quota"
+          "./herdr-tui-session.js"
         ];
       };
       agents = lib.mapAttrs' (filename: _:
@@ -173,6 +188,22 @@ in {
     catppuccin.opencode.enable = true;
 
     xdg.configFile."opencode/opencode.json".force = true;
+
+    # Keep the official Herdr integration under Home Manager ownership. The
+    # Herdr installer writes tui.jsonc imperatively; managing the same config
+    # here prevents it from competing with the declarative quota plugin.
+    xdg.configFile."opencode/tui.jsonc".text = builtins.toJSON {
+      "$schema" = "https://opencode.ai/tui.json";
+      theme = "catppuccin-macchiato";
+      plugin = [
+        "@slkiser/opencode-quota"
+        "./herdr-tui-session.js"
+      ];
+    };
+
+    home.file.".config/opencode/plugins/herdr-agent-state.js".source = herdrAgentState;
+    home.file.".config/opencode/herdr-tui-session.js".source = herdrTuiSession;
+    home.file.".config/opencode/herdr-opencode/tui.js".source = herdrTuiV2;
 
     home.file.".config/opencode/dcp.jsonc".text = builtins.toJSON {
       "$schema" = "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json";
