@@ -4,13 +4,12 @@
 return {
     "ThePrimeagen/refactoring.nvim",
     dependencies = {
+        "lewis6991/async.nvim",
         "nvim-lua/plenary.nvim",
         "nvim-treesitter/nvim-treesitter",
-        "nvim-telescope/telescope.nvim",
     },
     config = function()
         require("refactoring").setup()
-        require("telescope").load_extension("refactoring")
         -- Func keymaps
         vim.keymap.set("x", "<leader>rf", ":Refactor extract ", { desc = "Extract func" })
         vim.keymap.set("x", "<leader>rF", ":Refactor extract_to_file ", { desc = "Extract func to file" })
@@ -25,7 +24,7 @@ return {
         vim.keymap.set(
             {"n", "x"},
             "<leader>rr",
-            function() require('telescope').extensions.refactoring.refactors() end,
+            function() require('refactoring').select_refactor() end,
             { desc = "Show refactoring options" }
         )
     end,

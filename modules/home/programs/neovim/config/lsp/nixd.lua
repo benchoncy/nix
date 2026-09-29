@@ -3,5 +3,11 @@ return {
     cmd = { "nixd" },
     filetypes = { "nix" },
     root_markers = { "flake.nix", ".git" },
-    settings = {},
+    settings = {
+        nixd = {
+            nixpkgs = {
+                expr = "import <nixpkgs> {}",
+            },
+        },
+    },
 }
