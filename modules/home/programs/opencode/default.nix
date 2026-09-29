@@ -209,7 +209,7 @@ in {
       "$schema" = "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json";
       enabled = true;
       debug = false;
-      pruneNotification = "minimal";
+      pruneNotification = "off";
       pruneNotificationType = "toast";
       experimental.allowSubAgents = true;
       compress = {
@@ -227,6 +227,12 @@ in {
         };
       };
     };
+
+    home.file.".config/opencode/opencode-quota/quota-toast.json".text = builtins.toJSON {
+      enableToast = false;
+      resetNotifications.enabled = false;
+    };
+
     home.file.".config/opencode/plugins/rtk.ts".source = pkgs.rtk.src + "/hooks/opencode/rtk.ts";
 
     shell.secretRefs = {
