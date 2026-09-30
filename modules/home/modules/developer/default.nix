@@ -4,7 +4,7 @@ let
   profiles = args.profileConfig or (osConfig.homeProfiles or {});
 in {
   imports = lib.optionals (profiles.developer.enable or false) [
-    ./bruno.nix
+    ./default-packages.nix
     ./python.nix
     ./github.nix
     ./opencode.nix

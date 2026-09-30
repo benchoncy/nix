@@ -23,7 +23,7 @@ curl -fsSL https://raw.githubusercontent.com/benchoncy/nix/main/scripts/bootstra
 This example was updated for the new Home Manager profile system. Key changes:
 
 - `homeProfiles.ai.*` - AI tooling and policy (all options under homeProfiles.ai)
-- `homeProfiles.developer.enable` - enables developer profile (includes bruno by default)
+- `homeProfiles.developer.enable` - enables developer profile (includes bruno and DBeaver by default)
 - `homeProfiles.developer.github.enable` - enables gh CLI and gh-dash (replaces `github.tooling.enable`)
 - `homeProfiles.developer.opencode.enable` - enables opencode program + config
 - `homeProfiles.developer.aws.enable` - enables awscli2

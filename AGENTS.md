@@ -105,7 +105,7 @@ The Home Manager configuration uses a modular profile system with options that c
 
 ### `homeProfiles.developer.enable`
 Enables the developer profile. Includes by default:
-- bruno + bruno-cli
+- bruno + bruno-cli + DBeaver
 
 Optional sub-options (must also have `homeProfiles.developer.enable = true`):
 - `homeProfiles.developer.python.enable` - uv, pre-commit
