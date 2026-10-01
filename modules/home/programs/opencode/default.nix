@@ -153,7 +153,12 @@ in {
           };
           playwright = {
             type = "local";
-            command = [ "npx" "@playwright/mcp@latest" ];
+            command = [
+              "npx"
+              "@playwright/mcp@latest"
+              "--output-dir"
+              "/tmp/playwright-mcp"
+            ];
             enabled = false;
           };
           zotero = {
