@@ -5,6 +5,8 @@ in {
   home.packages = [ unstablePkgs.herdr ];
 
   home.file.".config/herdr/config.toml".text = ''
+    onboarding = false
+
     [keys]
     prefix = "ctrl+a"
   '';
